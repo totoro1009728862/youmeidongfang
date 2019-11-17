@@ -1,6 +1,6 @@
 <template>
     <!-- 多迁出组件，这样便于后期有页面公用功能时 可以迁至modules文件夹中 -->
-    <div class="hx-home"></div>
+    <div class="hx-home" @click="goLogin">我是首页</div>
 </template>
 
 <script>
@@ -15,7 +15,6 @@ export default {
     computed: {},
 
     async asyncData({ req }) {
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         let userAgent = process.server ? req.headers['user-agent'] : navigator.userAgent
         // const { $api } = app
         // const {
@@ -49,10 +48,12 @@ export default {
             link: `${window.location.href}`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
             imgUrl: 'http://www.iumer.cn/image/umer_qrcode.png'
         })
-        this.checkIsShowAdv()
     },
     methods: {
         // ...mapActions['setCityCode'],
+        goLogin() {
+            this.$router.push({ name: 'Login' })
+        }
     }
 }
 </script>

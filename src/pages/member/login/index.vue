@@ -1,247 +1,239 @@
 <template>
     <div class="hx-login">
-        <hx-header :css="{ backgroundColor: 'transparent' }">
+        <!-- <hx-header :css="{ backgroundColor: 'transparent' }">
             <div slot="left" class="left" @click="$routerBack">
                 <i class="hx-icon hx-icon-fanhui"></i>
             </div>
-        </hx-header>
-        <div class="logo">
-            <img src="//hxtrip.oss-cn-shanghai.aliyuncs.com/common/mobile/logo.png" alt />
-        </div>
+        </hx-header>-->
+        <background>
+            <div class="logo">ANMOYI</div>
+        </background>
+
         <div class="content">
+            <tabs v-model="tabIndex" :tabs="['代理', '店家']"></tabs>
             <div class="items">
-                <div class="item">
-                    <input v-model.trim="userName" placeholder="请输入手机号码或用户名" />
+                <div class="item" @click="nameInputFcous('userNameRef')">
+                    <div class="icon ym-account"></div>
+                    <input ref="userNameRef" v-model.trim="userName" type="tel" maxlength="11" placeholder="请输入登录手机号" />
                 </div>
-                <div class="item">
-                    <input v-model.trim="password" :type="isPasswordShow ? 'text' : 'password'" placeholder="请输入密码" />
-                    <span class="ege-warp" @click="changePassShow">
-                        <van-icon v-if="isPasswordShow" name="eye-o" />
-                        <van-icon v-if="!isPasswordShow" name="closed-eye" />
+                <div class="item" @click="nameInputFcous('passwordRef')">
+                    <div class="icon ym-password"></div>
+                    <input ref="passwordRef" v-model.trim="password" :type="isPasswordShow ? 'text' : 'password'" placeholder="请输入密码" />
+                    <span class="ege-warp" @click.stop="isPasswordShow = !isPasswordShow">
+                        <van-icon :name="isPasswordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
                 </div>
-                <nuxt-link v-if="!isWechat" tag="div" class="item forgot" :to="{ name: 'ForgetPassword' }">
-                    <span>忘记密码</span>
-                </nuxt-link>
+                <div class="forgot-box">
+                    <nuxt-link v-if="!isWechat" tag="div" class="forgot" :to="{ name: 'ForgetPassword', query: { tabIndex } }">
+                        <span>忘记密码?</span>
+                    </nuxt-link>
+                    <nuxt-link tag="div" class="forgot" :to="{ name: 'Registration', query: { ...$route.query } }">
+                        <span>注册账号</span>
+                    </nuxt-link>
+                </div>
             </div>
-            <van-button type="primary" class="btn" size="large" @click="submitLogin()">登 录</van-button>
-            <div v-if="!isWechat" class="other-more">
+            <div class="login-bt">
+                <div :class="{ 'no-click': noClick }" @click="submitLogin">登录</div>
+            </div>
+            <!-- <div v-if="!isWechat" class="other-more">
                 <nuxt-link tag="span" :to="{ name: 'LoginByPhone', query: { ...$route.query } }" replace>验证码登录</nuxt-link>
                 <nuxt-link tag="span" :to="{ name: 'Registration', query: { ...$route.query } }">注册账号</nuxt-link>
-            </div>
+            </div>-->
         </div>
     </div>
 </template>
 
 <script>
-import routerBack from '~/common/minix/routerBack.js'
+import Background from './background'
+import Tabs from './tabs'
+import { phoneNumberReg, passwordReg } from '~/common/utils/checkForm.js'
 const domain = process.env.domain
 export default {
-    layout: 'keepalive',
-    mixins: [routerBack],
+    components: {
+        Background,
+        Tabs
+    },
+
     data() {
         return {
+            tabIndex: 0, // tab下标
             isWechat: false, //是否在微信环境中
             userName: '', //用户名
             password: '', //密码
             isPasswordShow: false //密码是否可见
         }
     },
-    async asyncData({ app }) {
+    computed: {
+        noClick() {
+            return !this.userName || !this.password
+        }
+    },
+    async asyncData({ app, query }) {
         //进入当前页面---先清除userToken
         app.$cookies.remove('userToken', { domain, path: '/' }) //将之前的老cookie 先删除掉
         app.$cookies.removeAll()
-        app.$cookies.remove('userToken', {
-            domain: '.qa.hxtrip.com',
-            path: '/'
-        })
-        app.$cookies.remove('userToken', {
-            domain: 'm.qa.hxtrip.com',
-            path: '/'
-        })
-        app.$cookies.remove('userToken', {
-            domain: '.m.qa.hxtrip.com',
-            path: '/'
-        })
-        app.$cookies.remove('userToken', {
-            domain: '.m.hxtrip.com',
-            path: '/'
-        })
-        app.$cookies.remove('userToken', {
-            domain: '.hxtrip.com',
-            path: '/'
-        })
-        app.$cookies.remove('userToken', {
-            domain: 'www.m.hxtrip.com',
-            path: '/'
-        })
-        app.$cookies.remove('userToken', {
-            domain: '.www.m.hxtrip.com',
-            path: '/'
-        })
-        app.$cookies.remove('userToken', {
-            domain: '.qa.hxtrip.com'
-        })
-        app.$cookies.remove('userToken', {
-            domain: 'm.qa.hxtrip.com'
-        })
-        app.$cookies.remove('userToken', {
-            domain: '.m.qa.hxtrip.com'
-        })
-        app.$cookies.remove('userToken', {
-            domain: '.m.hxtrip.com'
-        })
-        app.$cookies.remove('userToken', {
-            domain: '.hxtrip.com'
-        })
-        app.$cookies.remove('userToken', {
-            domain: 'www.m.hxtrip.com'
-        })
-        app.$cookies.remove('userToken', {
-            domain: '.www.m.hxtrip.com'
-        })
-        //微信登录的处理   ---如果是微信的话 通过授权，而不是通过当前页面来注册的
-        return await app.$wxLogin()
+        const { tabIndex, userName } = query
+        return { tabIndex: Number(tabIndex), userName }
     },
     methods: {
-        changePassShow() {
-            //切换密码是否可见
-            this.isPasswordShow = !this.isPasswordShow
+        nameInputFcous(v) {
+            this.$nextTick(function() {
+                //DOM 更新了
+                this.$refs[v].focus()
+            })
         },
         submitLogin() {
-            if (this.userName.trim() === '') {
-                this.$Toast('请输入手机号码或用户名')
+            if (this.noClick) return
+            let phoneReg = phoneNumberReg(this.userName)
+            let psReg = passwordReg(this.password)
+            if (phoneReg) {
+                this.$Toast(phoneReg)
                 return
             }
-            if (this.password.trim() === '') {
-                this.$Toast('请输入密码')
-                return
-            }
-            if (/\s/.test(this.password)) {
-                this.$Toast('密码格式不正确')
+            if (psReg) {
+                this.$Toast(psReg)
                 return
             }
             this.$Toast.loading({
-                mask: true,
                 message: '登录中...',
-                duration: 0
+                duration: 1000
             })
-            this.$store
-                .dispatch('member/login/mLogin', {
-                    phoneNumber: this.userName,
-                    password: this.password
-                })
-                .then(res => {
-                    this.$Toast.clear()
-                    let { originUrl } = this.$route.query
-                    if (res.userToken) {
-                        this.$cookies.set('userToken', res.userToken, {
-                            domain,
-                            path: '/'
-                        })
-                        this.$store.dispatch('member/setUserInfo').then(() => {
-                            if (originUrl && originUrl.length) {
-                                this.$router.replace({
-                                    path: decodeURIComponent(originUrl)
-                                })
-                            } else {
-                                originUrl = this.$cookies.get('originUrl')
-                                if (originUrl && originUrl.length) {
-                                    this.$cookies.remove('originUrl', {
-                                        domain,
-                                        path: '/'
-                                    })
-                                    //删除之前的cookie 过一段时间可以删除掉
-                                    this.$router.replace({
-                                        path: decodeURIComponent(originUrl)
-                                    })
-                                } else {
-                                    this.$router.replace({ name: 'Home' })
-                                }
-                            }
-                        })
-                    }
-                })
-                .catch(() => {
-                    this.$Toast.clear()
-                    //this.$Toast(res.msg)
-                })
+            this.$router.replace({
+                name: 'Home'
+            })
+            // this.$store
+            //     .dispatch('member/login/mLogin', {
+            //         phoneNumber: this.userName,
+            //         password: this.password
+            //     })
+            //     .then(res => {
+            //         this.$Toast.clear()
+            //         let { originUrl } = this.$route.query //回调路由地址
+            //         if (res.userToken) {
+            //             this.$cookies.set('userToken', res.userToken, {
+            //                 domain,
+            //                 path: '/'
+            //             })
+            //             this.$store.dispatch('member/setUserInfo').then(() => {
+            //                 if (originUrl && originUrl.length) {
+            //                     this.$router.replace({
+            //                         path: decodeURIComponent(originUrl)
+            //                     })
+            //                 } else {
+            //                     originUrl = this.$cookies.get('originUrl')
+            //                     if (originUrl && originUrl.length) {
+            //                         this.$cookies.remove('originUrl', {
+            //                             domain,
+            //                             path: '/'
+            //                         })
+            //                         //删除之前的cookie 过一段时间可以删除掉
+            //                         this.$router.replace({
+            //                             path: decodeURIComponent(originUrl)
+            //                         })
+            //                     } else {
+            //                         this.$router.replace({ name: 'Home' })
+            //                     }
+            //                 }
+            //             })
+            //         }
+            //     })
+            //     .catch(() => {
+            //         this.$Toast.clear()
+            //         //this.$Toast(res.msg)
+            //     })
         }
     }
 }
 </script>
 <style lang="less" scoped>
 .hx-login {
-    background-color: #f5f5f5;
-    overflow: auto;
-    min-height: 100vh;
-}
-.logo {
-    padding: 100px 0 50px;
-    text-align: center;
-    img {
-        width: 300px;
+    z-index: 9;
+    .logo {
+        position: absolute;
+        top: 130px;
+        letter-spacing: 4px;
+        color: #fff;
+        font-size: 60px;
+        width: 100%;
+        text-align: center;
+        font-weight: 600;
     }
 }
+
 .content {
-    padding: 0 20px;
+    position: relative;
+    top: -70px;
+    background: #fff;
+    margin: 0 40px;
+    padding: 40px 24px 60px;
+    border-radius: 10px;
     .items {
-        padding: 50px 0;
-    }
-    .btn {
-        height: 80px;
-        line-height: 80px;
-        // font-size: 36px;
-        cursor: pointer;
-        border-radius: 56px;
-        border: none;
-        background: #1aad19;
-    }
-    .item {
-        height: 110px;
-        border-bottom: 2px solid #d4d4d4;
-        position: relative;
-        &.forgot {
-            border-bottom: none;
+        width: 100%;
+        display: flex;
+        flex-flow: column nowrap;
+        margin-top: 40px;
+        .item {
+            position: relative;
             display: flex;
-            flex-direction: row-reverse;
-            padding-top: 50px;
-            font-size: 32px;
-            color: #555;
+            flex-flow: row nowrap;
+            padding: 30px 80px;
+            border-bottom: 2px solid #f7f7f7;
+            .icon,
+            .ege-warp {
+                position: absolute;
+                display: flex;
+                height: 100%;
+                align-items: center;
+                width: 80px;
+                justify-content: center;
+
+                top: 0;
+                font-size: 40px;
+                color: #bbb;
+            }
+            .icon {
+                left: 0;
+            }
+            .ege-warp {
+                right: 0;
+            }
+        }
+        .forgot-box {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+        }
+        .forgot {
+            display: block;
+            font-size: 24px;
+            color: #bbb;
+            margin: 20px 0 40px;
+        }
+    }
+    .login-bt {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        width: 100%;
+        div {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            width: 320px;
+            background: #ab1f26;
+            color: #fff;
+            border-radius: 40px;
+            font-size: 28px;
+        }
+        .no-click {
+            color: #888;
+            background: #ddd;
         }
     }
     input {
-        height: 110px;
-        border: none;
-        width: 100%;
-        background: none;
-        font-size: 34px;
-        &::-webkit-input-placeholder {
-            color: #aab2bd;
-            font-size: 34px;
-        }
-    }
-    .ege-warp {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 110px;
-        height: 110px;
-        text-align: center;
-        i {
-            font-size: 48px;
-            margin-top: 30px;
-            color: #555;
-        }
-    }
-    .other-more {
-        display: flex;
-        justify-content: space-between;
-        color: #555;
-        height: 120px;
-        line-height: 120px;
-        font-size: 32px;
-        color: #555;
+        font-size: 28px;
     }
 }
 </style>

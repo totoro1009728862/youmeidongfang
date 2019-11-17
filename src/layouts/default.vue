@@ -1,6 +1,5 @@
 <template>
     <div class="layout">
-        <!-- <div class="offline-tip" v-if="$nuxt.isOffline">貌似还未链接网络</div> -->
         <nuxt></nuxt>
     </div>
 </template>
@@ -17,4 +16,11 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.layout {
+    background-color: #f5f5f5;
+    overflow: auto;
+    min-height: 100vh;
+    position: relative;
+}
+</style>

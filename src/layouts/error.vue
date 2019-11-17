@@ -23,9 +23,6 @@
                 </div>
             </div>
         </template>
-        <template>
-            <div>{{ error }}</div>
-        </template>
     </div>
 </template>
 

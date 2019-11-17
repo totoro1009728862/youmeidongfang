@@ -43,7 +43,7 @@ module.exports = {
             },
             {
                 'http-equiv': 'X-UA-Compatible',
-                content: 'IE=edge,chrome=1'
+                'content': 'IE=edge,chrome=1'
             },
             {
                 name: 'renderer',
@@ -76,12 +76,16 @@ module.exports = {
                 rel: 'icon',
                 type: 'image/x-icon',
                 href: '/favicon.ico'
+            },
+            {
+                rel: 'stylesheet',
+                href: '//at.alicdn.com/t/font_1513744_dprxauglqi.css'
             }
         ],
         script: [
-            {
-                src: 'https://hm.baidu.com/hm.js?a695e0e4508defa21c24f149cc4195d2'
-            },
+            // {
+            //     src: 'https://hm.baidu.com/hm.js?a695e0e4508defa21c24f149cc4195d2'
+            // },
             {
                 src: '//oss.hxtrip.com/common/cdn/flexible.min.js?v=2',
                 type: 'text/javascript',
@@ -111,10 +115,10 @@ module.exports = {
             }
         }
     },
-    css: ['~/assets/css/base.css', '~/assets/iconfont/hx-icon.css'],
+    css: ['~/assets/css/base.css'],
     router: {
         base: '/',
-        middleware: ['route', 'getUserInfo']
+        middleware: ['getUserInfo']
     },
     plugins: [
         {

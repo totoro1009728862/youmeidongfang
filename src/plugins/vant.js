@@ -18,7 +18,8 @@ import {
     DatetimePicker,
     TreeSelect,
     Sidebar,
-    SidebarItem
+    SidebarItem,
+    Area
 } from 'vant'
 /** 按需引用vant组件的样式，
  * base.less 包含icon、overlay、button、lazyload等等组件样式
@@ -83,6 +84,7 @@ Vue.use(DatetimePicker)
 Vue.use(TreeSelect)
 Vue.use(Sidebar)
 Vue.use(SidebarItem)
+Vue.use(Area)
 
 Vue.prototype.$Dialog = Dialog
 //(1)这个方法是仅仅注入Vue实例，所有组件内都可以访问，但是不包含服务器端

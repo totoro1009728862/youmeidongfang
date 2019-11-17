@@ -1,292 +1,264 @@
 <template>
-    <div class="hx-pwd-forget">
-        <hx-header :css="{ backgroundColor: 'transparent' }" :title="title">
-            <div slot="left" class="left" @click="$routerBack">
-                <i class="hx-icon hx-icon-fanhui"></i>
-            </div>
-        </hx-header>
-        <div v-if="step == 1" class="hx-pwd-forget-content">
-            <div class="input-warp">
-                <div class="item">
-                    <input v-model.trim="phoneNumber" maxlength="11" type="tel" placeholder="请输入手机号码" />
+    <div class="hx-login">
+        <background>
+            <div class="logo">ANMOYI</div>
+        </background>
+
+        <div class="content">
+            <div class="reset-title">密码重置</div>
+            <!-- 第一步 -->
+            <div v-if="step === 1">
+                <div class="items">
+                    <div class="item pr180" @click="nameInputFcous('phoneRef')">
+                        <input ref="phoneRef" v-model.trim="phone" type="tel" maxlength="11" placeholder="请输入手机号" />
+                        <div class="code-bt" @click.stop="getCode">{{ codeText }}</div>
+                    </div>
+                    <div class="item" @click="nameInputFcous('codeRef')">
+                        <input ref="codeRef" v-model.trim="code" type="tel" maxlength="4" placeholder="请输入短信验证码" />
+                    </div>
                 </div>
-                <div class="item">
-                    <input v-model.trim="phoneCode" maxlength="4" type="tel" placeholder="请输入验证码" />
-                    <span class="code-warp" @click="getCode">{{ countdownText }}</span>
-                </div>
-            </div>
-            <van-button type="primary" class="btn" size="large" @click="submitNext">下一步</van-button>
-        </div>
-        <div v-if="step == 2" class="hx-pwd-forget-content">
-            <div class="input-warp">
-                <div class="item-title">
-                    <span>请输入</span>
-                    <span class="num">{{ phoneNumber }}</span>
-                    <span>账号密码</span>
-                </div>
-                <div class="item">
-                    <input v-model.trim="pwd" maxlength="18" minlength="6" :type="pwdType" placeholder="6-18位数字或字母" />
-                    <span class="ege-warp" @click="isEyePwd = !isEyePwd">
-                        <van-icon v-if="!isEyePwd" name="eye-o" />
-                        <van-icon v-if="isEyePwd" name="closed-eye" />
-                    </span>
-                </div>
-                <div class="item">
-                    <input v-model.trim="pwdAgain" maxlength="18" minlength="6" :type="pwdTypeAgain" placeholder="确认密码" />
-                    <span class="ege-warp" @click="isEyePwdAgain = !isEyePwdAgain">
-                        <van-icon v-if="!isEyePwdAgain" name="eye-o" />
-                        <van-icon v-if="isEyePwdAgain" name="closed-eye" />
-                    </span>
+
+                <div class="login-bt">
+                    <div :class="{ 'no-click': noClick }" @click="goNext">下一步</div>
                 </div>
             </div>
-            <van-button type="primary" class="btn" size="large" @click="submitResetPwd">完成</van-button>
+            <!-- 第二步 -->
+            <div v-if="step === 2">
+                <div class="items">
+                    <div class="item" @click="nameInputFcous('passwordRef')">
+                        <input ref="passwordRef" v-model.trim="password" :type="showpass1 ? 'text' : 'password'" placeholder="请输入新密码" />
+                        <span class="ege-warp" @click.stop="showpass1 = !showpass1">
+                            <van-icon :name="showpass1 ? 'eye-o' : 'closed-eye'" />
+                        </span>
+                    </div>
+                    <div class="item" @click="nameInputFcous('repasswordRef')">
+                        <input ref="repasswordRef" v-model.trim="repassword" :type="showpass2 ? 'text' : 'password'" placeholder="请再次输入新密码" />
+                        <span class="ege-warp" @click.stop="showpass2 = !showpass2">
+                            <van-icon :name="showpass2 ? 'eye-o' : 'closed-eye'" />
+                        </span>
+                    </div>
+                    <div class="login-bt">
+                        <div :class="{ 'no-click': noSet }" @click="resetPassword">确定</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import { useTencentCaptcha } from '~/common/utils/index.js'
-import routerBack from '~/common/minix/routerBack.js'
-
-const phoneReg = /^1[3-9][0-9]{9}$/
-const pwdReg = /^[a-zA-Z0-9_]+$/
+import Background from './background'
+import { phoneNumberReg, passwordReg } from '~/common/utils/checkForm.js'
 export default {
-    layout: 'keepalive',
-    mixins: [routerBack],
+    components: {
+        Background
+    },
+
     data() {
         return {
-            phoneNumber: '',
-            phoneCode: '',
-            pwd: '',
-            pwdAgain: '',
-            countdown: 60,
-            countdownText: '获取验证码',
-            step: 1,
-            isEyePwd: true,
-            isEyePwdAgain: true
+            countdown: 60, // 倒计时重新获取
+            codeText: '获取验证码', // 文案
+            phone: '', //用户手机号
+            code: '', // 验证码
+            time: null,
+            step: 1, // 2为下一步设置密码
+
+            password: '',
+            repassword: '',
+            showpass1: false,
+            showpass2: false
         }
     },
     computed: {
-        title() {
-            return this.step == 1 ? '忘记密码' : '重置密码'
+        noClick() {
+            return !this.code || !this.phone
         },
-        pwdType() {
-            return this.isEyePwd ? 'password' : 'text'
-        },
-        pwdTypeAgain() {
-            return this.isEyePwdAgain ? 'password' : 'text'
+        noSet() {
+            return !this.password || !this.repassword
         }
     },
     methods: {
-        async getCode() {
-            if (this.countdown !== 60) return
-            if (this.phoneNumber && this.phoneNumber.length) {
+        // 点击’获取验证码’
+        getCode() {
+            const { phone, countdown } = this
+            if (countdown !== 60) return false
+            let phoneReg = phoneNumberReg(phone)
+            if (!phone) {
                 this.$Toast('请输入手机号码')
-            }
-            if (!phoneReg.test(this.phoneNumber)) {
-                this.$Toast('手机号码格式不正确')
-                return
-            }
-            this.$Toast.loading({
-                mask: true,
-                message: '获取中...',
-                duration: 0
-            })
-            this.phoneCode = ''
-            const { code, data } = await this.$api.member.login.ifOpenCaptcha()
-            this.$Toast.clear()
-            if (code == 200) {
-                if (data) {
-                    useTencentCaptcha().then(async res => {
-                        await this.getPwdPhoneCode({
-                            phoneNumber: this.phoneNumber,
-                            ticket: res.ticket,
-                            rand: res.randstr
-                        })
-                    })
-                } else {
-                    await this.getPwdPhoneCode({
-                        phoneNumber: this.phoneNumber,
-                        ticket: '1',
-                        rand: '1'
-                    })
-                }
+            } else if (phoneReg) {
+                this.$Toast(phoneReg)
+            } else {
+                this.getSmsCodeChecked({
+                    phone
+                })
             }
         },
-        async getPwdPhoneCode(params) {
-            this.$Toast.loading({
-                mask: true,
-                message: '发送中...',
-                duration: 0
-            })
-            const res = await this.$api.member.login.getPwdPhoneCode(params)
-            this.$Toast.clear()
-            if (res.code == 200) {
-                this.$Toast('验证码已发送到您手机')
-                this.countdownFn()
-            }
+
+        // 发送验证码
+        getSmsCodeChecked(params) {
+            console.log(params)
+            this.$Toast('验证码已发送到您手机')
+            this.countdownFn()
+            // const {
+            //     $api: { member }
+            // } = this
+            // member.quickOrderGetSmsCode(params).then(res => {
+            //     const { code } = res
+            //     if (code === 200) {
+            //         this.$Toast('验证码已发送到您手机')
+            //         this.countdownFn()
+            //     }
+            // })
         },
+        // 验证码倒计时计算
         countdownFn() {
-            this.countdown--
-            if (this.countdown == 0) {
-                this.countdown = 60
-                this.countdownText = '重新获取'
+            if (this.countdown === 0) {
+                this.code = ''
+                this.codeText = '重新获取'
+                clearTimeout(this.time)
                 return false
             } else {
-                this.countdownText = this.countdown + 's后重新获取'
-            }
-            setTimeout(() => {
-                this.countdownFn()
-            }, 1000)
-        },
-        async submitNext() {
-            if (this.phoneNumber == '') {
-                this.$Toast('请输入手机号码')
-                return
-            }
-            if (!phoneReg.test(this.phoneNumber)) {
-                this.$Toast('手机号码格式不正确')
-                return
-            }
-            if (this.phoneCode == '') {
-                this.$Toast('验证码不能为空')
-                return
-            }
-            this.$Toast.loading({
-                mask: true,
-                message: '校验中...',
-                duration: 0
-            })
-            const res = await this.$api.member.login.checkPwdSmsCode({
-                phoneNumber: this.phoneNumber,
-                smsCode: this.phoneCode
-            })
-            this.$Toast.clear()
-            if (res.code == 200) {
-                this.step = 2
+                this.countdown--
+                this.codeText = `${this.countdown}s重新获取`
+                this.time = setTimeout(() => {
+                    this.countdownFn()
+                }, 1000)
             }
         },
-        async submitResetPwd() {
-            {
-                if (this.phoneNumber === '') {
-                    this.$Toast('请输入手机号码')
-                    return
-                }
-                if (!phoneReg.test(this.phoneNumber)) {
-                    this.$Toast('手机号码格式不正确')
-                    return
-                }
-                if (this.phoneCode === '') {
-                    this.$Toast('验证码不能为空')
-                    return
-                }
-                if (this.pwd === '') {
-                    this.$Toast('请输入密码')
-                    return
-                }
-                if (this.pwd.length < 6) {
-                    this.$Toast('密码长度不能小于6位')
-                    return
-                }
-                if (!pwdReg.test(this.pwd)) {
-                    this.$Toast('密码格式不正确')
-                    return
-                }
-                if (this.pwd !== this.pwdAgain) {
-                    this.$Toast('两次输入密码不统一')
-                    return
-                }
+        goNext() {
+            if (this.noClick) return
+            this.step = 2
+        },
+        resetPassword() {
+            if (this.noSet) return
+            let psReg = passwordReg(this.password)
+            if (psReg) {
+                this.$Toast(psReg)
+                return
             }
-            this.$Toast.loading({
-                mask: true,
-                message: '重置中...',
-                duration: 0
-            })
-            const res = await this.$api.member.login.resetPwd({
-                phoneNumber: this.phoneNumber,
-                password: this.pwd,
-                smsCode: this.phoneCode
-            })
-            this.$Toast.clear()
-            if (res.code == 200) {
-                this.$Toast.success('重置成功')
-                setTimeout(() => {
-                    this.$Toast.clear()
-                    this.$routerBack()
-                }, 800)
+            if (this.password !== this.repassword) {
+                this.$Toast('两次输入的密码不一样')
+                return
             }
+            console.log('调接口')
+            this.$Toast.success({
+                message: '设置成功',
+                duration: 1000,
+                onClose: () => {
+                    this.$router.replace({
+                        name: 'Login',
+                        query: {
+                            userName: this.phone,
+                            tabIndex: this.$route.query.tabIndex
+                        }
+                    })
+                }
+            })
+        },
+        nameInputFcous(v) {
+            this.$nextTick(function() {
+                //DOM 更新了
+                this.$refs[v].focus()
+            })
         }
     }
 }
 </script>
-
 <style lang="less" scoped>
-.hx-pwd-forget {
-    background-color: #f5f5f5;
-    overflow: auto;
-    min-height: 100vh;
-    &-content {
-        padding: 0 20px;
-        .input-warp {
-            padding: 150px 0;
+.hx-login {
+    z-index: 9;
+    .logo {
+        position: absolute;
+        top: 130px;
+        letter-spacing: 4px;
+        color: #fff;
+        font-size: 60px;
+        width: 100%;
+        text-align: center;
+        font-weight: 600;
+    }
+}
 
-            input {
-                height: 110px;
-                border: none;
-                width: 100%;
-                background: none;
-                font-size: 34px;
-                &::-webkit-input-placeholder {
-                    color: #aab2bd;
-                    font-size: 34px;
-                }
-            }
-        }
+.content {
+    position: relative;
+    top: -70px;
+    background: #fff;
+    margin: 0 40px;
+    padding: 40px 24px 60px;
+    border-radius: 10px;
+    .reset-title {
+        width: 100%;
+        text-align: center;
+        color: #222;
+        margin-bottom: 20px;
+        font-size: 32px;
+        font-weight: bold;
+    }
+    .items {
+        width: 100%;
+        display: flex;
+        flex-flow: column nowrap;
+        margin-top: 40px;
         .item {
-            height: 110px;
-            border-bottom: 2px solid #d4d4d4;
             position: relative;
+            display: flex;
+            flex-flow: row nowrap;
+            padding: 30px 0;
+            border-bottom: 2px solid #f7f7f7;
+            .ege-warp {
+                position: absolute;
+                display: flex;
+                height: 100%;
+                align-items: center;
+                width: 80px;
+                justify-content: center;
+                right: 0;
+                top: 0;
+                font-size: 40px;
+                color: #bbb;
+            }
         }
-        .btn {
+        .pr180 {
+            padding-right: 180px;
+            .code-bt {
+                position: absolute;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                height: 100%;
+                width: 180px;
+                right: 0;
+                top: 0;
+                color: #bbb;
+                font-size: 28px;
+            }
+        }
+    }
+    .login-bt {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        width: 100%;
+        margin-top: 60px;
+        div {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: center;
             height: 80px;
-            line-height: 80px;
-            cursor: pointer;
-            border-radius: 56px;
-            border: none;
-            background: #1aad19;
+            width: 320px;
+            background: #ab1f26;
+            color: #fff;
+            border-radius: 40px;
+            font-size: 28px;
         }
-        .code-warp {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 220px;
-            height: 110px;
-            line-height: 110px;
-            color: #00b900;
-            text-align: right;
-            font-size: 32px;
+        .no-click {
+            color: #888;
+            background: #ddd;
         }
-        .item-title {
-            font-size: 34px;
-            margin-bottom: 20px;
-            span.num {
-                color: #00b900;
-                padding: 0 5px;
-            }
-        }
-        .ege-warp {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 110px;
-            height: 110px;
-            text-align: center;
-            i {
-                font-size: 48px;
-                margin-top: 30px;
-                color: #555555;
-            }
-        }
+    }
+    input {
+        font-size: 28px;
     }
 }
 </style>

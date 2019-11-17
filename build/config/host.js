@@ -1,4 +1,4 @@
-const year = new Date().getFullYear()
+// const year = new Date().getFullYear()
 module.exports = {
     build: {
         cssSourceMap: true,

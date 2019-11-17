@@ -108,7 +108,6 @@ video {
     padding: 0;
     border: 0;
     vertical-align: baseline;
-
 }
 
 article,
@@ -134,7 +133,7 @@ section {
 }
 
 i {
-    font-style: normal
+    font-style: normal;
 }
 
 input:focus,
@@ -213,6 +212,7 @@ input[type='search']::-webkit-search-cancel-button {
 ::-webkit-input-placeholder {
     color: #ccc !important;
     font-size: 14px;
+    line-height: normal;
 }
 
 :-moz-placeholder {
