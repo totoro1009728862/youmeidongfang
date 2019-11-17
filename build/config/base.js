@@ -79,7 +79,7 @@ module.exports = {
             },
             {
                 rel: 'stylesheet',
-                href: '//at.alicdn.com/t/font_1513744_dprxauglqi.css'
+                href: '//at.alicdn.com/t/font_1513744_dmr4ltna6da.css'
             }
         ],
         script: [
@@ -168,7 +168,7 @@ module.exports = {
             },
             plugins: [
                 px2rem({
-                    remUnit: 75
+                    remUnit: 37.5
                 })
             ]
         }

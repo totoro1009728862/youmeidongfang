@@ -5,12 +5,12 @@ module.exports = [
         name: 'Login',
         component: 'pages/member/login/index.vue'
     },
-    {
-        //验证码登录
-        path: `/login/phone`,
-        name: 'LoginByPhone',
-        component: 'pages/member/login/phone.vue'
-    },
+    // {
+    //     //验证码登录
+    //     path: `/login/phone`,
+    //     name: 'LoginByPhone',
+    //     component: 'pages/member/login/phone.vue'
+    // },
     {
         //找回密码
         path: `/forgetPassword`,

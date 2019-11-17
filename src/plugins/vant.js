@@ -19,7 +19,10 @@ import {
     TreeSelect,
     Sidebar,
     SidebarItem,
-    Area
+    Area,
+    Tab,
+    Tabs,
+    PullRefresh
 } from 'vant'
 /** 按需引用vant组件的样式，
  * base.less 包含icon、overlay、button、lazyload等等组件样式
@@ -56,9 +59,14 @@ import 'vant/lib/tree-select/index.less'
 import 'vant/lib/sidebar/index.less'
 // sidebar-item
 import 'vant/lib/sidebar-item/index.less'
-
+// tab
+import 'vant/lib/tab/index.less'
+// tabs
+import 'vant/lib/tabs/index.less'
+// pull-refresh
+import 'vant/lib/pull-refresh/index.less'
 //这里自动覆盖vant的样式的外链样式文件
-import '~/assets/css/vant.css'
+// import '~/assets/css/vant.css'
 
 //注册到vue的全局样式中
 Vue.use(Icon)
@@ -85,7 +93,9 @@ Vue.use(TreeSelect)
 Vue.use(Sidebar)
 Vue.use(SidebarItem)
 Vue.use(Area)
-
+Vue.use(Tab)
+Vue.use(Tabs)
+Vue.use(PullRefresh)
 Vue.prototype.$Dialog = Dialog
 //(1)这个方法是仅仅注入Vue实例，所有组件内都可以访问，但是不包含服务器端
 // Vue.prototype.$Toast = Toast

@@ -1,13 +1,14 @@
 <template>
-    <div>我的</div>
+    <div class="mine">{{ userInfo.name }}</div>
 </template>
 <script>
 export default {
-    name: 'Sign',
+    name: 'TeamList',
     data() {
         return {
-            signFlag: false,
-            isAnimate: false //动画
+            userInfo: {
+                name: '李强'
+            }
         }
     },
     mounted() {},

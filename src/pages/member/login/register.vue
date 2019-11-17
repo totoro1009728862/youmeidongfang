@@ -33,9 +33,9 @@
                 </div>
                 <div class="item" @click.stop="showArea = true">
                     <div class="label">所在区域</div>
-                    <span v-for="(item, index) in areaCodes" :key="index" :class="{ 'has-value': item.name }">
-                        {{ item.name || `选择${index === 0 ? '省' : index === 1 ? '市' : '区/县'}` }}
-                    </span>
+                    <span v-for="(item, index) in areaCodes" :key="index" :class="{ 'has-value': item.name }">{{
+                        item.name || `选择${index === 0 ? '省' : index === 1 ? '市' : '区/县'}`
+                    }}</span>
                     <span class="ege-warp icon ym-down"></span>
                 </div>
                 <div v-show="tabIndex === 2" class="item" @click="nameInputFcous('machineNumberRef')">
@@ -75,10 +75,18 @@
                     </span>
                 </div>
             </div>
-            <div class="login-bt">
-                <div :class="{ 'no-click': noClick }" @click="submitReg">提交申请</div>
+            <div class="reg-footer">
+                <div class="xieyi" @click="checked = !checked">
+                    <span class="icon" :class="{ 'ym-checked': checked, 'ym-check': !checked }"></span>
+                    <span>
+                        请仔细阅读
+                        <i @click.stop="showXY = true">注册协议</i>
+                    </span>
+                </div>
+                <div class="bt" :class="{ 'no-click': noClick }" @click="submitReg">提交申请</div>
             </div>
         </div>
+        <!-- 城市选择 -->
         <van-popup v-model="showArea" position="bottom">
             <van-area
                 :area-list="areaList"
@@ -89,18 +97,28 @@
                 @confirm="getArea"
             />
         </van-popup>
+        <!-- 协议 -->
+        <van-popup v-model="showXY" class="agree-box">
+            <div class="agree-title">
+                注册协议
+                <i class="icon ym-close" @click="showXY = false"></i>
+            </div>
+            <agreement></agreement>
+        </van-popup>
     </div>
 </template>
 
 <script>
 import Background from './background'
 import Tabs from './tabs'
+import Agreement from './agreement'
 import { phoneNumberReg, passwordReg } from '~/common/utils/checkForm.js'
 import { area } from '~/common/utils/area.js'
 export default {
     components: {
         Background,
-        Tabs
+        Tabs,
+        Agreement
     },
 
     data() {
@@ -129,14 +147,16 @@ export default {
             cashwordShow: false,
             recashword: '',
             recashwordShow: false,
+            checked: false, // 协议是否确定
+            showXY: false, // 协议内容开关
             areaList: [], // 省市区信息
             showArea: false // 地区选择开关
         }
     },
     computed: {
         noClick() {
-            const { shopName, userName, phoneNumber, code, areaCode, machineNumber, password, repassword, cashword, recashword, tabIndex } = this
-            const v = !phoneNumber || !code || !userName || !areaCode || !password || !repassword || !cashword || !recashword
+            const { shopName, userName, phoneNumber, code, areaCode, machineNumber, password, repassword, cashword, recashword, checked, tabIndex } = this
+            const v = !phoneNumber || !code || !userName || !areaCode || !password || !repassword || !cashword || !recashword || !checked
             const v2 = !shopName || !machineNumber || v
             return tabIndex === 2 ? v2 : v
         }
@@ -225,7 +245,8 @@ export default {
                 password,
                 repassword,
                 cashword,
-                recashword
+                recashword,
+                checked
             } = this
             let phoneReg = phoneNumberReg(phoneNumber)
             let InviterReg = InviterNumber ? phoneNumberReg(InviterNumber) : ''
@@ -275,7 +296,8 @@ export default {
                 password,
                 repassword,
                 cashword,
-                recashword
+                recashword,
+                checked: Number(checked) // 协议勾选
             }
             console.log(params)
             this.$Toast.success({
@@ -293,13 +315,13 @@ export default {
 </script>
 <style lang="less" scoped>
 .hx-login {
-    padding-bottom: 120px;
+    padding-bottom: 60px;
     .logo {
         position: absolute;
-        top: 130px;
-        letter-spacing: 4px;
+        top: 65px;
+        letter-spacing: 2px;
         color: #fff;
-        font-size: 60px;
+        font-size: 30px;
         width: 100%;
         text-align: center;
         font-weight: 600;
@@ -310,47 +332,47 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    top: -80px;
-    height: 160px;
+    top: -40px;
+    height: 80px;
     width: 100%;
     div {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 160px;
-        height: 160px;
+        width: 80px;
+        height: 80px;
         background: #fff;
         border-radius: 50%;
-        box-shadow: 0px 8px 12px 0px rgba(255, 239, 240, 1);
+        box-shadow: 0px 4px 6px 0px rgba(255, 239, 240, 1);
         .icon {
-            font-size: 120px;
+            font-size: 60px;
             color: #ab1f26;
         }
     }
 }
 .tab-box {
     position: relative;
-    margin: 0 40px;
-    top: -40px;
+    margin: 0 20px;
+    top: -20px;
 }
 .content {
     position: relative;
     background: #fff;
-    margin: 0 40px 120px;
-    padding: 40px 24px 60px;
-    border-radius: 10px;
+    margin: 0 20px 60px;
+    padding: 20px 12px 30px;
+    border-radius: 5px;
     .items {
         width: 100%;
         display: flex;
         flex-flow: column nowrap;
-        margin-top: 40px;
+        margin-top: 20px;
         .item {
             position: relative;
             display: flex;
             flex-flow: row nowrap;
-            padding: 30px 80px 30px 200px;
-            border-bottom: 2px solid #f7f7f7;
-            font-size: 28px;
+            padding: 15px 40px 15px 100px;
+            border-bottom: 1px solid #f7f7f7;
+            font-size: 14px;
             color: #bbb;
             .label,
             .ege-warp {
@@ -360,41 +382,41 @@ export default {
                 align-items: center;
                 justify-content: center;
                 top: 0;
-                font-size: 28px;
+                font-size: 14px;
             }
             .label {
-                font-size: 28px;
+                font-size: 14px;
                 font-weight: 600;
                 color: #222;
-                left: 40px;
+                left: 20px;
             }
             .ege-warp {
-                width: 80px;
-                font-size: 40px;
+                width: 40px;
+                font-size: 20px;
                 right: 0;
                 color: #bbb;
             }
             span {
-                padding-right: 20px;
-                font-size: 26px;
+                padding-right: 10px;
+                font-size: 13px;
             }
             .has-value {
                 color: #222;
             }
         }
         .pr180 {
-            padding-right: 180px;
+            padding-right: 90px;
             .code-bt {
                 position: absolute;
                 display: flex;
                 align-items: center;
                 justify-content: flex-end;
                 height: 100%;
-                width: 180px;
+                width: 90px;
                 right: 0;
                 top: 0;
                 color: #bbb;
-                font-size: 28px;
+                font-size: 14px;
             }
         }
         .forgot-box {
@@ -404,9 +426,9 @@ export default {
         }
         .forgot {
             display: block;
-            font-size: 24px;
+            font-size: 12px;
             color: #bbb;
-            margin: 20px 0 40px;
+            margin: 10px 0 20px;
         }
     }
     .login-bt {
@@ -419,21 +441,100 @@ export default {
             flex-flow: row nowrap;
             align-items: center;
             justify-content: center;
-            height: 80px;
-            width: 320px;
+            height: 40px;
+            width: 160px;
             background: #ab1f26;
             color: #fff;
-            border-radius: 40px;
-            font-size: 28px;
-        }
-        .no-click {
-            color: #888;
-            background: #ddd;
+            border-radius: 20px;
+            font-size: 14px;
         }
     }
     input {
         width: 100%;
-        font-size: 30px;
+        font-size: 15px;
+    }
+    .reg-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100px;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        padding: 0 20px;
+        color: #555;
+        font-size: 14px;
+        .bt {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            width: 120px;
+            font-size: 14px;
+            color: #fff;
+            background: #ab1f26;
+        }
+        .no-click {
+            background: #ddd;
+        }
+        .xieyi {
+            display: flex;
+            height: 100%;
+            align-items: center;
+            flex-flow: row nowrap;
+            .icon {
+                font-size: 18px;
+                margin-right: 5px;
+            }
+            .ym-check {
+                color: #bbb;
+            }
+            .ym-checked {
+                color: #ab1f26;
+            }
+            span {
+                display: inline-block;
+                color: #222;
+                font-size: 14px;
+                i {
+                    padding-left: 5px;
+                    color: #ab1f26;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
+.agree-box {
+    padding: 50px 10px 0;
+    width: 300px;
+    border-radius: 3px;
+    max-height: 400px;
+    min-height: 150px;
+    overflow: hidden;
+    .agree-title {
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: #222;
+        width: 100%;
+        height: 43px;
+        line-height: 43px;
+        text-align: center;
+        i {
+            position: absolute;
+            right: 10px;
+            top: 0;
+            line-height: 43px;
+            color: #222;
+            font-size: 16px;
+            font-weight: 500;
+        }
     }
 }
 </style>

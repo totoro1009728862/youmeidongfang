@@ -42,12 +42,12 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 180px;
-        height: 60px;
+        width: 90px;
+        height: 30px;
         overflow: hidden;
         color: #222;
-        font-size: 28px;
-        border-radius: 30px;
+        font-size: 14px;
+        border-radius: 15px;
     }
     .actived {
         background: #ab1f26;

@@ -16,7 +16,7 @@ export default {
 <style lang="less" scoped>
 .cont {
     position: relative;
-    height: 300px;
+    height: 150px;
     width: 100%;
     img {
         display: block;

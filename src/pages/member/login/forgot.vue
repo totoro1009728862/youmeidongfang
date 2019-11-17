@@ -169,10 +169,10 @@ export default {
     z-index: 9;
     .logo {
         position: absolute;
-        top: 130px;
-        letter-spacing: 4px;
+        top: 65px;
+        letter-spacing: 2px;
         color: #fff;
-        font-size: 60px;
+        font-size: 30px;
         width: 100%;
         text-align: center;
         font-weight: 600;
@@ -181,56 +181,56 @@ export default {
 
 .content {
     position: relative;
-    top: -70px;
+    top: -35px;
     background: #fff;
-    margin: 0 40px;
-    padding: 40px 24px 60px;
-    border-radius: 10px;
+    margin: 0 20px;
+    padding: 20px 12px 30px;
+    border-radius: 5px;
     .reset-title {
         width: 100%;
         text-align: center;
         color: #222;
-        margin-bottom: 20px;
-        font-size: 32px;
+        margin-bottom: 10px;
+        font-size: 16px;
         font-weight: bold;
     }
     .items {
         width: 100%;
         display: flex;
         flex-flow: column nowrap;
-        margin-top: 40px;
+        margin-top: 20px;
         .item {
             position: relative;
             display: flex;
             flex-flow: row nowrap;
-            padding: 30px 0;
-            border-bottom: 2px solid #f7f7f7;
+            padding: 15px 0;
+            border-bottom: 1px solid #f7f7f7;
             .ege-warp {
                 position: absolute;
                 display: flex;
                 height: 100%;
                 align-items: center;
-                width: 80px;
+                width: 40px;
                 justify-content: center;
                 right: 0;
                 top: 0;
-                font-size: 40px;
+                font-size: 20px;
                 color: #bbb;
             }
         }
         .pr180 {
-            padding-right: 180px;
+            padding-right: 90px;
             .code-bt {
                 position: absolute;
                 display: flex;
                 align-items: center;
                 justify-content: flex-end;
                 height: 100%;
-                width: 180px;
+                width: 90px;
                 right: 0;
                 top: 0;
                 color: #bbb;
-                font-size: 28px;
+                font-size: 14px;
             }
         }
     }
@@ -239,18 +239,18 @@ export default {
         flex-flow: row nowrap;
         justify-content: center;
         width: 100%;
-        margin-top: 60px;
+        margin-top: 30px;
         div {
             display: flex;
             flex-flow: row nowrap;
             align-items: center;
             justify-content: center;
-            height: 80px;
-            width: 320px;
+            height: 40px;
+            width: 160px;
             background: #ab1f26;
             color: #fff;
-            border-radius: 40px;
-            font-size: 28px;
+            border-radius: 20px;
+            font-size: 14px;
         }
         .no-click {
             color: #888;
@@ -258,7 +258,7 @@ export default {
         }
     }
     input {
-        font-size: 28px;
+        font-size: 14px;
     }
 }
 </style>
