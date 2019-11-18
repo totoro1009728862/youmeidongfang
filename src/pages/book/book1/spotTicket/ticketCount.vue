@@ -6,11 +6,11 @@
             </div>
             <div class="add-subtract">
                 <div class="jian" :class="{ 'no-click': ticketNumber <= 1 }">
-                    <span class="hx-icon hx-icon-jian" @click="reduceNumber"></span>
+                    <span class="icon ym-jian" @click="reduceNumber"></span>
                 </div>
                 <div class="number">{{ ticketNumber }}</div>
                 <div class="jian" :class="{ 'no-click': ticketNumber >= 99 }">
-                    <span class="hx-icon hx-icon-jiahao" @click="addNumber"></span>
+                    <span class="icon ym-jiahao" @click="addNumber"></span>
                 </div>
             </div>
         </div>

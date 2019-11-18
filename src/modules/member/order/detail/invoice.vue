@@ -3,7 +3,7 @@
     <div v-show="orderStatus === 3 || orderStatus === 2" class="order-invoice">
         <div class="order-traveler-title">
             申请发票
-            <a class="phone-icon" :href="`tel:${supplierContactsTel}`"><i class="hx-icon hx-icon-dianhua"></i></a>
+            <a class="phone-icon" :href="`tel:${supplierContactsTel}`"><i class="icon ym-dianhua"></i></a>
         </div>
         <div class="order-traveler-one">发票由中道旅游发展有限公司开具</div>
     </div>

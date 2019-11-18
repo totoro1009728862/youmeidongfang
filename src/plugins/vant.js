@@ -66,7 +66,7 @@ import 'vant/lib/tabs/index.less'
 // pull-refresh
 import 'vant/lib/pull-refresh/index.less'
 //这里自动覆盖vant的样式的外链样式文件
-// import '~/assets/css/vant.css'
+import '~/assets/css/vant.css'
 
 //注册到vue的全局样式中
 Vue.use(Icon)

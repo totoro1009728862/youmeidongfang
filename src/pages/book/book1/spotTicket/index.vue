@@ -1,11 +1,11 @@
 <template>
     <div>
         <div v-show="!isChildRoute" class="hx-book">
-            <hx-header title="订单填写">
+            <ym-header title="订单填写">
                 <div slot="left" class="left" @click="$routerBack">
-                    <i class="hx-icon hx-icon-fanhui"></i>
+                    <i class="icon ym-left"></i>
                 </div>
-            </hx-header>
+            </ym-header>
             <div class="hx-book-content">
                 <!-- 基础信息 -->
                 <product-info

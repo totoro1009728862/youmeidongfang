@@ -15,7 +15,7 @@
                 </div>
                 <div class="right" @click="shareItem">
                     <div>
-                        <i class="hx-icon hx-icon-fenxiang"></i>
+                        <i class="icon ym-fenxiang"></i>
                     </div>
                     <p>分享</p>
                 </div>
@@ -35,7 +35,7 @@
             <div class="share-warp">
                 <div class="share-item" @click="copyLink">
                     <div class="share-item-icon">
-                        <i class="hx-icon hx-icon-fuzhilianjie"></i>
+                        <i class="icon ym-fuzhilianjie"></i>
                     </div>
                     <p>复制链接</p>
                 </div>
@@ -179,7 +179,7 @@ export default {
             padding: 8px;
             font-size: 26px;
             > div {
-                i.hx-icon {
+                i.icon {
                     font-size: 32px;
                 }
             }

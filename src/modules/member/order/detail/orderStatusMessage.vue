@@ -2,7 +2,7 @@
     <div v-if="orderStatus" class="status-warp">
         <div class="status-top">
             <div class="status-top-left">
-                <i class="hx-icon" :class="orderStatus.icon"></i>
+                <i class="icon" :class="orderStatus.icon"></i>
                 <span>{{ orderStatus.name }}</span>
             </div>
             <div class="status-top-right" @click="showPopupFunc">
@@ -11,7 +11,7 @@
                     <i>¥</i>
                     {{ orderDetail.payPrice }}
                 </span>
-                <i v-if="orderDetail.productType != 41" class="hx-icon hx-icon-guanyuwomen"></i>
+                <i v-if="orderDetail.productType != 41" class="icon ym-guanyuwomen"></i>
             </div>
         </div>
         <div v-show="orderStatus.messsage" class="status-message">{{ orderStatus.messsage }}</div>
@@ -19,7 +19,7 @@
             <div>退款进度：{{ orderStatus.name }}</div>
             <div @click="goTicketRegressionDetail()">
                 <div>查看详情</div>
-                <span class="hx-icon hx-icon-xiangyou"></span>
+                <span class="icon ym-xiangyou"></span>
             </div>
         </div>
     </div>
@@ -58,19 +58,19 @@ export default {
                 {
                     name: '已取消',
                     value: -1,
-                    icon: 'hx-icon-yiquxiao',
+                    icon: 'icon-yiquxiao',
                     messsage: ''
                 },
                 {
                     name: '待支付',
                     value: 0,
-                    icon: 'hx-icon-daifukuancu',
+                    icon: 'icon-daifukuancu',
                     messsage: ''
                 },
                 {
                     name: '待出行',
                     value: 1,
-                    icon: 'hx-icon-daichuhangcu',
+                    icon: 'icon-daichuhangcu',
                     messsage: '请关注短信通知，出行当天按时到站点候车。'
                 },
                 {
@@ -82,31 +82,31 @@ export default {
                 {
                     name: '已完成',
                     value: 3,
-                    icon: 'hx-icon-yiwancheng',
+                    icon: 'icon-yiwancheng',
                     messsage: ''
                 },
                 {
                     name: '退款中',
                     value: 4,
-                    icon: 'hx-icon-tuikuanzhong',
+                    icon: 'icon-tuikuanzhong',
                     messsage: '预计1-3个工作日原路退回到您所支付的账户中。'
                 },
                 {
                     name: '已退款',
                     value: 5,
-                    icon: 'hx-icon-tuikuanzhong',
+                    icon: 'icon-tuikuanzhong',
                     messsage: ''
                 },
                 {
                     name: '商家确认中',
                     value: 6,
-                    icon: 'hx-icon-querenzhong',
+                    icon: 'icon-querenzhong',
                     messsage: '已通知商家确认您的订单，确认后会短信或电话告知您，请耐心等待！'
                 },
                 {
                     name: '出票中',
                     value: 7,
-                    icon: 'hx-icon-chupiaozhong',
+                    icon: 'icon-chupiaozhong',
                     messsage: '商家出票中，请您留意出票短信。'
                 }
             ],

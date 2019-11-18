@@ -1,10 +1,10 @@
 <template>
     <van-popup v-model="calendarSwitch" position="right">
-        <hx-header title="选择出行日期">
+        <ym-header title="选择出行日期">
             <div slot="left" class="back-icon" @click="closeCalendar">
-                <i class="hx-icon hx-icon-fanhui"></i>
+                <i class="icon ym-left"></i>
             </div>
-        </hx-header>
+        </ym-header>
         <div class="calendar-warp">
             <!-- 周 -->
             <div class="week-warp-body">

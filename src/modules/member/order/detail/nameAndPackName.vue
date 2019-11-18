@@ -5,7 +5,7 @@
                 <div v-if="nameInfo.scenicSpot">{{ nameInfo.scenicSpot }}&nbsp;-&nbsp;</div>
                 <div>{{ nameInfo.productName }}</div>
             </div>
-            <div class="product-icon"><i class="hx-icon hx-icon-xiangyou"></i></div>
+            <div class="product-icon"><i class="icon ym-xiangyou"></i></div>
         </div>
         <div v-show="nameInfo.packName" class="spec-warp">{{ nameInfo.packName }}</div>
     </div>

@@ -4,18 +4,18 @@
         <div class="tip-box">
             <div class="tip-left">
                 <div class="time-tip">
-                    <div class="hx-icon hx-icon-yuanxuanzhong"></div>
+                    <div class="icon ym-yuanxuanzhong"></div>
                     <div>{{ isChangeTicket ? '换票入园' : '无需换票' }}</div>
                 </div>
                 <div class="time-tip">
-                    <div class="hx-icon hx-icon-yuanxuanzhong"></div>
+                    <div class="icon ym-yuanxuanzhong"></div>
                     <div>{{ refundType === 1 ? '随时退' : refundType === 2 ? '有条件退' : '不可退' }}</div>
                 </div>
             </div>
 
             <div class="notice" @click="getByScenicTicketIdApi()">
                 更多须知
-                <i class="hx-icon hx-icon-xiangyou"></i>
+                <i class="icon ym-xiangyou"></i>
             </div>
         </div>
         <div v-show="minuteNum < 60 && minuteNum > 0" class="tip">仅剩{{ minuteNum }}分钟可买{{ advanceDay | timeValue }}票</div>

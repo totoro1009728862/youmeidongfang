@@ -234,7 +234,7 @@ export default {
             color: #00b900;
             font-size: 28px;
         }
-        .hx-icon-dingwei {
+        .icon-dingwei {
             font-size: 34px;
         }
     }

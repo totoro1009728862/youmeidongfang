@@ -3,13 +3,13 @@
         <div class="footer">
             <a class="item" :href="tel">
                 <p>
-                    <span class="hx-icon hx-icon-dianhua"></span>
+                    <span class="icon ym-dianhua"></span>
                 </p>
                 <p>咨询</p>
             </a>
             <div class="item" @click="saveCollection">
                 <p>
-                    <span class="hx-icon" :class="{ 'hx-icon-yishoucang': collection, 'hx-icon-shoucang': !collection }"></span>
+                    <span class="icon" :class="{ 'icon-yishoucang': collection, 'icon-shoucang': !collection }"></span>
                 </p>
                 <p>收藏</p>
             </div>
@@ -95,7 +95,7 @@ export default {
             }
         }
 
-        .hx-icon-yishoucang {
+        .icon-yishoucang {
             color: #ff6138;
         }
     }

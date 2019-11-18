@@ -1,9 +1,9 @@
-import HxHeader from './index.vue'
+import YmHeader from './index.vue'
 
-const hxHeader = {
+const ymHeader = {
     install: function(Vue) {
-        Vue.component('hxHeader', HxHeader)
+        Vue.component('ymHeader', YmHeader)
     }
 }
 
-export default hxHeader
+export default ymHeader

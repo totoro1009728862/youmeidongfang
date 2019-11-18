@@ -3,7 +3,7 @@
     <van-popup :value="noticeShow" round position="bottom" class="popup" @click-overlay="close()">
         <div class="title">
             {{ explain.productName }}
-            <i class="hx-icon hx-icon-chacha" @click="close()"></i>
+            <i class="icon ym-chacha" @click="close()"></i>
         </div>
         <div class="ticket-notes">
             <div class="notes-box">
@@ -54,7 +54,7 @@
                 <span class="old">￥{{ explain.minMarkedPrice }}</span>
             </div>
             <a class="item" :href="`tel:${explain.operatorContactsTel || '0512-65336612'}`">
-                <span class="hx-icon hx-icon-dianhua"></span>
+                <span class="icon ym-dianhua"></span>
                 <span>咨询</span>
             </a>
             <div v-show="!preview" class="bt" @click="goPlaceOrder(explain.id)">立即预订</div>
@@ -221,7 +221,7 @@ export default {
         top: 0;
         left: 0;
 
-        .hx-icon {
+        .icon {
             position: absolute;
             display: block;
             top: 20px;

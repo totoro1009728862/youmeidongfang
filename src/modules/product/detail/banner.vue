@@ -6,13 +6,13 @@
             </van-swipe-item>
         </van-swipe>
         <div class="return-icon" @click="closePage">
-            <i class="hx-icon hx-icon-fanhui"></i>
+            <i class="icon ym-left"></i>
         </div>
         <div class="return-icon-home" @click="goHoemPage">
-            <i class="hx-icon hx-icon-shouye1"></i>
+            <i class="icon ym-shouye1"></i>
         </div>
         <div slot="indicator" class="custom-indicator">
-            <i class="hx-icon hx-icon-tupian"></i>
+            <i class="icon ym-tupian"></i>
             <span>&nbsp;{{ bannerCurrent + 1 }}</span>
             <span>/&nbsp;{{ list.length }}</span>
         </div>

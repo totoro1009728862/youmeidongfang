@@ -1,6 +1,6 @@
 <template>
     <div class="cont">
-        <img src="../../../assets/image/login-bg.png" alt="背景图" />
+        <img src="../../assets/image/login-bg.png" alt="背景图" />
         <slot></slot>
     </div>
 </template>

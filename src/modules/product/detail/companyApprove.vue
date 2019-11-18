@@ -1,7 +1,7 @@
 <template>
     <div class="approve-warp">
         <div class="approve-icon">
-            <i class="hx-icon hx-icon-gongyingshang"></i>
+            <i class="icon ym-gongyingshang"></i>
         </div>
         <div class="approve-company">
             <p>{{ supplierName }}</p>

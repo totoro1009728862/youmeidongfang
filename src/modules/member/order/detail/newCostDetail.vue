@@ -4,7 +4,7 @@
             <!-- 费用明细 -->
             <div class="cancel-title">
                 <span>费用明细</span>
-                <i class="hx-icon hx-icon-chacha" @click="close()"></i>
+                <i class="icon ym-chacha" @click="close()"></i>
             </div>
             <div class="radios">
                 <div>

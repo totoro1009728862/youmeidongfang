@@ -1,10 +1,6 @@
 <template>
     <div class="hx-login">
-        <!-- <hx-header :css="{ backgroundColor: 'transparent' }">
-            <div slot="left" class="left" @click="$routerBack">
-                <i class="hx-icon hx-icon-fanhui"></i>
-            </div>
-        </hx-header>-->
+        <ym-header title="登录"></ym-header>
         <background>
             <div class="logo">ANMOYI</div>
         </background>
@@ -44,7 +40,7 @@
 </template>
 
 <script>
-import Background from './background'
+import Background from '~/modules/assist/background'
 import Tabs from './tabs'
 import { phoneNumberReg, passwordReg } from '~/common/utils/checkForm.js'
 const domain = process.env.domain

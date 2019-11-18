@@ -1,16 +1,19 @@
 <template>
     <div class="cont">
-        <ym-header title="我的团队"></ym-header>
-        <van-sticky :offset-top="50">
-            <div class="tabs">
-                <div v-for="(item, index) in allStatus" :key="index" :class="{ actived: index === status }" @click="linkTab(index)">
-                    <span>{{ `${item.name}(${item.number})人` }}</span>
+        <ym-header title="我的业绩"></ym-header>
+        <van-sticky v-if="tabIndex" :offset-top="50">
+            <div class="select-dom">
+                <div class="date-box">
+                    <div class="bd" @click="beginDateSwitch = true">{{ bDate }}</div>
+                    <div>&nbsp;-&nbsp;</div>
+                    <div class="ed" @click="endDateSwitch = true">{{ eDate }}</div>
                 </div>
+                <div @click="onRefresh">筛选</div>
             </div>
         </van-sticky>
 
         <van-pull-refresh v-model="reLoading" :immediate-check="false" @refresh="onRefresh(true)">
-            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getUsers">
+            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getList">
                 <div v-if="users.length" class="list-box">
                     <div v-for="(user, i) in users" :key="i" class="item">
                         <div>{{ user.name }}</div>
@@ -24,6 +27,14 @@
                 </div>
             </van-list>
         </van-pull-refresh>
+        <div v-if="tabIndex">
+            <van-popup v-model="beginDateSwitch" position="bottom">
+                <van-datetime-picker v-model="beginDate" type="date" :min-date="minDate" :max-date="maxDate" @cancel="cancel" @confirm="setBeginDate" />
+            </van-popup>
+            <van-popup v-model="endDateSwitch" position="bottom">
+                <van-datetime-picker v-model="endDate" type="date" :min-date="minDate" :max-date="maxDate" @cancel="cancel" @confirm="setEndDate" />
+            </van-popup>
+        </div>
     </div>
 </template>
 <script>
@@ -31,12 +42,14 @@ export default {
     name: 'TeamList',
     data() {
         return {
-            tabIndex: 0, // 0一级，1二级
-            allStatus: [
-                { name: '一级代理', value: 0, number: 0 },
-                { name: '二级代理', value: 1, number: 0 },
-                { name: '店家', value: 2, number: 0 }
-            ],
+            tabIndex: 0, // 0代理，1店家
+            beginDate: '', // 开始日期
+            endDate: '', // 结束日期
+            minDate: new Date('2010-01-01'),
+            maxDate: new Date(),
+            beginDateSwitch: false,
+            endDateSwitch: false,
+
             users: [],
             total: 90, // 一共多少数据
             status: 0, // 当前选中的类型
@@ -51,17 +64,12 @@ export default {
         return { tabIndex: 1 }
     },
     created() {
-        const v1 = [
-            { name: '一级代理', value: 0, number: 0 },
-            { name: '二级代理', value: 1, number: 0 },
-            { name: '店家', value: 2, number: 0 }
-        ]
-        const v2 = [
-            { name: '二级代理', value: 1, number: 0 },
-            { name: '店家', value: 2, number: 0 }
-        ]
-        this.allStatus = this.tabIndex ? v2 : v1
-        this.status = this.allStatus[0].value
+        this.endDate = new Date()
+        const m = this.endDate.getMonth() + 1
+        const y = this.endDate.getFullYear()
+        this.beginDate = new Date(`${m > 3 ? y : y - 1}-${m - 3}-01`)
+        this.bDate = this.formatDate(this.beginDate)
+        this.eDate = this.formatDate(this.endDate)
     },
     methods: {
         // 刷新
@@ -71,17 +79,17 @@ export default {
                     this.reLoading = false
                     this.users = []
                     this.current = 1
-                    this.getUsers()
+                    this.getList()
                 }, 500)
             } else {
                 this.reLoading = false
                 this.users = []
                 this.current = 1
-                this.getUsers()
+                this.getList()
             }
         },
-        getUsers() {
-            console.log('1111111111111111111111')
+        getList() {
+            console.log('-------')
             setTimeout(() => {
                 for (let i = 0; i < 15; i++) {
                     this.users.push({
@@ -90,18 +98,42 @@ export default {
                     })
                 }
                 this.loading = false
-                console.log(this.loading)
                 this.current++
                 if (this.total && this.users.length >= this.total) {
                     this.finished = true
                 }
             }, 500)
         },
-        linkTab(index) {
-            if (this.status != index) {
-                this.status = index
-                this.onRefresh()
+        // 赋值开始日期
+        setBeginDate(e) {
+            if (e.getTime() > this.endDate.getTime()) {
+                this.beginDate = new Date(this.bDate)
+                this.$Toast('开始日期不能大于结束日期')
+                return
             }
+            this.bDate = this.formatDate(this.beginDate)
+            this.beginDateSwitch = false
+        },
+        // 赋值结束日期
+        setEndDate(e) {
+            if (e.getTime() < this.beginDate.getTime()) {
+                this.endDate = new Date(this.eDate)
+                this.$Toast('结束日期不能小于开始日期')
+                return
+            }
+            this.eDate = this.formatDate(this.endDate)
+            this.endDateSwitch = false
+        },
+        //  确定赋值
+        cancel() {
+            this.beginDateSwitch = this.endDateSwitch = false
+        },
+        formatDate(v) {
+            if (!v) return ''
+            const m = v.getMonth() + 1
+            const y = v.getFullYear()
+            const d = v.getDate()
+            return `${y}-${m < 10 ? '0' + m : m}-${d < 10 ? '0' + d : d}`
         }
     }
 }
@@ -110,19 +142,29 @@ export default {
 .cont {
     height: 100vh;
 }
-.tabs {
+.select-dom {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-around;
+    justify-content: center;
     background: #fff;
     height: 44px;
     align-items: center;
-    div {
-        font-size: 14px;
-        font-weight: 500;
-        color: rgba(34, 34, 34, 1);
-        line-height: 44px;
-        border-bottom: 2px solid #fff;
+    color: 888;
+    font-size: 14px;
+    .date-box {
+        display: flex;
+        flex-flow: row nowrap;
+        padding: 7px 10px 7px 0;
+        align-items: center;
+        .bd,
+        .ed {
+            width: 120px;
+            height: 30px;
+            line-height: 30px;
+            background: #ececec;
+            text-align: center;
+            border-radius: 4px;
+        }
     }
 
     .actived {

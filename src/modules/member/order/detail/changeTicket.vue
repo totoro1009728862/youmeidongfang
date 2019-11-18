@@ -23,7 +23,7 @@
                 <h5>换票地点</h5>
                 <p v-for="(item, index) in changeTicketInfoDto.changeTicketAddress" :key="index" class="address" @click="openMap(item)">
                     {{ item.name }}
-                    <i class="hx-icon hx-icon-dingwei"></i>
+                    <i class="icon ym-dingwei"></i>
                 </p>
             </div>
             <div v-show="changeTicketInfoDto.changeTicketContent" class="change-address">

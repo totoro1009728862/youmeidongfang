@@ -11,7 +11,7 @@
             <div class="box">
                 <div class="detail-price" @click="showPriceDetail">
                     <span>费用明细</span>
-                    <span class="hx-icon" :class="{ 'hx-icon-xiangshang': !isShowPriceDetail, 'hx-icon-xiangxia': isShowPriceDetail }"></span>
+                    <span class="icon" :class="{ 'icon-xiangshang': !isShowPriceDetail, 'icon-xiangxia': isShowPriceDetail }"></span>
                 </div>
                 <!-- <v-touch tag="button" :class="{ disable: !isNext }" @tap="triggerNext">{{ btnText }}</v-touch> -->
                 <button v-if="preview == 0" :class="{ disable: !isNext }" @click="triggerNext">{{ btnText }}</button>
@@ -21,7 +21,7 @@
             <div class="content">
                 <div class="title">
                     费用明细
-                    <i class="hx-icon hx-icon-chacha" @click="isShowPriceDetail = false"></i>
+                    <i class="icon ym-chacha" @click="isShowPriceDetail = false"></i>
                 </div>
                 <template v-for="(item, index) in priceDetail">
                     <div :key="index" class="unit">
@@ -194,7 +194,7 @@ export default {
             display: flex;
             justify-content: baseline;
 
-            span.hx-icon {
+            span.icon {
                 color: #555;
                 padding: 6px 0 0 10px;
                 font-size: 24px;
@@ -227,7 +227,7 @@ export default {
         line-height: 46px;
         border-bottom: 2px solid #e6e6e6;
         padding: 27px 0;
-        .hx-icon-chacha {
+        .icon-chacha {
             position: absolute;
             top: 24px;
             right: 0;

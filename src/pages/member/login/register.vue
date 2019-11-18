@@ -1,5 +1,6 @@
 <template>
     <div class="hx-login">
+        <ym-header title="注册"></ym-header>
         <background>
             <div class="logo">ANMOYI</div>
         </background>
@@ -33,9 +34,9 @@
                 </div>
                 <div class="item" @click.stop="showArea = true">
                     <div class="label">所在区域</div>
-                    <span v-for="(item, index) in areaCodes" :key="index" :class="{ 'has-value': item.name }">{{
-                        item.name || `选择${index === 0 ? '省' : index === 1 ? '市' : '区/县'}`
-                    }}</span>
+                    <span v-for="(item, index) in areaCodes" :key="index" :class="{ 'has-value': item.name }">
+                        {{ item.name || `选择${index === 0 ? '省' : index === 1 ? '市' : '区/县'}` }}
+                    </span>
                     <span class="ege-warp icon ym-down"></span>
                 </div>
                 <div v-show="tabIndex === 2" class="item" @click="nameInputFcous('machineNumberRef')">
@@ -109,7 +110,7 @@
 </template>
 
 <script>
-import Background from './background'
+import Background from '~/modules/assist/background'
 import Tabs from './tabs'
 import Agreement from './agreement'
 import { phoneNumberReg, passwordReg } from '~/common/utils/checkForm.js'

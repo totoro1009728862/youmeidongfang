@@ -2,7 +2,7 @@
     <div class="bind-title">
         <div v-show="canShow" class="cont">
             <div v-if="!hasBind">
-                <span class="hx-icon hx-icon-guanyuwomen"></span>
+                <span class="icon ym-guanyuwomen"></span>
                 <span>
                     <span>点击“去支付”表示您已阅读并同意</span>
                     <i @click="goAgreement('服务协议')">服务协议</i>
@@ -11,7 +11,7 @@
                 </span>
             </div>
             <div v-if="elecProtocolUrl">
-                <span class="hx-icon hx-icon-guanyuwomen"></span>
+                <span class="icon ym-guanyuwomen"></span>
                 <span>提交订单前请确认您已阅读并同意</span>
                 <a :href="elecProtocolUrl">
                     <i>合同条款</i>

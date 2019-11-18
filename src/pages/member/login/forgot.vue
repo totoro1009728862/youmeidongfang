@@ -1,5 +1,6 @@
 <template>
     <div class="hx-login">
+        <ym-header title="修改密码"></ym-header>
         <background>
             <div class="logo">ANMOYI</div>
         </background>
@@ -47,7 +48,7 @@
 </template>
 
 <script>
-import Background from './background'
+import Background from '~/modules/assist/background'
 import { phoneNumberReg, passwordReg } from '~/common/utils/checkForm.js'
 export default {
     components: {

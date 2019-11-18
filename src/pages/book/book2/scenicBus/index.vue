@@ -1,11 +1,11 @@
 <template>
     <div>
         <div v-show="!isChildRoute" class="hx-book">
-            <hx-header title="填写信息">
+            <ym-header title="填写信息">
                 <div slot="left" class="left" @click="$routerBack">
-                    <i class="hx-icon hx-icon-fanhui"></i>
+                    <i class="icon ym-left"></i>
                 </div>
-            </hx-header>
+            </ym-header>
             <div class="hx-book-summary">
                 <div class="title">{{ productName }}</div>
                 <dl class="unit">
@@ -33,7 +33,7 @@
                     <div class="go-title">
                         <span class="title">备注</span>
                         <span :class="{ c5: remark.remarkText }">{{ remark.remarkText ? remark.remarkText : '请输入您的内容' }}</span>
-                        <span class="hx-icon hx-icon-xiangyou"></span>
+                        <span class="icon ym-xiangyou"></span>
                     </div>
                 </div>
             </div>
@@ -693,7 +693,7 @@ export default {
             font-size: 30px;
         }
 
-        .hx-icon {
+        .icon {
             position: absolute;
             right: 20px;
             line-height: 100px;
@@ -827,7 +827,7 @@ export default {
             color: #555;
             border-radius: 6px;
             overflow: hidden;
-            .hx-icon-xuanzhongkuang {
+            .icon-xuanzhongkuang {
                 display: none;
                 position: absolute;
                 right: -3px;
@@ -844,7 +844,7 @@ export default {
             border-color: #04c71f;
             color: #04c71f;
 
-            .hx-icon {
+            .icon {
                 display: block;
             }
         }
