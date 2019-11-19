@@ -13,9 +13,26 @@
                     <div>提现至银行卡</div>
                     <div class="icon ym-card"></div>
                 </div>
+                <div v-if="cards && cards.length">
+                    <div v-for="(item, index) in cards" :key="index" class="card" @click="selectCard = item">
+                        <div class="lf">
+                            <div class="icon" :class="{ 'ym-radio': item.id !== selectCard.id, 'ym-radio-checked': item.id === selectCard.id }"></div>
+                            <div class="number">{{ item.number | hideNumber }}</div>
+                            <div class="name">{{ item.name }}</div>
+                        </div>
+                        <div v-if="false" class="icon ym-right"></div>
+                    </div>
+                    <div class="add-line" @click="addCard">
+                        <div class="lf">
+                            <div class="icon ym-add"></div>
+                            <div class="number">添加新的银行卡</div>
+                        </div>
+                        <div class="icon ym-right"></div>
+                    </div>
+                </div>
             </div>
             <div class="bt">
-                <div @click="clearToken">退出登录</div>
+                <div @click="submitForm">确定</div>
             </div>
         </div>
     </div>
@@ -27,11 +44,22 @@ export default {
     components: {
         Background
     },
+    filters: {
+        hideNumber(v) {
+            if (!v) {
+                return ''
+            } else {
+                return v.substring(0, 4) + '**********' + v.substring(v.length - 4, v.length)
+            }
+        }
+    },
     data() {
         return {
             system: 0, // 系统0位店家
             price: '', // 可提现收益
-            showMacs: false
+            cashPrice: '', // 用户输入的提现金额
+            cards: [], // 卡信息
+            selectCard: {} // 选择银行卡
         }
     },
     async asyncData() {
@@ -42,21 +70,23 @@ export default {
         }
     },
     created() {
-        this.macsArr = [
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 }
+        this.cards = [
+            { number: '234235345456454', id: 1, name: '招商银行' },
+            { number: '999999999999999', id: 2, name: '浦发银行' }
         ]
     },
     methods: {
-        clearToken() {
-            this.$cookies.remove('userToken')
-            this.$cookies.removeAll()
-            this.$router.replace({ name: 'Login' })
-        }
+        submitForm() {
+            const { price, system, selectCard, cashPrice } = this
+            let params = {
+                system,
+                price,
+                cashPrice,
+                ...selectCard
+            }
+            console.log(params)
+        },
+        addCard() {}
     }
 }
 </script>
@@ -111,15 +141,42 @@ export default {
         display: flex;
         flex-flow: column nowrap;
         font-size: 14px;
-        .title {
+        .title,
+        .card {
             display: flex;
             flex-flow: row nowrap;
             justify-content: space-between;
             align-items: center;
             height: 60px;
-            font-weight: 600;
+            font-size: 14px;
             .icon {
                 font-size: 24px;
+                color: #ab1f26;
+            }
+            .ym-radio {
+                color: #888;
+            }
+        }
+        .title {
+            font-weight: 600;
+        }
+        .card {
+            .lf {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
+                .number {
+                    color: #222;
+                    font-weight: 600;
+                    margin: 10px;
+                }
+                .name {
+                    color: #888;
+                }
+            }
+            .ym-right {
+                font-size: 30px;
+                color: #888;
             }
         }
     }

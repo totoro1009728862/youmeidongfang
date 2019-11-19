@@ -56,19 +56,19 @@ module.exports = {
             {
                 hid: 'description',
                 name: 'description',
-                content: '优美东方'
+                content: '优美东方,按摩椅'
             },
             {
                 name: 'Keywords',
-                content: '优美东方'
+                content: '优美东方,按摩椅'
             },
             {
                 name: 'author',
-                content: '优美东方'
+                content: '优美东方,按摩椅'
             },
             {
                 name: 'copyright',
-                content: '优美东方'
+                content: '优美东方,按摩椅'
             }
         ],
         link: [
@@ -79,7 +79,7 @@ module.exports = {
             },
             {
                 rel: 'stylesheet',
-                href: '//at.alicdn.com/t/font_1513744_hwvmu2mvu9.css'
+                href: '//at.alicdn.com/t/font_1513744_pb11qt3ypl.css'
             }
         ],
         script: [
