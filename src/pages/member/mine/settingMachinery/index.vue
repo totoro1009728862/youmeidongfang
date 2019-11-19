@@ -1,6 +1,6 @@
 <template>
     <div class="cont">
-        <ym-header title="我的机器"></ym-header>
+        <ym-header title="机器设置"></ym-header>
         <van-sticky :offset-top="50">
             <div class="tabs">
                 <div v-for="(item, index) in allStatus" :key="index" :class="{ actived: index === status }" @click="linkTab(index)">
@@ -28,7 +28,7 @@
 </template>
 <script>
 export default {
-    name: 'MachineryList',
+    name: 'SettingMachinery',
     data() {
         return {
             tabIndex: 0, // 0一级，1二级

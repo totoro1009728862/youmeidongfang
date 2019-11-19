@@ -1,7 +1,7 @@
 <template>
     <div class="cont">
-        <ym-header title="我的业绩"></ym-header>
-        <van-sticky v-if="system === 0" :offset-top="50">
+        <ym-header title="提现明细"></ym-header>
+        <van-sticky v-if="false" :offset-top="50">
             <div class="select-dom">
                 <div class="date-box">
                     <div class="bd" @click="beginDateSwitch = true">{{ bDate }}</div>
@@ -14,21 +14,21 @@
 
         <van-pull-refresh v-model="reLoading" :immediate-check="false" @refresh="onRefresh(true)">
             <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getList">
-                <div v-if="users.length" class="list-box">
-                    <div v-for="(user, i) in users" :key="i" class="item">
+                <div v-if="logs.length" class="list-box">
+                    <div v-for="(log, i) in logs" :key="i" class="item">
                         <div class="l-info">
-                            <div class="mac-no">顾客购买收入{{ user.number }}</div>
-                            <div class="mac-price">激活时间：{{ user.activatedDate }}</div>
+                            <div class="mac-no">提现</div>
+                            <div class="mac-price">{{ log.activatedDate }}</div>
                         </div>
                         <div class="r-info">
-                            <i>{{ user.price }}</i>
+                            <i>{{ log.price }}</i>
                         </div>
                     </div>
-                    <div v-if="!users.length && !isLoading" class="no-list">暂无{{ item.name }}，快去推广吧</div>
+                    <div v-if="!logs.length && !isLoading" class="no-list">暂无{{ item.name }}，快去推广吧</div>
                 </div>
             </van-list>
         </van-pull-refresh>
-        <div v-if="system === 0">
+        <div v-if="false">
             <van-popup v-model="beginDateSwitch" position="bottom">
                 <van-datetime-picker v-model="beginDate" type="date" :min-date="minDate" :max-date="maxDate" @cancel="cancel" @confirm="setBeginDate" />
             </van-popup>
@@ -51,7 +51,7 @@ export default {
             beginDateSwitch: false,
             endDateSwitch: false,
 
-            users: [],
+            logs: [], // 提现log
             total: 90, // 一共多少数据
             status: 0, // 当前选中的类型
             loading: false, // 数据加载loading
@@ -78,13 +78,13 @@ export default {
             if (v) {
                 setTimeout(() => {
                     this.reLoading = false
-                    this.users = []
+                    this.logs = []
                     this.current = 1
                     this.getList()
                 }, 500)
             } else {
                 this.reLoading = false
-                this.users = []
+                this.logs = []
                 this.current = 1
                 this.getList()
             }
@@ -92,15 +92,14 @@ export default {
         getList() {
             setTimeout(() => {
                 for (let i = 0; i < 15; i++) {
-                    this.users.push({
+                    this.logs.push({
                         price: '2,999.00',
-                        number: 'SJ04660',
                         activatedDate: '2019-11-15 14:11:00'
                     })
                 }
                 this.loading = false
                 this.current++
-                if (this.total && this.users.length >= this.total) {
+                if (this.total && this.logs.length >= this.total) {
                     this.finished = true
                 }
             }, 500)
@@ -208,7 +207,7 @@ export default {
             i {
                 color: #ab1f26;
                 &::before {
-                    content: '+￥';
+                    content: '-￥';
                 }
             }
         }

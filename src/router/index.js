@@ -2,11 +2,7 @@
 //所以当前文件夹内的代码 不能使用import/export
 //这里server端的代码 目前只能require
 const login = require('./login')
-const product = require('./product')
-const order = require('./order')
-const assist = require('./assist')
 const mine = require('./mine')
-const book = require('./book')
 
 module.exports = [
     {
@@ -25,8 +21,5 @@ module.exports = [
 
     ...login,
     ...product,
-    ...order,
-    ...assist,
-    ...mine,
-    ...book
+    ...mine
 ]

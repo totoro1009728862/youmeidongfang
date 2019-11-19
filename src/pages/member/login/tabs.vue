@@ -1,7 +1,7 @@
 <template>
     <div class="tabs">
         <div v-for="(item, index) in tabs" :key="index" @click="changeTab(index)">
-            <div :class="{ actived: tabIndex === index }">{{ item }}</div>
+            <div :class="{ actived: tabIndex === index }">{{ item }}{{ tabIndex }}</div>
         </div>
     </div>
 </template>

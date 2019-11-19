@@ -22,5 +22,17 @@ module.exports = [
         path: `/mine/myperformance`,
         name: 'MyPerformance',
         component: 'pages/member/mine/myPerformance/index.vue'
+    },
+    // 佣金提现
+    {
+        path: `/mine/getcash`,
+        name: 'GetCash',
+        component: 'pages/member/mine/getCash/index.vue'
+    },
+    // 佣金提现明细
+    {
+        path: `/mine/cashlog`,
+        name: 'CashLog',
+        component: 'pages/member/mine/cashLog/index.vue'
     }
 ]

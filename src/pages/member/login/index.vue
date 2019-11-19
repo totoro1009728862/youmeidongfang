@@ -69,7 +69,7 @@ export default {
         app.$cookies.remove('userToken', { domain, path: '/' }) //将之前的老cookie 先删除掉
         app.$cookies.removeAll()
         const { tabIndex, userName } = query
-        return { tabIndex: Number(tabIndex), userName }
+        return { tabIndex: tabIndex ? Number(tabIndex) : 0, userName }
     },
     methods: {
         nameInputFcous(v) {
@@ -95,7 +95,8 @@ export default {
                 duration: 1000
             })
             this.$router.replace({
-                name: this.tabIndex ? 'MachineryList' : 'TeamList'
+                name: 'Mine'
+                // name: this.tabIndex ? 'MachineryList' : 'TeamList'
             })
             // this.$store
             //     .dispatch('member/login/mLogin', {

@@ -1,6 +1,4 @@
 import login from './login'
-import order from './order'
-
 const state = () => ({
     userInfo: null
 })
@@ -16,8 +14,7 @@ const mutations = {
 }
 
 const modules = {
-    login,
-    order
+    login
 }
 
 const actions = {

@@ -1,5 +1,4 @@
 import member from './member'
-import product from './product'
 export const state = () => ({
     //originUrl: null,
     cityCode: '',

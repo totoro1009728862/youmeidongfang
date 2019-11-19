@@ -306,7 +306,7 @@ export default {
                 duration: 1000,
                 onClose: () => {
                     this.$router.replace({
-                        name: 'Home'
+                        name: 'Mine'
                     })
                 }
             })

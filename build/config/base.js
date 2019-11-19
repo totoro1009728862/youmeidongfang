@@ -79,7 +79,7 @@ module.exports = {
             },
             {
                 rel: 'stylesheet',
-                href: '//at.alicdn.com/t/font_1513744_dmr4ltna6da.css'
+                href: '//at.alicdn.com/t/font_1513744_hwvmu2mvu9.css'
             }
         ],
         script: [
