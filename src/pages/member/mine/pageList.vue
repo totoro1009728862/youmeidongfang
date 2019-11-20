@@ -162,7 +162,7 @@ export default {
     .item {
         display: flex;
         justify-content: center;
-        border-bottom: 1px solid #bbb;
+        border-bottom: 2px solid #bbb;
         height: 40px;
         margin-bottom: 40px;
         input {
