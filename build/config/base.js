@@ -7,7 +7,6 @@ const px2rem = require('postcss-px2rem')
 const routes = require('../../src/router/')
 
 const srcDir = 'src/'
-
 const reslove = pathUrl => path.resolve(__dirname, '../../', srcDir, pathUrl)
 
 const resloveRoutes = routes => {
@@ -84,7 +83,9 @@ module.exports = {
         ],
         script: [
             // {
-            //     src: 'https://hm.baidu.com/hm.js?a695e0e4508defa21c24f149cc4195d2'
+            //     src: '/ff.js',
+            //     type: 'text/javascript',
+            //     charset: 'utf-8'
             // },
             {
                 src: '//www.iumer.vip/files/flexible.min.js',

@@ -16,9 +16,30 @@
                     <span>购买使用次数</span>
                     <span>(只限当前门店使用)</span>
                 </div>
-            </div>
-            <div class="bt">
-                <div @click="clearToken">退出登录</div>
+                <div class="list">
+                    <div>
+                        <div v-for="(item, index) in picks" :key="index" class="item">
+                            <div>{{ item.name }}</div>
+                            <div>{{ item.price }}</div>
+                            <div>{{ item.count }}</div>
+                            <div class="buy-bt">
+                                <div>购买</div>
+                            </div>
+                        </div>
+                        <div class="item">占位</div>
+                    </div>
+                </div>
+                <div class="title mt20">
+                    <span>我的次数</span>
+                </div>
+                <div class="count-box">
+                    <div class="border">100</div>
+                    <div>剩余次数</div>
+                    <div class="begin-bt">
+                        <div>开始使用</div>
+                    </div>
+                    <div class="tip">每次只能单次使用</div>
+                </div>
             </div>
         </div>
     </div>
@@ -104,12 +125,127 @@ export default {
     .pick {
         display: flex;
         flex-flow: column nowrap;
+        width: 100%;
         .title {
             font-size: 12px;
             color: #888;
             span:nth-child(1) {
                 font-size: 14px;
                 color: #222;
+            }
+        }
+        .mt20 {
+            margin-top: 20px;
+        }
+        .count-box {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+            > div:nth-child(1) {
+                height: 40px;
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: center;
+                align-items: center;
+                font-size: 20px;
+                color: #ab1f26;
+                width: 180px;
+            }
+            > div:nth-child(2) {
+                widows: 100%;
+                text-align: center;
+                color: #222;
+                font-size: 14px;
+                margin: 10px 0;
+            }
+            > .begin-bt {
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: center;
+                > div {
+                    height: 30px;
+                    width: 120px;
+                    line-height: 30px;
+                    background: #ab1f26;
+                    color: #fff;
+                    font-size: 14px;
+                    text-align: center;
+                    border-radius: 15px;
+                }
+            }
+            .tip {
+                margin-top: 5px;
+                color: #888;
+                font-size: 12px;
+                &::before {
+                    content: '*';
+                    color: #ab1f26;
+                    font-size: 12px;
+                    padding-right: 5px;
+                }
+            }
+        }
+        .list {
+            width: calc(100% + 20px);
+            overflow: scroll;
+            height: auto;
+            margin-top: 20px;
+            padding: 10px;
+            > div {
+                display: flex;
+                flex-flow: row nowrap;
+                width: auto;
+                .item:nth-last-child(1) {
+                    border: none;
+                    width: 20px;
+                    background: #fff;
+                    box-shadow: none;
+                    color: #fff;
+                }
+                .item {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: center;
+                    height: 200px;
+                    width: 140px;
+                    margin-right: 10px;
+                    padding: 20px 0;
+                    left: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0px 2px 6px 0px rgba(187, 187, 187, 1);
+                    > div:nth-child(1) {
+                        font-size: 18px;
+                        color: #222;
+                    }
+                    > div:nth-child(2) {
+                        color: #ab1f26;
+                        font-size: 18px;
+                        margin: 10px;
+                    }
+                    > div:nth-child(3) {
+                        font-size: 14px;
+                        color: #888;
+                        margin-bottom: 20px;
+                    }
+                    > .buy-bt {
+                        display: flex;
+                        flex-flow: row nowrap;
+                        justify-content: center;
+                        > div {
+                            background: #ab1f26;
+                            color: #fff;
+                            font-size: 14px;
+                            text-align: center;
+                            border-radius: 20px;
+                            height: 40px;
+                            width: 120px;
+                            line-height: 40px;
+                        }
+                    }
+                }
             }
         }
     }

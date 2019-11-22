@@ -229,3 +229,16 @@ input[type='search']::-webkit-search-cancel-button {
     color: #ccc;
     font-size: 14px;
 }
+.border {
+    border-bottom: 1px solid #f7f7f7;
+}
+@media screen and (-webkit-min-device-pixel-ratio: 2) {
+    .border {
+        border-bottom: 0.5px solid #f7f7f7;
+    }
+}
+@media screen and (-webkit-min-device-pixel-ratio: 3) {
+    .border {
+        border-bottom: 0.33333px solid #f7f7f7;
+    }
+}
