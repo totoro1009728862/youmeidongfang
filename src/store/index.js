@@ -41,37 +41,6 @@ export const modules = {
 }
 
 export const actions = {
-    async nuxtServerInit({ commit, dispatch, rootState }) {
-        const routeName = this.app.context.route.name
-        const domain = process.env.domain || '.zdserver.com'
-        if (routeName && !/^login/.test(routeName.toLowerCase())) {
-            if (routeName && routeName.length && routeName.toLowerCase().indexOf('login') == -1) {
-                const userToken = this.$cookies.get('userToken')
-                // console.log(userToken, '获取到cookie')
-                // console.log(this.$cookies.getAll(), '获取所有cookie')
-                if (rootState.member.login.userToken != userToken) {
-                    commit('member/login/setUserToken', userToken)
-                    if (userToken && userToken.length) {
-                        await dispatch('member/setUserInfo')
-                    } else {
-                        commit('member/setUserInfo', null)
-                    }
-                } else {
-                    if (!(rootState.member.userInfo && rootState.member.userInfo.id) && userToken && userToken.length) {
-                        await dispatch('member/setUserInfo')
-                    }
-                }
-            } else {
-                this.$cookies.remove('userToken', {
-                    domain,
-                    path: '/'
-                })
-            }
-        }
-    },
-    setCityCode({ commit }, payload) {
-        commit('setCityCode', payload)
-    },
     setWxConfig({ commit }, payload) {
         commit('setWxConfig', payload)
     },

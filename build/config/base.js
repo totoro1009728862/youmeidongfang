@@ -56,19 +56,19 @@ module.exports = {
             {
                 hid: 'description',
                 name: 'description',
-                content: '优美东方,按摩椅'
+                content: '优美东方,按摩仪'
             },
             {
                 name: 'Keywords',
-                content: '优美东方,按摩椅'
+                content: '优美东方,按摩仪'
             },
             {
                 name: 'author',
-                content: '优美东方,按摩椅'
+                content: '优美东方,按摩仪'
             },
             {
                 name: 'copyright',
-                content: '优美东方,按摩椅'
+                content: '优美东方,按摩仪'
             }
         ],
         link: [
@@ -87,15 +87,15 @@ module.exports = {
             //     src: 'https://hm.baidu.com/hm.js?a695e0e4508defa21c24f149cc4195d2'
             // },
             {
-                src: '//oss.hxtrip.com/common/cdn/flexible.min.js?v=2',
+                src: '//www.iumer.vip/files/flexible.min.js',
                 type: 'text/javascript',
                 charset: 'utf-8'
             },
-            {
-                src: 'https://ssl.captcha.qq.com/TCaptcha.js',
-                type: 'text/javascript',
-                charset: 'utf-8'
-            },
+            // {
+            //     src: 'https://ssl.captcha.qq.com/TCaptcha.js',
+            //     type: 'text/javascript',
+            //     charset: 'utf-8'
+            // },
             {
                 src: '//res.wx.qq.com/open/js/jweixin-1.4.0.js',
                 type: 'text/javascript',
@@ -117,8 +117,8 @@ module.exports = {
     },
     css: ['~/assets/css/base.css'],
     router: {
-        base: '/',
-        middleware: ['getUserInfo']
+        base: '/'
+        // middleware: ['getUserInfo']
     },
     plugins: [
         {
@@ -177,7 +177,7 @@ module.exports = {
         loading: '加载中...',
         error_404: '啊哦，您来晚了，该页面已失效~',
         server_error: '抱歉！程序加载失败',
-        nuxtjs: '中道旅游网络科技',
+        nuxtjs: '优美东方',
         back_to_home: '返回首页',
         server_error_details: '程序发生错误，工程师们正在紧急抢修，请稍后再试',
         client_error: '抱歉！页面渲染失败',

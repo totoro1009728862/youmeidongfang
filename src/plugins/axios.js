@@ -23,8 +23,8 @@ export default ({ $axios, app, redirect }) => {
         if (isDev) {
             $axios.defaults.baseURL = 'http://127.0.0.1:9922/api'
         } else {
-            if (env === 'development' || env === 'host') $axios.defaults.baseURL = 'http://192.168.205.6:8769'
-            else $axios.defaults.baseURL = 'http://hxtrip-zuul-svc'
+            if (env === 'development' || env === 'host') $axios.defaults.baseURL = 'http://192.168.0.32:8081'
+            else $axios.defaults.baseURL = 'https://www.iumer.vip'
             // if (env === 'pro') $axios.defaults.baseURL = 'http://hxtrip-zuul'
             // else if (env === 'rc') $axios.defaults.baseURL = 'http://hxtrip-zuul'
             // else if (env === 'integration') $axios.defaults.baseURL = 'http://hx-trip-zuul-integration'
@@ -35,11 +35,8 @@ export default ({ $axios, app, redirect }) => {
     $axios.interceptors.request.use(
         config => {
             config.headers.userToken = app.$cookies.get('userToken') || ''
+            config.headers.userType = app.$cookies.get('userType') || ''
             config.headers.site = ''
-            // if (isServer) config.headers.host = app.context.req.headers.host || 'm.hxtrip.com'
-            // if (isServer) {
-            //     config.headers.referer = 'https://' + req.headers.host + req.url || 'http://m.zdserver.com:9922/www'
-            // }
             return config
         },
         err => {
@@ -58,12 +55,16 @@ export default ({ $axios, app, redirect }) => {
                 isDebug && console.log('请求失败处理,根据请求响应信息查找错误点：')
                 isDebug && console.log(`option = ${JSON.stringify(res)}`)
                 isDebug && console.groupEnd()
-                //app.nuxt.error.call(app, new Error(msg || '请求响应错误'))
+                //app.nuxt.error.call(app, new Error(desc || '请求响应错误'))
                 return Promise.reject(res)
             } else {
                 if (code == 302) {
                     //未登录或者登录过期
                     app.$cookies.remove('userToken', {
+                        domain,
+                        path: '/'
+                    }) //清除登录cookie
+                    app.$cookies.remove('userType', {
                         domain,
                         path: '/'
                     }) //清除登录cookie
@@ -97,11 +98,11 @@ export default ({ $axios, app, redirect }) => {
                         data: handleWarnMessage(data)
                     })
                 }
-                if (process.server && code == 600) {
-                    redirect({
-                        path: '/home'
-                    })
-                }
+                // if (process.server && code == 600) {
+                //     redirect({
+                //         path: '/home'
+                //     })
+                // }
             }
             return code == 200
                 ? res
@@ -125,18 +126,18 @@ const handleWarnMessage = (res, app) => {
     //     '600': '数据异常，操作失败',
     //     '805': '无权查看'
     // }
-    const { code, data, msg } = res
+    const { code, data, desc } = res
     let rs = {
             code,
-            msg
+            desc
         },
-        _message = `${msg}`
+        _message = `${desc}`
     if (code == '302') return res
     if (process.client) {
-        if (code == '999') {
+        if (code == '0') {
             if (data && data.length) {
-                _message = data[0]['message'] || res.msg || '抱歉，出现个异常，请稍后重试！'
-            } else _message = res.msg || '抱歉，出现个异常，请稍后重试！'
+                _message = data[0]['message'] || res.desc || '抱歉，出现个异常，请稍后重试！'
+            } else _message = res.desc || '抱歉，出现个异常，请稍后重试！'
         }
         // else {
         //     _message = error_enum[code] || _message || '抱歉，出现个异常，请稍后重试！'

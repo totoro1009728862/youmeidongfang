@@ -66,11 +66,18 @@ export default {
     },
     async asyncData({ app, query }) {
         //进入当前页面---先清除userToken
-        app.$cookies.remove('userToken', { domain, path: '/' }) //将之前的老cookie 先删除掉
+        app.$cookies.remove('userToken', {
+            domain,
+            path: '/'
+        }) //将之前的老cookie 先删除掉
         app.$cookies.removeAll()
         const { tabIndex, userName } = query
-        return { tabIndex: tabIndex ? Number(tabIndex) : 0, userName }
+        return {
+            tabIndex: tabIndex ? Number(tabIndex) : 0,
+            userName
+        }
     },
+    created() {},
     methods: {
         nameInputFcous(v) {
             this.$nextTick(function() {
@@ -78,10 +85,11 @@ export default {
                 this.$refs[v].focus()
             })
         },
-        submitLogin() {
+        async submitLogin() {
             if (this.noClick) return
-            let phoneReg = phoneNumberReg(this.userName)
-            let psReg = passwordReg(this.password)
+            const { userName, password, tabIndex } = this
+            let phoneReg = phoneNumberReg(userName)
+            let psReg = passwordReg(password)
             if (phoneReg) {
                 this.$Toast(phoneReg)
                 return
@@ -90,54 +98,28 @@ export default {
                 this.$Toast(psReg)
                 return
             }
-            this.$Toast.loading({
-                message: '登录中...',
-                duration: 1000
+            let params = {
+                phone: userName,
+                loginPassword: password
+            }
+            const userType = tabIndex ? 2 : 1
+            this.$cookies.set('userType', userType, {
+                path: '/'
             })
-            this.$router.replace({
-                name: 'Mine'
-                // name: this.tabIndex ? 'MachineryList' : 'TeamList'
-            })
-            // this.$store
-            //     .dispatch('member/login/mLogin', {
-            //         phoneNumber: this.userName,
-            //         password: this.password
-            //     })
-            //     .then(res => {
-            //         this.$Toast.clear()
-            //         let { originUrl } = this.$route.query //回调路由地址
-            //         if (res.userToken) {
-            //             this.$cookies.set('userToken', res.userToken, {
-            //                 domain,
-            //                 path: '/'
-            //             })
-            //             this.$store.dispatch('member/setUserInfo').then(() => {
-            //                 if (originUrl && originUrl.length) {
-            //                     this.$router.replace({
-            //                         path: decodeURIComponent(originUrl)
-            //                     })
-            //                 } else {
-            //                     originUrl = this.$cookies.get('originUrl')
-            //                     if (originUrl && originUrl.length) {
-            //                         this.$cookies.remove('originUrl', {
-            //                             domain,
-            //                             path: '/'
-            //                         })
-            //                         //删除之前的cookie 过一段时间可以删除掉
-            //                         this.$router.replace({
-            //                             path: decodeURIComponent(originUrl)
-            //                         })
-            //                     } else {
-            //                         this.$router.replace({ name: 'Home' })
-            //                     }
-            //                 }
-            //             })
-            //         }
-            //     })
-            //     .catch(() => {
-            //         this.$Toast.clear()
-            //         //this.$Toast(res.msg)
-            //     })
+            const {
+                $api: { member }
+            } = this
+            const { code, data } = await member.login.userLogin(params)
+            if (code === 200) {
+                console.log('1')
+                this.$cookies.set('userToken', data.token, {
+                    path: '/'
+                })
+                console.log('----------------------')
+                this.$router.replace({
+                    name: 'Mine'
+                })
+            }
         }
     }
 }
@@ -163,17 +145,20 @@ export default {
     margin: 0 20px;
     padding: 20px 12px 30px;
     border-radius: 5px;
+
     .items {
         width: 100%;
         display: flex;
         flex-flow: column nowrap;
         margin-top: 20px;
+
         .item {
             position: relative;
             display: flex;
             flex-flow: row nowrap;
             padding: 15px 40px;
             border-bottom: 1px solid #f7f7f7;
+
             .icon,
             .ege-warp {
                 position: absolute;
@@ -187,18 +172,22 @@ export default {
                 font-size: 20px;
                 color: #bbb;
             }
+
             .icon {
                 left: 0;
             }
+
             .ege-warp {
                 right: 0;
             }
         }
+
         .forgot-box {
             display: flex;
             flex-flow: row nowrap;
             justify-content: space-between;
         }
+
         .forgot {
             display: block;
             font-size: 12px;
@@ -206,11 +195,13 @@ export default {
             margin: 10px 0 20px;
         }
     }
+
     .login-bt {
         display: flex;
         flex-flow: row nowrap;
         justify-content: center;
         width: 100%;
+
         div {
             display: flex;
             flex-flow: row nowrap;
@@ -223,11 +214,13 @@ export default {
             border-radius: 20px;
             font-size: 14px;
         }
+
         .no-click {
             color: #888;
             background: #ddd;
         }
     }
+
     input {
         font-size: 14px;
     }
