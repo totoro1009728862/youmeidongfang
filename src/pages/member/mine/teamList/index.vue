@@ -9,21 +9,17 @@
             </div>
         </van-sticky>
 
-        <van-pull-refresh v-model="reLoading" @refresh="onRefresh(true)">
-            <van-list v-model="loading" :finished="finished" :immediate-check="false" finished-text="没有更多了" @load="getUsers">
-                <div class="list-box">
-                    <div v-for="(user, i) in users" :key="i" class="item">
-                        <div>{{ user.name }}</div>
-                        <div class="rt">
-                            机器
-                            <span>{{ user.totalNum }}</span>
-                            台
-                        </div>
-                    </div>
+        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getUsers">
+            <div v-for="(user, i) in users" :key="i" class="item">
+                <div>{{ user.name }}</div>
+                <div class="rt">
+                    机器
+                    <span>{{ user.totalNum }}</span>
+                    台
                 </div>
-            </van-list>
-            <!-- <div v-if="!users.length && loading" class="no-list">暂无{{ typeName }}，快去推广吧</div> -->
-        </van-pull-refresh>
+            </div>
+            <div v-if="!users.length" class="no-list">暂无{{ typeName }}，快去推广吧</div>
+        </van-list>
     </div>
 </template>
 <script>
@@ -37,10 +33,10 @@ export default {
             allStatus: [],
             users: [],
             loading: false, // 数据加载loading
-            reLoading: false, // 刷新数据中
             finished: false, // 拿到所有数据
             current: 1,
-            pageSize: 10
+            pageSize: 10,
+            listLoad: false
         }
     },
     computed: {
@@ -53,6 +49,14 @@ export default {
             }
         }
     },
+    watch: {
+        businessType() {
+            this.users = []
+            this.current = 1
+            this.loading = false
+            this.getUsers()
+        }
+    },
     async asyncData({ app }) {
         const userId = app.$cookies.get('userId')
         const {
@@ -60,64 +64,40 @@ export default {
         } = app
         const { data } = await member.mine.myTeamGroup({ userId })
         return {
-            businessType: data[0].businessType,
             allStatus: data,
             userId
         }
     },
-    created() {
-        this.onRefresh()
-    },
+    created() {},
     methods: {
-        // 刷新
-        onRefresh(v) {
-            if (v) {
-                setTimeout(() => {
-                    this.reLoading = false
-                    this.users = []
-                    this.current = 1
-                    this.getUsers()
-                }, 500)
-            } else {
-                this.reLoading = false
-                this.users = []
-                this.current = 1
-                this.getUsers()
-            }
-        },
         async getUsers() {
-            console.log('loading:' + this.loading)
+            const { id } = this.$route.params
             const {
                 userId,
-                businessType,
                 current,
                 allStatus,
                 $api: { member }
             } = this
             const params = {
                 userId,
-                businessType,
+                businessType: id,
                 page: current,
                 rows: 10
             }
             const { data } = await member.mine.myTeamGroupList(params)
-            const total = allStatus[businessType - 1].totalNum
+            const total = allStatus[id - 1].totalNum
             this.users.push(...data)
-            this.loading = false
-            console.log('---------------------------------')
-            console.log('total:' + total)
-            console.log(total && this.users && this.users.length >= total)
-            if (total && this.users && this.users.length >= total) {
+            this.current++
+
+            if (this.users.length === total) {
                 this.finished = true
-            } else {
-                this.current++
             }
         },
         linkTab(item) {
-            if (this.businessType != item) {
-                this.businessType = item.businessType
-                this.onRefresh()
-            }
+            this.$router.replace({
+                name: 'TeamList',
+                params: { id: item.businessType }
+            })
         }
     }
 }
@@ -146,38 +126,30 @@ export default {
         font-weight: 600;
     }
 }
-.list-box {
-    // display: flex;
-    // flex-flow: column wrap;
-    // border-top: 10px solid #ececec;
-    // padding: 0 20px;
-    // color: #222;
-    // background: #fff;
-    .item {
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-        border-bottom: 1px solid #f7f7f7;
-        height: 60px;
-        padding: 0 20px;
-        background: #fff;
-        .rt {
-            color: #888;
-            span {
-                padding: 0 8px;
-                color: #ab1f26;
-            }
+.item {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    border-bottom: 1px solid #f7f7f7;
+    height: 60px;
+    padding: 0 20px;
+    background: #fff;
+    .rt {
+        color: #888;
+        span {
+            padding: 0 8px;
+            color: #ab1f26;
         }
     }
-    .end {
-        width: 100%;
-        line-height: 100px;
-        color: #888;
-        text-align: center;
-        font-size: 14px;
-    }
+}
+.end {
+    width: 100%;
+    line-height: 100px;
+    color: #888;
+    text-align: center;
+    font-size: 14px;
 }
 .no-list {
     display: flex;

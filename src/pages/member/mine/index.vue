@@ -16,7 +16,7 @@
                 </div>
             </div>
             <!-- 导航 -->
-            <page-list :user-type="userType" :price="price"></page-list>
+            <page-list :id="userInfo.businessType" :user-type="userType" :price="price"></page-list>
             <div class="bt">
                 <div @click="clearToken">退出登录</div>
             </div>

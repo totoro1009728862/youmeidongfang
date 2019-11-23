@@ -12,22 +12,20 @@
             </div>
         </van-sticky>
 
-        <van-pull-refresh v-model="reLoading" :immediate-check="false" @refresh="onRefresh(true)">
-            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getList">
-                <div v-if="users.length" class="list-box">
-                    <div v-for="(user, i) in users" :key="i" class="item">
-                        <div class="l-info">
-                            <div class="mac-no">顾客购买收入{{ user.number }}</div>
-                            <div class="mac-price">激活时间：{{ user.activatedDate }}</div>
-                        </div>
-                        <div class="r-info">
-                            <i>{{ user.price }}</i>
-                        </div>
+        <van-list v-model="loading" :finished="finished" :immediate-check="false" finished-text="没有更多了" @load="getList">
+            <div v-if="perList.length" class="list-boxx">
+                <div v-for="(user, i) in perList" :key="i" class="item">
+                    <div class="l-info">
+                        <div class="mac-no">顾客购买收入{{ user.number }}</div>
+                        <div class="mac-price">激活时间：{{ user.activatedDate }}</div>
                     </div>
-                    <div v-if="!users.length && !isLoading" class="no-list">暂无{{ item.name }}，快去推广吧</div>
+                    <div class="r-info">
+                        <i>{{ user.price }}</i>
+                    </div>
                 </div>
-            </van-list>
-        </van-pull-refresh>
+                <div v-if="!perList.length && !isLoading" class="no-list">暂无{{ item.name }}，快去推广吧</div>
+            </div>
+        </van-list>
         <div v-if="system === 0">
             <van-popup v-model="beginDateSwitch" position="bottom">
                 <van-datetime-picker v-model="beginDate" type="date" :min-date="minDate" :max-date="maxDate" @cancel="cancel" @confirm="setBeginDate" />
@@ -52,8 +50,8 @@ export default {
             beginDateSwitch: false,
             endDateSwitch: false,
 
-            users: [],
-            total: 90, // 一共多少数据
+            perList: [],
+            total: 0, // 一共多少数据
             status: 0, // 当前选中的类型
             loading: false, // 数据加载loading
             reLoading: false, // 刷新数据中
@@ -72,39 +70,45 @@ export default {
         this.beginDate = new Date(`${m > 3 ? y : y - 1}-${m - 3}-01`)
         this.bDate = this.formatDate(this.beginDate)
         this.eDate = this.formatDate(this.endDate)
+        this.getList()
     },
     methods: {
         // 刷新
-        onRefresh(v) {
-            if (v) {
-                setTimeout(() => {
-                    this.reLoading = false
-                    this.users = []
-                    this.current = 1
-                    this.getList()
-                }, 500)
-            } else {
-                this.reLoading = false
-                this.users = []
-                this.current = 1
-                this.getList()
-            }
+        onRefresh() {
+            this.reLoading = false
+            this.perList = []
+            this.current = 1
+            this.getList()
         },
-        getList() {
-            setTimeout(() => {
-                for (let i = 0; i < 15; i++) {
-                    this.users.push({
-                        price: '2,999.00',
-                        number: 'SJ04660',
-                        activatedDate: '2019-11-15 14:11:00'
-                    })
-                }
+        async getList() {
+            const {
+                businessType,
+                current,
+                bDate,
+                eDate,
+                $api: { member },
+                $cookies
+            } = this
+            const params = {
+                userId: $cookies.get('userId'),
+                businessType,
+                operation: 0,
+                startDayTime: bDate,
+                endDayTime: eDate,
+                page: current,
+                rows: 10
+            }
+            const { code, data } = await member.mine.myPerformanceList(params)
+            if (code === 200) {
+                console.log(this.finished)
+                this.total = data.total
+                this.perList.push(...data.list)
                 this.loading = false
                 this.current++
-                if (this.total && this.users.length >= this.total) {
+                if (this.perList.length === this.total) {
                     this.finished = true
                 }
-            }, 500)
+            }
         },
         // 赋值开始日期
         setBeginDate(e) {
@@ -174,60 +178,54 @@ export default {
         font-weight: 600;
     }
 }
-.list-box {
+.item {
     display: flex;
-    flex-flow: column wrap;
-    border-top: 10px solid #f7f7f7;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    border-bottom: 1px solid #f7f7f7;
+    height: 90px;
     padding: 0 20px;
-    color: #222;
     background: #fff;
-    .item {
+    .l-info {
         display: flex;
-        flex-flow: row nowrap;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-        border-bottom: 1px solid #f7f7f7;
-        height: 90px;
-        .l-info {
-            display: flex;
-            flex-flow: column nowrap;
-            justify-content: center;
-            .mac-price {
-                font-size: 12px;
-                line-height: 30px;
-                color: #888;
-                &::after {
-                    content: '元/次';
-                }
-            }
-        }
-        .r-info {
-            font-size: 16px;
-            color: #222;
-            font-weight: bold;
-            i {
-                color: #ab1f26;
-                &::before {
-                    content: '+￥';
-                }
-            }
-        }
-    }
-    .end {
-        width: 100%;
-        line-height: 100px;
-        color: #888;
-        text-align: center;
-        font-size: 14px;
-    }
-    .no-list {
-        display: flex;
-        min-height: calc(100vh - 200px);
-        align-items: center;
+        flex-flow: column nowrap;
         justify-content: center;
-        color: #888;
-        font-size: 14px;
+        .mac-price {
+            font-size: 12px;
+            line-height: 30px;
+            color: #888;
+            &::after {
+                content: '元/次';
+            }
+        }
     }
+    .r-info {
+        font-size: 16px;
+        color: #222;
+        font-weight: bold;
+        i {
+            color: #ab1f26;
+            &::before {
+                content: '+￥';
+            }
+        }
+    }
+}
+.end {
+    width: 100%;
+    line-height: 100px;
+    color: #888;
+    text-align: center;
+    font-size: 14px;
+}
+.no-list {
+    display: flex;
+    min-height: calc(100vh - 200px);
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 14px;
 }
 </style>

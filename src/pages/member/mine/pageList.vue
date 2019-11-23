@@ -1,6 +1,6 @@
 <template>
     <div class="page-list">
-        <nuxt-link v-if="userType === 1" :to="{ name: 'TeamList' }" tag="div" class="page">
+        <nuxt-link v-if="userType === 1" :to="{ name: 'TeamList', params: { id } }" tag="div" class="page">
             <div class="left-info">
                 <div class="icon ym-team"></div>
                 <div>我的团队</div>
@@ -56,6 +56,10 @@ export default {
         price: {
             type: [String, Number],
             default: 0
+        },
+        id: {
+            type: [String, Number],
+            default: 1
         }
     },
     data() {
