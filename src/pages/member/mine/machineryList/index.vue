@@ -9,8 +9,8 @@
             </div>
         </van-sticky>
 
-        <van-pull-refresh v-model="reLoading" :immediate-check="false" @refresh="onRefresh(true)">
-            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getUsers">
+        <van-pull-refresh v-model="reLoading" @refresh="onRefresh(true)">
+            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :immediate-check="false" @load="getUsers">
                 <div v-if="users.length" class="list-box">
                     <div v-for="(user, i) in users" :key="i" class="item">
                         <div>{{ user.name }}</div>
@@ -29,14 +29,10 @@
 <script>
 export default {
     name: 'MachineryList',
+    middleware: 'checkLogin',
     data() {
         return {
-            tabIndex: 0, // 0一级，1二级
-            allStatus: [
-                { name: '一级代理', value: 0, number: 0 },
-                { name: '二级代理', value: 1, number: 0 },
-                { name: '店家', value: 2, number: 0 }
-            ],
+            allStatus: [],
             users: [],
             total: 90, // 一共多少数据
             status: 0, // 当前选中的类型
@@ -47,22 +43,22 @@ export default {
             pageSize: 10
         }
     },
-    async asyncData() {
-        return { tabIndex: 1 }
+    async asyncData({ app, store }) {
+        const { userInfo } = store.state
+        const {
+            $api: { member }
+        } = app
+        let params = {
+            userId: userInfo.userId
+        }
+        const { data } = await member.mine.myTeamGroup(params)
+        return {
+            businessType: data[0].businessType,
+            allStatus: data,
+            userId: userInfo.userId
+        }
     },
-    created() {
-        const v1 = [
-            { name: '一级代理', value: 0, number: 0 },
-            { name: '二级代理', value: 1, number: 0 },
-            { name: '店家', value: 2, number: 0 }
-        ]
-        const v2 = [
-            { name: '二级代理', value: 1, number: 0 },
-            { name: '店家', value: 2, number: 0 }
-        ]
-        this.allStatus = this.tabIndex ? v2 : v1
-        this.status = this.allStatus[0].value
-    },
+    created() {},
     methods: {
         // 刷新
         onRefresh(v) {
@@ -81,7 +77,6 @@ export default {
             }
         },
         getUsers() {
-            console.log('1111111111111111111111')
             setTimeout(() => {
                 for (let i = 0; i < 15; i++) {
                     this.users.push({

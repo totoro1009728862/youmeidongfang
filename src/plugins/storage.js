@@ -8,6 +8,6 @@ Vue.use(VueSessionStorage)
 export default ({ store }) => {
     createPersistedState({
         key: 'local',
-        paths: ['rules']
+        paths: ['userInfo']
     })(store)
 }

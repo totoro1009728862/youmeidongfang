@@ -2,7 +2,7 @@
     <div class="hx-login">
         <ym-header title="登录"></ym-header>
         <background>
-            <div class="logo">ANMOYI</div>
+            <div class="logo">HUATAI</div>
         </background>
 
         <div class="content">
@@ -43,6 +43,7 @@
 import Background from '~/modules/assist/background'
 import Tabs from './tabs'
 import { phoneNumberReg, passwordReg } from '~/common/utils/checkForm.js'
+import { mapActions } from 'vuex'
 const domain = process.env.domain
 export default {
     components: {
@@ -79,6 +80,7 @@ export default {
     },
     created() {},
     methods: {
+        ...mapActions(['set_userInfo']),
         nameInputFcous(v) {
             this.$nextTick(function() {
                 //DOM 更新了
@@ -111,14 +113,21 @@ export default {
             } = this
             const { code, data } = await member.login.userLogin(params)
             if (code === 200) {
-                console.log('1')
+                this.set_userInfo(data)
                 this.$cookies.set('userToken', data.token, {
                     path: '/'
                 })
-                console.log('----------------------')
-                this.$router.replace({
-                    name: 'Mine'
+                this.$cookies.set('userId', data.userId, {
+                    path: '/'
                 })
+
+                if (this.$route.query.originUrl) {
+                    this.$router.replace(decodeURIComponent(this.$route.query.originUrl))
+                } else {
+                    this.$router.replace({
+                        name: 'Mine'
+                    })
+                }
             }
         }
     }

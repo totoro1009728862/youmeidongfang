@@ -2,7 +2,7 @@
     <div class="hx-login">
         <ym-header title="修改密码"></ym-header>
         <background>
-            <div class="logo">ANMOYI</div>
+            <div class="logo">HUATAI</div>
         </background>
 
         <div class="content">

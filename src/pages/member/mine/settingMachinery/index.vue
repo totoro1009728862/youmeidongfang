@@ -29,6 +29,7 @@
 <script>
 export default {
     name: 'SettingMachinery',
+    middleware: 'checkLogin',
     data() {
         return {
             tabIndex: 0, // 0一级，1二级

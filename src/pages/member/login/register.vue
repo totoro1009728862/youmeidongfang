@@ -2,7 +2,7 @@
     <div class="hx-login">
         <ym-header title="注册"></ym-header>
         <background>
-            <div class="logo">ANMOYI</div>
+            <div class="logo">HUATAI</div>
         </background>
         <div class="header-box">
             <div>
@@ -19,37 +19,33 @@
                     <div class="label">门店名称</div>
                     <input ref="shopNameRef" v-model.trim="shopName" placeholder="请填写您的门店全称" />
                 </div>
-                <div class="item" @click="nameInputFcous('userNameRef')">
+                <div class="item" @click="nameInputFcous('nameRef')">
                     <div class="label">姓名</div>
-                    <input ref="userNameRef" v-model.trim="userName" placeholder="请填写您的姓名" />
+                    <input ref="nameRef" v-model.trim="name" placeholder="请填写您的姓名" />
                 </div>
                 <div class="item pr180" @click="nameInputFcous('phoneNumberRef')">
                     <div class="label">手机号</div>
-                    <input ref="phoneNumberRef" v-model.trim="phoneNumber" type="tel" maxlength="11" placeholder="请填写您的手机号" />
+                    <input ref="phoneNumberRef" v-model.trim="phone" type="tel" maxlength="11" placeholder="请填写您的手机号" />
                     <div class="code-bt" @click.stop="getCode">{{ codeText }}</div>
                 </div>
                 <div class="item" @click="nameInputFcous('codeRef')">
                     <div class="label">验证码</div>
-                    <input ref="codeRef" v-model.trim="code" type="tel" maxlength="4" placeholder="请填写您的手机验证码" />
+                    <input ref="codeRef" v-model.trim="authCode" type="tel" maxlength="6" placeholder="请填写您的手机验证码" />
                 </div>
                 <div class="item" @click.stop="showArea = true">
                     <div class="label">所在区域</div>
-                    <span v-for="(item, index) in areaCodes" :key="index" :class="{ 'has-value': item.name }">
-                        {{ item.name || `选择${index === 0 ? '省' : index === 1 ? '市' : '区/县'}` }}
-                    </span>
+                    <span v-for="(item, index) in areaCodes" :key="index" :class="{ 'has-value': item.name }">{{
+                        item.name || `选择${index === 0 ? '省' : index === 1 ? '市' : '区/县'}`
+                    }}</span>
                     <span class="ege-warp icon ym-down"></span>
-                </div>
-                <div v-show="tabIndex === 2" class="item" @click="nameInputFcous('machineNumberRef')">
-                    <div class="label">机器数量</div>
-                    <input ref="machineNumberRef" v-model.trim="machineNumber" type="tel" maxlength="4" placeholder="请输入购买的机器数量" />
                 </div>
                 <div class="item" @click="nameInputFcous('InviterNumberRef')">
                     <div class="label">邀请人</div>
-                    <input ref="InviterNumberRef" v-model.trim="InviterNumber" type="tel" maxlength="11" placeholder="请填写邀请人的手机号" />
+                    <input ref="InviterNumberRef" v-model.trim="inviteBusinessPhone" type="tel" maxlength="11" placeholder="请填写邀请人的手机号" />
                 </div>
                 <div class="item" @click="nameInputFcous('passwordRef')">
                     <div class="label">登录密码</div>
-                    <input ref="passwordRef" v-model.trim="password" :type="passwordShow ? 'text' : 'password'" placeholder="请填写您的登录密码" />
+                    <input ref="passwordRef" v-model.trim="loginPassword" :type="passwordShow ? 'text' : 'password'" placeholder="请填写您的登录密码" />
                     <span class="ege-warp" @click.stop="passwordShow = !passwordShow">
                         <van-icon :name="passwordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
@@ -63,7 +59,7 @@
                 </div>
                 <div class="item" @click="nameInputFcous('cashwordRef')">
                     <div class="label">提现密码</div>
-                    <input ref="cashwordRef" v-model.trim="cashword" :type="cashwordShow ? 'text' : 'password'" placeholder="请填写您的提现密码" />
+                    <input ref="cashwordRef" v-model.trim="payPassword" :type="cashwordShow ? 'text' : 'password'" placeholder="请填写您的提现密码" />
                     <span class="ege-warp" @click.stop="cashwordShow = !cashwordShow">
                         <van-icon :name="cashwordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
@@ -128,23 +124,22 @@ export default {
             countdown: 60, // 倒计时重新获取
             codeText: '获取验证码', // 文案
             time: null,
-            code: '', // 验证码
+            authCode: '', // 验证码
             shopName: '', // 门店数量
-            userName: '', //用户名
-            phoneNumber: '', // 手机号
+            name: '', //用户名
+            phone: '', // 手机号
             areaCode: '', // 用于显示的
             areaCodes: [
                 { code: '', name: '' },
                 { code: '', name: '' },
                 { code: '', name: '' }
             ], // 省市区编码
-            machineNumber: '', // 机器数量
-            InviterNumber: '', // 邀请人手机号
-            password: '',
+            inviteBusinessPhone: '', // 邀请人手机号
+            loginPassword: '',
             passwordShow: false,
             repassword: '',
             repasswordShow: false,
-            cashword: '',
+            payPassword: '',
             cashwordShow: false,
             recashword: '',
             recashwordShow: false,
@@ -156,9 +151,10 @@ export default {
     },
     computed: {
         noClick() {
-            const { shopName, userName, phoneNumber, code, areaCode, machineNumber, password, repassword, cashword, recashword, checked, tabIndex } = this
-            const v = !phoneNumber || !code || !userName || !areaCode || !password || !repassword || !cashword || !recashword || !checked
-            const v2 = !shopName || !machineNumber || v
+            const { shopName, name, phone, authCode, areaCode, loginPassword, repassword, payPassword, recashword, checked, tabIndex } = this
+            const v = !phone || !authCode || !name || !areaCode || !loginPassword || !repassword || !payPassword || !recashword || !checked
+
+            const v2 = !shopName || v
             return tabIndex === 2 ? v2 : v
         }
     },
@@ -174,42 +170,41 @@ export default {
         },
         // 点击’获取验证码’
         getCode() {
-            const { phoneNumber, countdown } = this
+            console.log('!!!!!!!!!!!!!!')
+            const { phone, countdown } = this
+            console.log(countdown)
             if (countdown !== 60) return false
-            let phoneReg = phoneNumberReg(phoneNumber)
-            if (!phoneNumber) {
+            console.log(phone)
+            let phoneReg = phoneNumberReg(phone)
+            if (!phone) {
                 this.$Toast('请输入手机号码')
             } else if (phoneReg) {
                 this.$Toast(phoneReg)
             } else {
                 this.getSmsCodeChecked({
-                    phoneNumber
+                    phone
                 })
             }
         },
 
         // 发送验证码
-        getSmsCodeChecked(params) {
-            console.log(params)
-            this.$Toast('验证码已发送到您手机')
-            this.countdownFn()
-            // const {
-            //     $api: { member }
-            // } = this
-            // member.quickOrderGetSmsCode(params).then(res => {
-            //     const { code } = res
-            //     if (code === 200) {
-            //         this.$Toast('验证码已发送到您手机')
-            //         this.countdownFn()
-            //     }
-            // })
+        async getSmsCodeChecked(params) {
+            const {
+                $api: { member }
+            } = this
+            const { code } = await member.login.authPhone(params)
+            if (code === 200) {
+                this.$Toast('验证码已发送到您手机')
+                this.countdownFn()
+            }
         },
         // 验证码倒计时计算
         countdownFn() {
             if (this.countdown === 0) {
-                this.code = ''
+                this.authCode = ''
                 this.codeText = '重新获取'
                 clearTimeout(this.time)
+                this.countdown = 60
                 return false
             } else {
                 this.countdown--
@@ -232,27 +227,26 @@ export default {
             this.showArea = false
         },
 
-        submitReg() {
+        async submitReg() {
             if (this.noClick) return
             const {
-                code, // 验证码
+                $api: { member },
+                tabIndex,
+                authCode, // 验证码
                 shopName, // 门店数量
-                userName, //用户名
-                phoneNumber, // 手机号
-                areaCode, // 用于显示的
+                name, //用户名
+                phone, // 手机号
                 areaCodes, // 省市区编码
-                machineNumber, // 机器数量
-                InviterNumber, // 邀请人手机号
-                password,
+                inviteBusinessPhone, // 邀请人手机号
+                loginPassword,
                 repassword,
-                cashword,
-                recashword,
-                checked
+                payPassword,
+                recashword
             } = this
-            let phoneReg = phoneNumberReg(phoneNumber)
-            let InviterReg = InviterNumber ? phoneNumberReg(InviterNumber) : ''
-            let psReg = passwordReg(password)
-            let cashwordReg = passwordReg(cashword)
+            let phoneReg = phoneNumberReg(phone)
+            let InviterReg = inviteBusinessPhone ? phoneNumberReg(inviteBusinessPhone) : ''
+            let psReg = passwordReg(loginPassword)
+            let cashwordReg = passwordReg(payPassword)
             if (phoneReg) {
                 this.$Toast(phoneReg)
                 this.nameInputFcous('phoneNumberRef')
@@ -271,7 +265,7 @@ export default {
                 this.$Toast(psReg)
                 return
             }
-            if (password !== repassword) {
+            if (loginPassword !== repassword) {
                 this.$Toast('两次输入的登录密码不一样')
                 this.nameInputFcous('repasswordRef')
                 return
@@ -280,36 +274,40 @@ export default {
                 this.$Toast(cashwordReg)
                 return
             }
-            if (cashword !== recashword) {
+            if (payPassword !== recashword) {
                 this.$Toast('两次输入的提现密码不一样')
                 this.nameInputFcous('recashwordRef')
                 return
             }
-            let params = {
-                code, // 验证码
-                shopName, // 门店数量
-                userName, //用户名
-                phoneNumber, // 手机号
-                areaCode, // 用于显示的
-                areaCodes, // 省市区编码
-                machineNumber, // 机器数量
-                InviterNumber, // 邀请人手机号
-                password,
-                repassword,
-                cashword,
-                recashword,
-                checked: Number(checked) // 协议勾选
-            }
-            console.log(params)
-            this.$Toast.success({
-                message: '注册成功',
-                duration: 1000,
-                onClose: () => {
-                    this.$router.replace({
-                        name: 'Mine'
-                    })
-                }
+            const userType = tabIndex === 2 ? 2 : 1
+            this.$cookies.set('userType', userType, {
+                path: '/'
             })
+            let params = {
+                businessType: tabIndex === 2 ? 0 : tabIndex === 1 ? 1 : 2,
+                authCode, // 验证码
+                shopName, // 门店数量
+                name, //用户名
+                phone, // 手机号
+                inviteBusinessPhone, // 邀请人手机号
+                loginPassword,
+                payPassword,
+                cityName: areaCodes[1].name,
+                provinceName: areaCodes[0].name,
+                areaName: areaCodes[2].name
+            }
+            const { code } = await member.login.registerUser(params)
+            if (code === 200) {
+                this.$Toast.success({
+                    message: '申请已发送，请等待客服审核！',
+                    duration: 2000,
+                    onClose: () => {
+                        this.$router.replace({
+                            name: 'Login'
+                        })
+                    }
+                })
+            }
         }
     }
 }
@@ -459,7 +457,7 @@ export default {
         bottom: 0;
         left: 0;
         right: 0;
-        height: 100px;
+        height: 50px;
         display: flex;
         flex-flow: row nowrap;
         justify-content: space-between;

@@ -1,17 +1,20 @@
 <template>
     <div class="user-info">
-        <div class="head">
-            <img :src="info.img" alt="用户头像" />
-        </div>
+        <div class="head">{{ info.name | getHead }}</div>
         <div class="user-name">
-            <div>{{ info.userName }}</div>
-            <div v-if="info.InviterNumber">邀请人:{{ info.InviterNumber }}</div>
+            <div>{{ info.name }}</div>
+            <div v-if="info.InviterNumber">邀请人:{{ info.inviteBusinessName }}</div>
         </div>
     </div>
 </template>
 <script>
 export default {
     name: 'PageList',
+    filters: {
+        getHead(v) {
+            return v ? v.charAt(0) : ''
+        }
+    },
     props: {
         info: {
             type: Object,
@@ -40,16 +43,18 @@ export default {
     color: #fff;
     padding: 20px;
     .head {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: center;
         width: 60px;
         height: 60px;
         margin-right: 10px;
         border-radius: 50%;
+        background: #fff;
         overflow: hidden;
-        img {
-            display: block;
-            height: 100%;
-            width: 100%;
-        }
+        color: #ab1f26;
+        font-size: 30px;
     }
     .user-name {
         display: flex;

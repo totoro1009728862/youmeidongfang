@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <background>
-            <div class="logo">ANMOYI</div>
+            <div class="logo">HUATAI</div>
         </background>
 
         <div class="home-box">
@@ -87,7 +87,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .home {
-    min-height: 100vh;
+    height: 100vh;
     background: #fff;
     .logo {
         position: absolute;
@@ -108,7 +108,7 @@ export default {
     background: #fff;
     padding: 0 20px 30px;
     border-radius: 5px;
-    height: calc(100vh - 35px);
+    height: calc(100vh - 130px);
     .pick-info {
         display: flex;
         flex-flow: column nowrap;
@@ -243,6 +243,7 @@ export default {
                             height: 40px;
                             width: 120px;
                             line-height: 40px;
+                            margin: 0 20px;
                         }
                     }
                 }

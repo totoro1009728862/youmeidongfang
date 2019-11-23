@@ -1,6 +1,5 @@
 const domain = process.env.domain
-export default async context => {
-    const { app, route, redirect } = context
+export default async ({ app, route, redirect }) => {
     const { $cookies } = app
     const userToken = $cookies.get('userToken')
     if (!userToken) {

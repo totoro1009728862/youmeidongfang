@@ -41,6 +41,7 @@
 <script>
 export default {
     name: 'MyPerformance',
+    middleware: 'checkLogin',
     data() {
         return {
             system: 0, // 1,2代理，0店家

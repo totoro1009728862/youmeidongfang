@@ -83,7 +83,8 @@ import Background from '~/modules/assist/background'
 import { bankCardAttribution } from '~/common/utils/bank.js'
 
 export default {
-    name: 'Mine',
+    name: 'GetCash',
+    middleware: 'checkLogin',
     components: {
         Background
     },

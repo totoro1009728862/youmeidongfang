@@ -1,9 +1,9 @@
 import login from './login'
 // import order from './order'
-// import mine from './mine'
+import mine from './mine'
 
 export default $axios => ({
-    login: login($axios)
+    login: login($axios),
     // order: order($axios),
-    // mine: mine($axios)
+    mine: mine($axios)
 })

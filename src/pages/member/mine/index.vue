@@ -7,16 +7,16 @@
             <div class="price-info">
                 <div class="price-v">{{ price }}</div>
                 <div class="price-t">{{ priceText }}</div>
-                <div v-if="!system" class="show-macs" @click="showMacs = !showMacs">
+                <div v-if="userType === 2" class="show-macs" @click="showMacs = !showMacs">
                     <div class="icon" :class="{ 'ym-down': !showMacs, 'ym-up': showMacs }"></div>
                 </div>
                 <!-- 机器列表 -->
-                <div v-if="!system && macsArr && macsArr.length">
+                <div v-if="userType === 2 && macsArr && macsArr.length">
                     <macs-list v-show="showMacs" :macs-arr="macsArr"></macs-list>
                 </div>
             </div>
             <!-- 导航 -->
-            <page-list :system="system" :price="price"></page-list>
+            <page-list :user-type="userType" :price="price"></page-list>
             <div class="bt">
                 <div @click="clearToken">退出登录</div>
             </div>
@@ -28,8 +28,10 @@ import Background from '~/modules/assist/background'
 import UserInfo from './userInfo'
 import MacsList from './macsList'
 import PageList from './pageList'
+import { mapGetters, mapActions } from 'vuex'
 export default {
     name: 'Mine',
+    middleware: 'checkLogin',
     components: {
         Background,
         UserInfo,
@@ -38,31 +40,18 @@ export default {
     },
     data() {
         return {
-            system: 0, // 系统0位店家
-            userInfo: {
-                userName: '',
-                img: ''
-            },
+            userType: 1, // 1代理2门店
             macsArr: [],
             price: '0',
             priceText: '',
             showMacs: false
         }
     },
-    async asyncData() {
-        const system = 0
-        return {
-            userInfo: {
-                img: 'http://b-ssl.duitang.com/uploads/item/201812/28/20181228170011_yhmnc.jpg',
-                userName: '隔壁老王',
-                InviterNumber: '13451977774'
-            },
-            system,
-            price: system ? '￥28,888.00' : '3',
-            priceText: system ? '推广仪器累计佣金' : '已拥有机器数'
-        }
+    computed: {
+        ...mapGetters(['userInfo'])
     },
     created() {
+        this.getUserInfo()
         this.macsArr = [
             { number: 'SJ04011', price: 260, count: 27 },
             { number: 'SJ04011', price: 260, count: 27 },
@@ -73,9 +62,24 @@ export default {
         ]
     },
     methods: {
+        ...mapActions(['set_userInfo']),
+        async getUserInfo() {
+            const {
+                userInfo,
+                $api: { member }
+            } = this
+            this.userType = userInfo.userType || 1
+            this.priceText = this.userType === 1 ? '推广仪器累计佣金' : '已拥有机器数'
+            let params = {
+                operation: 0,
+                userId: userInfo.userId
+            }
+            const { data } = this.userType === 1 ? await member.mine.myPerformance(params) : await member.mine.myDeviceNum(params)
+            this.price = data.price || data.totalNum || 0
+        },
         clearToken() {
-            this.$cookies.remove('userToken')
             this.$cookies.removeAll()
+            this.set_userInfo({})
             this.$router.replace({ name: 'Login' })
         }
     }

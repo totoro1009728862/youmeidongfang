@@ -7,8 +7,8 @@
     "license": "ISC",
     "scripts": {
         "dev": " cross-env NODE_ENV=development IS_DEBUG=debug node build/server/index.js",
-        "build": "npm run clean && nuxt build && npm run upload",
-        "start": "node build/server/index.js",
+        "build": "cross-env NODE_ENV=integration nuxt build",
+        "start": "cross-env NODE_ENV=integration node build/server/index.js",
         "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
         "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
         "build-qa": "cross-env NODE_ENV=integration nuxt build",
@@ -64,5 +64,4 @@
         "rimraf": "^2.6.3",
         "vconsole": "^3.3.4"
     }
-
 }

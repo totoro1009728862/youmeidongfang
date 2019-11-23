@@ -1,6 +1,6 @@
 <template>
     <div class="page-list">
-        <nuxt-link v-if="system" :to="{ name: 'TeamList' }" tag="div" class="page">
+        <nuxt-link v-if="userType === 1" :to="{ name: 'TeamList' }" tag="div" class="page">
             <div class="left-info">
                 <div class="icon ym-team"></div>
                 <div>我的团队</div>
@@ -20,14 +20,14 @@
                 <div>我的业绩</div>
             </div>
             <div class="right-info">
-                <div v-if="!system" class="price-text">{{ price }}</div>
+                <div v-if="userType === 1" class="price-text">{{ price }}</div>
                 <div class="icon ym-right"></div>
             </div>
         </nuxt-link>
         <div class="page" @click="show = true">
             <div class="left-info">
                 <div class="icon ym-qianbao"></div>
-                <div>{{ system ? '收益体现' : '佣金提现' }}</div>
+                <div>{{ userType === 2 ? '收益体现' : '佣金提现' }}</div>
             </div>
             <div class="icon ym-right"></div>
         </div>
@@ -49,7 +49,7 @@ import { passwordReg } from '~/common/utils/checkForm.js'
 export default {
     name: 'PageList',
     props: {
-        system: {
+        userType: {
             type: Number,
             default: 0
         },

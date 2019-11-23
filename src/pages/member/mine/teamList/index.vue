@@ -3,43 +3,39 @@
         <ym-header title="我的团队"></ym-header>
         <van-sticky :offset-top="50">
             <div class="tabs">
-                <div v-for="(item, index) in allStatus" :key="index" :class="{ actived: index === status }" @click="linkTab(index)">
-                    <span>{{ `${item.name}(${item.number})人` }}</span>
+                <div v-for="(item, index) in allStatus" :key="index" :class="{ actived: item.businessType === businessType }" @click="linkTab(item)">
+                    <span>{{ `${item.name}(${item.totalNum})人` }}</span>
                 </div>
             </div>
         </van-sticky>
 
-        <van-pull-refresh v-model="reLoading" :immediate-check="false" @refresh="onRefresh(true)">
-            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getUsers">
-                <div v-if="users.length" class="list-box">
+        <van-pull-refresh v-model="reLoading" @refresh="onRefresh(true)">
+            <van-list v-model="loading" :finished="finished" :immediate-check="false" finished-text="没有更多了" @load="getUsers">
+                <div class="list-box">
                     <div v-for="(user, i) in users" :key="i" class="item">
                         <div>{{ user.name }}</div>
                         <div class="rt">
                             机器
-                            <span>{{ user.number }}</span>
+                            <span>{{ user.totalNum }}</span>
                             台
                         </div>
                     </div>
-                    <div v-if="!users.length && !isLoading" class="no-list">暂无{{ item.name }}，快去推广吧</div>
                 </div>
             </van-list>
+            <!-- <div v-if="!users.length && loading" class="no-list">暂无{{ typeName }}，快去推广吧</div> -->
         </van-pull-refresh>
     </div>
 </template>
 <script>
 export default {
     name: 'TeamList',
+    middleware: 'checkLogin',
     data() {
         return {
-            tabIndex: 0, // 0一级，1二级
-            allStatus: [
-                { name: '一级代理', value: 0, number: 0 },
-                { name: '二级代理', value: 1, number: 0 },
-                { name: '店家', value: 2, number: 0 }
-            ],
+            userId: null,
+            businessType: 1, // 一级，二级
+            allStatus: [],
             users: [],
-            total: 90, // 一共多少数据
-            status: 0, // 当前选中的类型
             loading: false, // 数据加载loading
             reLoading: false, // 刷新数据中
             finished: false, // 拿到所有数据
@@ -47,21 +43,30 @@ export default {
             pageSize: 10
         }
     },
-    async asyncData() {
-        return { tabIndex: 1 }
+    computed: {
+        typeName() {
+            if (this.allStatus && this.allStatus.length) {
+                let v = this.allStatus[this.businessType - 1]
+                return v.name
+            } else {
+                return ''
+            }
+        }
+    },
+    async asyncData({ app }) {
+        const userId = app.$cookies.get('userId')
+        const {
+            $api: { member }
+        } = app
+        const { data } = await member.mine.myTeamGroup({ userId })
+        return {
+            businessType: data[0].businessType,
+            allStatus: data,
+            userId
+        }
     },
     created() {
-        const v1 = [
-            { name: '一级代理', value: 0, number: 0 },
-            { name: '二级代理', value: 1, number: 0 },
-            { name: '店家', value: 2, number: 0 }
-        ]
-        const v2 = [
-            { name: '二级代理', value: 1, number: 0 },
-            { name: '店家', value: 2, number: 0 }
-        ]
-        this.allStatus = this.tabIndex ? v2 : v1
-        this.status = this.allStatus[0].value
+        this.onRefresh()
     },
     methods: {
         // 刷新
@@ -80,26 +85,37 @@ export default {
                 this.getUsers()
             }
         },
-        getUsers() {
-            console.log('1111111111111111111111')
-            setTimeout(() => {
-                for (let i = 0; i < 15; i++) {
-                    this.users.push({
-                        name: '强',
-                        number: this.current + '-' + i
-                    })
-                }
-                this.loading = false
-                console.log(this.loading)
+        async getUsers() {
+            console.log('loading:' + this.loading)
+            const {
+                userId,
+                businessType,
+                current,
+                allStatus,
+                $api: { member }
+            } = this
+            const params = {
+                userId,
+                businessType,
+                page: current,
+                rows: 10
+            }
+            const { data } = await member.mine.myTeamGroupList(params)
+            const total = allStatus[businessType - 1].totalNum
+            this.users.push(...data)
+            this.loading = false
+            console.log('---------------------------------')
+            console.log('total:' + total)
+            console.log(total && this.users && this.users.length >= total)
+            if (total && this.users && this.users.length >= total) {
+                this.finished = true
+            } else {
                 this.current++
-                if (this.total && this.users.length >= this.total) {
-                    this.finished = true
-                }
-            }, 500)
+            }
         },
-        linkTab(index) {
-            if (this.status != index) {
-                this.status = index
+        linkTab(item) {
+            if (this.businessType != item) {
+                this.businessType = item.businessType
                 this.onRefresh()
             }
         }
@@ -131,12 +147,12 @@ export default {
     }
 }
 .list-box {
-    display: flex;
-    flex-flow: column wrap;
-    border-top: 10px solid #ececec;
-    padding: 0 20px;
-    color: #222;
-    background: #fff;
+    // display: flex;
+    // flex-flow: column wrap;
+    // border-top: 10px solid #ececec;
+    // padding: 0 20px;
+    // color: #222;
+    // background: #fff;
     .item {
         display: flex;
         flex-flow: row nowrap;
@@ -145,6 +161,8 @@ export default {
         font-size: 14px;
         border-bottom: 1px solid #f7f7f7;
         height: 60px;
+        padding: 0 20px;
+        background: #fff;
         .rt {
             color: #888;
             span {
@@ -160,13 +178,13 @@ export default {
         text-align: center;
         font-size: 14px;
     }
-    .no-list {
-        display: flex;
-        min-height: calc(100vh - 200px);
-        align-items: center;
-        justify-content: center;
-        color: #888;
-        font-size: 14px;
-    }
+}
+.no-list {
+    display: flex;
+    min-height: calc(100vh - 200px);
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 14px;
 }
 </style>
