@@ -12,7 +12,7 @@
             </div>
         </van-sticky>
 
-        <van-pull-refresh v-model="reLoading" :immediate-check="false" @refresh="onRefresh(true)">
+        <van-pull-refresh v-model="reLoading" :immediate-check="false" class="mt10" @refresh="onRefresh(true)">
             <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getList">
                 <div v-if="logs.length" class="list-box">
                     <div v-for="(log, i) in logs" :key="i" class="item">

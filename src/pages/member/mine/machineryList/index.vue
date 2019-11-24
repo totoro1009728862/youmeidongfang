@@ -1,101 +1,73 @@
 <template>
     <div class="cont">
         <ym-header title="我的机器"></ym-header>
-        <van-sticky :offset-top="50">
-            <div class="tabs">
-                <div v-for="(item, index) in allStatus" :key="index" :class="{ actived: index === status }" @click="linkTab(index)">
-                    <span>{{ `${item.name}(${item.number})人` }}</span>
+        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" class="mt10" @load="getList">
+            <div v-if="machList.length" class="list-box">
+                <div v-for="(item, i) in machList" :key="i" class="item">
+                    <div class="l-info">
+                        <div class="mac-no">编号：{{ item.deviceNo }}</div>
+                        <div class="mac-price">{{ item.price }}</div>
+                    </div>
+                    <div class="r-info">
+                        <i>{{ item.useNum }}</i>
+                    </div>
                 </div>
             </div>
-        </van-sticky>
-
-        <van-pull-refresh v-model="reLoading" @refresh="onRefresh(true)">
-            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :immediate-check="false" @load="getUsers">
-                <div v-if="users.length" class="list-box">
-                    <div v-for="(user, i) in users" :key="i" class="item">
-                        <div>{{ user.name }}</div>
-                        <div class="rt">
-                            机器
-                            <span>{{ user.number }}</span>
-                            台
-                        </div>
-                    </div>
-                    <div v-if="!users.length && !isLoading" class="no-list">暂无{{ item.name }}，快去推广吧</div>
-                </div>
-            </van-list>
-        </van-pull-refresh>
+            <div v-if="!machList.length && !loading" class="no-list">暂无业绩，快去推广吧</div>
+        </van-list>
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
-    name: 'MachineryList',
+    name: 'MyPerformance',
     middleware: 'checkLogin',
     data() {
         return {
-            allStatus: [],
-            users: [],
-            total: 90, // 一共多少数据
-            status: 0, // 当前选中的类型
+            machList: [],
+            total: 0, // 一共多少数据
             loading: false, // 数据加载loading
             reLoading: false, // 刷新数据中
             finished: false, // 拿到所有数据
             current: 1,
-            pageSize: 10
+            pageSize: 11
         }
     },
-    async asyncData({ app, store }) {
-        const { userInfo } = store.state
-        const {
-            $api: { member }
-        } = app
-        let params = {
-            userId: userInfo.userId
-        }
-        const { data } = await member.mine.myTeamGroup(params)
-        return {
-            businessType: data[0].businessType,
-            allStatus: data,
-            userId: userInfo.userId
-        }
+
+    computed: {
+        ...mapGetters(['userInfo'])
     },
-    created() {},
     methods: {
         // 刷新
-        onRefresh(v) {
-            if (v) {
-                setTimeout(() => {
-                    this.reLoading = false
-                    this.users = []
-                    this.current = 1
-                    this.getUsers()
-                }, 500)
-            } else {
-                this.reLoading = false
-                this.users = []
-                this.current = 1
-                this.getUsers()
-            }
+        onRefresh() {
+            this.machList = []
+            this.current = 1
+            this.finished = false
+            this.loading = false
+            this.getList()
         },
-        getUsers() {
-            setTimeout(() => {
-                for (let i = 0; i < 15; i++) {
-                    this.users.push({
-                        name: '强',
-                        number: this.current + '-' + i
-                    })
-                }
+        async getList() {
+            const {
+                userInfo,
+                current,
+                pageSize,
+                $api: { member }
+            } = this
+
+            const params = {
+                page: current,
+                rows: pageSize,
+                userId: userInfo.userId
+            }
+            const { code, data } = await member.mine.myDeviceList(params)
+            if (code === 200) {
+                this.total = data.total
+                this.machList.push(...data.list)
                 this.loading = false
-                console.log(this.loading)
                 this.current++
-                if (this.total && this.users.length >= this.total) {
+                if (this.machList.length === this.total) {
                     this.finished = true
                 }
-            }, 500)
-        },
-        linkTab(index) {
-            if (this.status != index) {
-                this.status = index
-                this.onRefresh()
             }
         }
     }
@@ -105,19 +77,29 @@ export default {
 .cont {
     height: 100vh;
 }
-.tabs {
+.select-dom {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-around;
+    justify-content: center;
     background: #fff;
     height: 44px;
     align-items: center;
-    div {
-        font-size: 14px;
-        font-weight: 500;
-        color: rgba(34, 34, 34, 1);
-        line-height: 44px;
-        border-bottom: 2px solid #fff;
+    color: 888;
+    font-size: 14px;
+    .date-box {
+        display: flex;
+        flex-flow: row nowrap;
+        padding: 7px 10px 7px 0;
+        align-items: center;
+        .bd,
+        .ed {
+            width: 120px;
+            height: 30px;
+            line-height: 30px;
+            background: #ececec;
+            text-align: center;
+            border-radius: 4px;
+        }
     }
 
     .actived {
@@ -125,43 +107,57 @@ export default {
         font-weight: 600;
     }
 }
-.list-box {
+.item {
     display: flex;
-    flex-flow: column wrap;
-    border-top: 10px solid #ececec;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    border-bottom: 1px solid #f7f7f7;
+    height: 90px;
     padding: 0 20px;
-    color: #222;
     background: #fff;
-    .item {
+    .l-info {
         display: flex;
-        flex-flow: row nowrap;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-        border-bottom: 1px solid #f7f7f7;
-        height: 60px;
-        .rt {
+        flex-flow: column nowrap;
+        justify-content: center;
+        .mac-price {
+            font-size: 12px;
+            line-height: 30px;
             color: #888;
-            span {
-                padding: 0 8px;
-                color: #ab1f26;
+            &::after {
+                content: '元/次';
             }
         }
     }
-    .end {
-        width: 100%;
-        line-height: 100px;
-        color: #888;
-        text-align: center;
-        font-size: 14px;
+    .r-info {
+        font-size: 16px;
+        color: #222;
+        font-weight: bold;
+        i {
+            color: #ab1f26;
+            &::before {
+                content: '已使用';
+            }
+            &::after {
+                content: '次';
+            }
+        }
     }
-    .no-list {
-        display: flex;
-        min-height: calc(100vh - 200px);
-        align-items: center;
-        justify-content: center;
-        color: #888;
-        font-size: 14px;
-    }
+}
+.end {
+    width: 100%;
+    line-height: 100px;
+    color: #888;
+    text-align: center;
+    font-size: 14px;
+}
+.no-list {
+    display: flex;
+    min-height: calc(100vh - 200px);
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 14px;
 }
 </style>

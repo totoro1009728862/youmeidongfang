@@ -170,11 +170,8 @@ export default {
         },
         // 点击’获取验证码’
         getCode() {
-            console.log('!!!!!!!!!!!!!!')
             const { phone, countdown } = this
-            console.log(countdown)
             if (countdown !== 60) return false
-            console.log(phone)
             let phoneReg = phoneNumberReg(phone)
             if (!phone) {
                 this.$Toast('请输入手机号码')

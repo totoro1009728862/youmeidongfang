@@ -1,7 +1,7 @@
 <template>
     <div class="cont">
         <ym-header title="我的业绩"></ym-header>
-        <van-sticky :offset-top="50">
+        <van-sticky v-if="userType === 2" :offset-top="50">
             <div class="select-dom">
                 <div class="date-box">
                     <div class="bd" @click="beginDateSwitch = true">{{ bDate }}</div>
@@ -12,21 +12,21 @@
             </div>
         </van-sticky>
 
-        <van-list v-model="loading" :finished="finished" :immediate-check="false" finished-text="没有更多了" @load="getList">
-            <div v-if="perList.length" class="list-boxx">
-                <div v-for="(user, i) in perList" :key="i" class="item">
+        <van-list v-model="loading" :finished="finished" :immediate-check="false" finished-text="没有更多了" class="mt10" @load="getList">
+            <div v-if="perList.length" class="list-box">
+                <div v-for="(item, i) in perList" :key="i" class="item">
                     <div class="l-info">
-                        <div class="mac-no">顾客购买收入{{ user.number }}</div>
-                        <div class="mac-price">激活时间：{{ user.activatedDate }}</div>
+                        <div class="mac-no">{{ typeTxt.t1 }}{{ item.deviceNo }}</div>
+                        <div class="mac-price">{{ typeTxt.t2 }}{{ item.createDate }}</div>
                     </div>
                     <div class="r-info">
-                        <i>{{ user.price }}</i>
+                        <i>{{ item.price }}</i>
                     </div>
                 </div>
-                <div v-if="!perList.length && !isLoading" class="no-list">暂无{{ item.name }}，快去推广吧</div>
             </div>
+            <div v-if="!perList.length && !loading" class="no-list">暂无业绩，快去推广吧</div>
         </van-list>
-        <div>
+        <div v-if="userType === 2">
             <van-popup v-model="beginDateSwitch" position="bottom">
                 <van-datetime-picker v-model="beginDate" type="date" :min-date="minDate" :max-date="maxDate" @cancel="cancel" @confirm="setBeginDate" />
             </van-popup>
@@ -42,6 +42,7 @@ export default {
     middleware: 'checkLogin',
     data() {
         return {
+            userType: 1, //2门店1代理
             beginDate: '', // 开始日期
             endDate: '', // 结束日期
             minDate: new Date('2010-01-01'),
@@ -59,7 +60,17 @@ export default {
             pageSize: 10
         }
     },
+    computed: {
+        typeTxt() {
+            const v = this.userType
+            return {
+                t1: v === 1 ? '代理佣金' : '顾客购买收入',
+                t2: v === 1 ? '' : '激活时间:'
+            }
+        }
+    },
     created() {
+        this.userType = this.$cookies.get('userType')
         this.endDate = new Date()
         const m = this.endDate.getMonth() + 1
         const y = this.endDate.getFullYear()
@@ -71,9 +82,10 @@ export default {
     methods: {
         // 刷新
         onRefresh() {
-            this.reLoading = false
             this.perList = []
             this.current = 1
+            this.finished = false
+            this.loading = false
             this.getList()
         },
         async getList() {
@@ -96,7 +108,6 @@ export default {
             }
             const { code, data } = await member.mine.myPerformanceList(params)
             if (code === 200) {
-                console.log(this.finished)
                 this.total = data.total
                 this.perList.push(...data.list)
                 this.loading = false
@@ -192,9 +203,6 @@ export default {
             font-size: 12px;
             line-height: 30px;
             color: #888;
-            &::after {
-                content: '元/次';
-            }
         }
     }
     .r-info {

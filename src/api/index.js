@@ -1,10 +1,10 @@
-// import product from './product'
+import product from './product'
 import member from './member'
 // import assist from './assist'
 // import book from './book'
 
 export default $axios => ({
-    // product: product($axios),
+    product: product($axios),
     member: member($axios)
     // assist: assist($axios),
     // book: book($axios)

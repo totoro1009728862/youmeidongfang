@@ -15,7 +15,7 @@
                         <div class="code-bt" @click.stop="getCode">{{ codeText }}</div>
                     </div>
                     <div class="item" @click="nameInputFcous('codeRef')">
-                        <input ref="codeRef" v-model.trim="code" type="tel" maxlength="4" placeholder="请输入短信验证码" />
+                        <input ref="codeRef" v-model.trim="code" type="tel" maxlength="6" placeholder="请输入短信验证码" />
                     </div>
                 </div>
 
@@ -96,20 +96,15 @@ export default {
         },
 
         // 发送验证码
-        getSmsCodeChecked(params) {
-            console.log(params)
-            this.$Toast('验证码已发送到您手机')
-            this.countdownFn()
-            // const {
-            //     $api: { member }
-            // } = this
-            // member.quickOrderGetSmsCode(params).then(res => {
-            //     const { code } = res
-            //     if (code === 200) {
-            //         this.$Toast('验证码已发送到您手机')
-            //         this.countdownFn()
-            //     }
-            // })
+        async getSmsCodeChecked(params) {
+            const {
+                $api: { member }
+            } = this
+            const { code } = await member.login.authPhone(params)
+            if (code === 200) {
+                this.$Toast('验证码已发送到您手机')
+                this.countdownFn()
+            }
         },
         // 验证码倒计时计算
         countdownFn() {
@@ -117,6 +112,7 @@ export default {
                 this.code = ''
                 this.codeText = '重新获取'
                 clearTimeout(this.time)
+                this.countdown = 60
                 return false
             } else {
                 this.countdown--
@@ -141,20 +137,39 @@ export default {
                 this.$Toast('两次输入的密码不一样')
                 return
             }
-            console.log('调接口')
-            this.$Toast.success({
-                message: '设置成功',
-                duration: 1000,
-                onClose: () => {
-                    this.$router.replace({
-                        name: 'Login',
-                        query: {
-                            userName: this.phone,
-                            tabIndex: this.$route.query.tabIndex
-                        }
-                    })
-                }
-            })
+            this.resetApiFunc()
+        },
+        async resetApiFunc() {
+            const {
+                $api: { member },
+                password: loginPassword,
+                code: authCode,
+                phone
+            } = this
+            const params = {
+                authCode,
+                phone,
+                loginPassword
+            }
+            console.log(params)
+            const { code } = await member.login.updatePassword(params)
+            if (code === 200) {
+                this.$Toast.success({
+                    message: '设置成功',
+                    duration: 1000,
+                    onClose: () => {
+                        this.$router.replace({
+                            name: 'Login',
+                            query: {
+                                userName: this.phone,
+                                tabIndex: this.$route.query.tabIndex
+                            }
+                        })
+                    }
+                })
+            } else {
+                this.step = 1
+            }
         },
         nameInputFcous(v) {
             this.$nextTick(function() {

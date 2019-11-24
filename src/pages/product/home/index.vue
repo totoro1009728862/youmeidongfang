@@ -53,7 +53,9 @@ export default {
     },
     data() {
         return {
-            system: 0, // 系统0位店家
+            auth_code: '', // 来源令牌
+            paymentMode: '', // 来源
+            deviceId: '', // 设备id
             picks: [], // 套餐
             macNumber: '', // 机器型号
             shopName: '', // 门点名称
@@ -61,26 +63,56 @@ export default {
         }
     },
     async asyncData() {
-        const system = 0
-        return {
-            system,
-            macNumber: 'SJ03202',
-            shopName: '苏州SEE SKIN友福梅克'
-        }
+        // const { auth_code, paymentMode, deviceId } = query
+        // app.$cookies.set('userType', 3, {
+        //     path: '/'
+        // })
+        // const {
+        //     $api: { product }
+        // } = app
+        // const { code, data } = await product.userLogin({
+        //     paymentMode,
+        //     jsCode: auth_code
+        // })
+        // const { data: dataList } = await product.deviceSetList({ deviceId })
+        // if (code === 200) {
+        //     app.$cookies.set('userToken', data.token, {
+        //         path: '/'
+        //     })
+        //     app.$cookies.set('userId', data.userId, {
+        //         path: '/'
+        //     })
+        // }
+        // console.log(data)
+        // console.log(dataList)
+        // return {
+        //     auth_code: auth_code || '',
+        //     paymentMode: paymentMode || 'wechat',
+        //     deviceId,
+        //     shopName: dataList.shopName,
+        //     deviceNo: dataList.deviceNo,
+        //     deviceSetId: dataList.deviceSetId
+        // }
     },
     created() {
-        this.picks = [
-            { name: '单次', price: 49, count: 1 },
-            { name: '套餐一', price: 1998, count: 50 },
-            { name: '套餐二', price: 2998, count: 100 },
-            { name: '套餐三', price: 3998, count: 200 }
-        ]
+        this.auth_code = this.$route.query.auth_code || '6e3d8d9eff16495080cf95aa00ecTX78'
+        this.getPicks()
     },
     methods: {
-        clearToken() {
-            this.$cookies.remove('userToken')
-            this.$cookies.removeAll()
-            this.$router.replace({ name: 'Login' })
+        async submit(params) {
+            const {
+                $api: { member }
+            } = this
+            const { code } = await member.mine.submitPrice(params)
+            if (code === 200) {
+                this.$Toast.success({
+                    message: '提交成功，资金将在3-5个工作日内到账，请注意查收',
+                    duration: 2000,
+                    onClose: () => {
+                        this.showSub = false
+                    }
+                })
+            }
         }
     }
 }

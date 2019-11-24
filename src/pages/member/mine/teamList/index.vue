@@ -14,7 +14,7 @@
             </div>
         </van-sticky>
 
-        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="getUsers">
+        <van-list v-model="loading" :finished="finished" :finished-text="total != 0 ? '没有更多了' : ''" :offset="100" class="mt10" @load="getUsers">
             <div v-for="(user, i) in users" :key="i" class="item">
                 <div>{{ user.name }}</div>
                 <div class="rt">
