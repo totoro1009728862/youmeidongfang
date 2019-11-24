@@ -21,6 +21,7 @@ const resloveRoutes = routes => {
 
 module.exports = {
     mode: 'universal',
+
     srcDir,
     // loading: '~/modules/common/loading/index.vue',
     loading: {

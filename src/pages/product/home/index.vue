@@ -96,23 +96,95 @@ export default {
     },
     created() {
         this.auth_code = this.$route.query.auth_code || '6e3d8d9eff16495080cf95aa00ecTX78'
-        this.getPicks()
+        // this.getPicks()
     },
     methods: {
-        async submit(params) {
-            const {
-                $api: { member }
-            } = this
-            const { code } = await member.mine.submitPrice(params)
-            if (code === 200) {
-                this.$Toast.success({
-                    message: '提交成功，资金将在3-5个工作日内到账，请注意查收',
-                    duration: 2000,
-                    onClose: () => {
-                        this.showSub = false
-                    }
-                })
+        // 初始化支付接口 JSAPI
+        // async confirmOrderApi() {
+        //     if (this.paymentMode === 'wechat') {
+        //         this.payMethod = 'JSAPI'
+        //     }
+        //     const openId = this.$route.query.openId ? this.$route.query.openId : ''
+        //     const params = `orderId=${this.orderNo}&type=3&payMethod=${this.payMethod}&openId=${openId}&businessType=${this.businessType}`
+        //     const res = await confirmOrder(params)
+        //     if (res.code === 200) {
+        //         if (isWeXinCheck()) {
+        //             if (typeof WeixinJSBridge == 'undefined') {
+        //                 if (document.addEventListener) {
+        //                     document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(res.data, this.orderNo, this.businessType), false)
+        //                 } else if (document.attachEvent) {
+        //                     document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady(res.data, this.orderNo, this.businessType))
+        //                     document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady(res.data, this.orderNo, this.businessType))
+        //                 }
+        //             } else {
+        //                 this.onBridgeReady(res.data, this.orderNo, this.businessType)
+        //             }
+        //         } else {
+        //             window.location.href = res.data.mwebUrl
+        //         }
+        //     } else {
+        //         this.$Notify(res.msg)
+        //     }
+        // },
+        // 阿里支付
+        // async confirmOrderWithAliPayWebApi() {
+        //     const params = `orderId=${this.orderNo}&type=2&payMethod=${this.payMethod}&businessType=${this.businessType}`
+        //     const res = await confirmOrderWithAliPayWeb(params)
+        //     if (res) {
+        //         console.log(res)
+        //         if (res.msg) {
+        //             this.$Notify(res.msg)
+        //         } else {
+        //             this.aliPayHtml = res
+        //             const div = document.createElement('div')
+        //             div.innerHTML = res //此处form就是后台返回接收到的数据
+        //             document.body.appendChild(div)
+        //             document.forms[0].submit()
+        //         }
+        //     }
+        // },
+        // 支付事件
+        goPay() {
+            // 微信支付
+            if (this.payType === 1) {
+                this.confirmOrderApi()
             }
+            // 支付宝
+            if (this.payType === 2) {
+                this.confirmOrderWithAliPayWebApi()
+            }
+        },
+
+        //返回跳转详情
+        goDetail() {
+            window.location.href = this.detailLink
+        },
+        // 准备唤起微信支付
+        onBridgeReady(v, orderNo, businessType) {
+            let value = v.brandWcVo
+            console.log(value)
+            console.log(orderNo + businessType)
+            //支付回调跳转
+            //     if (typeof WeixinJSBridge == 'undefined') {
+            //         this.$Notify('不在微信浏览器内。')
+            //         return
+            //     }
+            //     WeixinJSBridge.invoke(
+            //         'getBrandWCPayRequest',
+            //         {
+            //             appId: value.appId, //公众号名称，由商户传入
+            //             timeStamp: value.timeStamp, //时间戳，自1970年以来的秒数
+            //             nonceStr: value.nonceStr, //随机串
+            //             package: value.packageData,
+            //             signType: value.signType, //微信签名方式：
+            //             paySign: value.paySign //微信签名
+            //         },
+            //         function(res) {
+            //             if (res.err_msg == 'get_brand_wcpay_request:ok') {
+            //                 window.location.href = `/paySuccess?orderNo=${orderNo}&businessType=${businessType}`
+            //             }
+            //         }
+            //     )
         }
     }
 }
