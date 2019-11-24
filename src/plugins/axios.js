@@ -18,7 +18,11 @@ export default ({ $axios, app, redirect }) => {
     //请求头配置
     $axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
     if (!isServer) {
-        $axios.defaults.baseURL = '/api'
+        if (isDev) {
+            $axios.defaults.baseURL = '/api'
+        } else {
+            $axios.defaults.baseURL = 'https://www.iumer.vip'
+        }
     } else {
         if (isDev) {
             $axios.defaults.baseURL = 'http://127.0.0.1:9922/api'

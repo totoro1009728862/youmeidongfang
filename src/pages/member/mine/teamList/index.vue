@@ -2,7 +2,7 @@
     <div class="cont">
         <ym-header title="我的团队"></ym-header>
         <van-sticky :offset-top="50">
-            <div class="tabs">
+            <div v-if="allStatus && allStatus.length" class="tabs">
                 <div
                     v-for="(item, index) in allStatus"
                     :key="index"
@@ -13,8 +13,7 @@
                 </div>
             </div>
         </van-sticky>
-
-        <van-list v-model="loading" :finished="finished" :finished-text="total != 0 ? '没有更多了' : ''" :offset="100" class="mt10" @load="getUsers">
+        <div class="mt10" @touchmove="getUsers()">
             <div v-for="(user, i) in users" :key="i" class="item">
                 <div>{{ user.name }}</div>
                 <div class="rt">
@@ -23,8 +22,8 @@
                     台
                 </div>
             </div>
-        </van-list>
-        <div v-if="!users.length && !loading" class="no-list">暂无{{ typeName }}，快去推广吧</div>
+            <div v-if="!users.length && !loading" class="no-list">暂无{{ typeName }}，快去推广吧</div>
+        </div>
     </div>
 </template>
 <script>
@@ -34,19 +33,19 @@ export default {
     data() {
         return {
             userId: null,
-            businessType: 1, // 一级，二级
+            businessType: 0, // 一级，二级
             allStatus: [],
             users: [],
-            loading: false, // 数据加载loading
             finished: false, // 拿到所有数据
             current: 1,
             pageSize: 12,
-            listLoad: false
+            loading: false,
+            scrollEnd: false
         }
     },
     computed: {
         typeName() {
-            if (this.allStatus && this.allStatus.length) {
+            if (this.allStatus && this.allStatus.length && this.businessType) {
                 let v = this.allStatus[this.businessType - 1]
                 return v.name
             } else {
@@ -63,12 +62,18 @@ export default {
         return {
             allStatus: data,
             userId,
-            businessType: data[0].businessType
+            businessType: data[0].businessType || 1
         }
     },
-    created() {},
+    created() {
+        this.getUsers()
+    },
     methods: {
         async getUsers() {
+            if (this.finished || this.loading) {
+                return
+            }
+            this.loading = true
             const {
                 userId,
                 current,
@@ -77,6 +82,8 @@ export default {
                 pageSize,
                 $api: { member }
             } = this
+            const total = allStatus[businessType - 1].totalNum
+
             const params = {
                 userId,
                 businessType,
@@ -84,11 +91,12 @@ export default {
                 rows: pageSize
             }
             const { data } = await member.mine.myTeamGroupList(params)
-            const total = allStatus[businessType - 1].totalNum
-            this.users.push(...data)
-            this.current++
             this.loading = false
-            if (this.users.length === total) {
+            this.users = [].concat(this.users).concat(data)
+            this.current++
+
+            if (this.users.length >= total) {
+                console.log('数据加载完毕')
                 this.finished = true
             }
         },
@@ -97,8 +105,8 @@ export default {
             this.businessType = v
             this.users = []
             this.current = 1
-            this.loading = false
             this.finished = false
+            this.getUsers()
         }
     }
 }

@@ -83,16 +83,16 @@ module.exports = {
             }
         ],
         script: [
-            // {
-            //     src: '/ff.js',
-            //     type: 'text/javascript',
-            //     charset: 'utf-8'
-            // },
             {
-                src: '//www.iumer.vip/files/flexible.min.js',
+                src: '/ff.js',
                 type: 'text/javascript',
                 charset: 'utf-8'
             },
+            // {
+            //     src: '//www.iumer.vip/files/flexible.min.js',
+            //     type: 'text/javascript',
+            //     charset: 'utf-8'
+            // },
             // {
             //     src: 'https://ssl.captcha.qq.com/TCaptcha.js',
             //     type: 'text/javascript',

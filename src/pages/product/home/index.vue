@@ -8,7 +8,7 @@
             <div class="pick-info">
                 <div class="shop-info">
                     <div>{{ shopName }}</div>
-                    <div>机器编号：{{ macNumber }}</div>
+                    <div>机器编号：{{ deviceNo }}</div>
                 </div>
             </div>
             <div class="pick">
@@ -21,8 +21,8 @@
                         <div v-for="(item, index) in picks" :key="index" class="item">
                             <div>{{ item.name }}</div>
                             <div>{{ item.price }}</div>
-                            <div>{{ item.count }}</div>
-                            <div class="buy-bt">
+                            <div>{{ item.totalNum }}</div>
+                            <div class="buy-bt" @click="goPay(item.deviceSetId)">
                                 <div>购买</div>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                     <span>我的次数</span>
                 </div>
                 <div class="count-box">
-                    <div class="border">100</div>
+                    <div class="border">{{ surplusNum }}次</div>
                     <div>剩余次数</div>
                     <div class="begin-bt">
                         <div>开始使用</div>
@@ -53,105 +53,124 @@ export default {
     },
     data() {
         return {
+            userId: '',
             auth_code: '', // 来源令牌
             paymentMode: '', // 来源
             deviceId: '', // 设备id
             picks: [], // 套餐
-            macNumber: '', // 机器型号
+            deviceNo: '', // 机器型号
             shopName: '', // 门点名称
-            surplus: 90 // 剩余次数
+            surplusNum: 0, // 剩余次数
+            payMethod: '' // 微信支付方式
         }
     },
-    async asyncData() {
-        // const { auth_code, paymentMode, deviceId } = query
-        // app.$cookies.set('userType', 3, {
-        //     path: '/'
-        // })
-        // const {
-        //     $api: { product }
-        // } = app
-        // const { code, data } = await product.userLogin({
-        //     paymentMode,
-        //     jsCode: auth_code
-        // })
-        // const { data: dataList } = await product.deviceSetList({ deviceId })
-        // if (code === 200) {
-        //     app.$cookies.set('userToken', data.token, {
-        //         path: '/'
-        //     })
-        //     app.$cookies.set('userId', data.userId, {
-        //         path: '/'
-        //     })
-        // }
-        // console.log(data)
-        // console.log(dataList)
-        // return {
-        //     auth_code: auth_code || '',
-        //     paymentMode: paymentMode || 'wechat',
-        //     deviceId,
-        //     shopName: dataList.shopName,
-        //     deviceNo: dataList.deviceNo,
-        //     deviceSetId: dataList.deviceSetId
-        // }
+    async asyncData({ app, query }) {
+        const params = {
+            paymentMode: query.paymentMode,
+            jsCode: query.code || query.auth_code
+        }
+        app.$cookies.set('userType', 3, {
+            path: '/'
+        })
+        const {
+            $api: { product }
+        } = app
+        const { code, data } = await product.userLogin(params)
+
+        if (code === 200) {
+            app.$cookies.set('userToken', data.token, {
+                path: '/'
+            })
+            app.$cookies.set('userId', data.userId, {
+                path: '/'
+            })
+            return {
+                auth_code: query.auth_code || query.code || '',
+                paymentMode: query.paymentMode || 'wechat',
+                deviceId: query.deviceId,
+                surplusNum: data.surplusNum,
+                userId: data.userId
+            }
+        }
+        return {}
     },
     created() {
-        this.auth_code = this.$route.query.auth_code || '6e3d8d9eff16495080cf95aa00ecTX78'
-        // this.getPicks()
+        this.getPicks()
     },
     methods: {
-        // 初始化支付接口 JSAPI
-        // async confirmOrderApi() {
-        //     if (this.paymentMode === 'wechat') {
-        //         this.payMethod = 'JSAPI'
-        //     }
-        //     const openId = this.$route.query.openId ? this.$route.query.openId : ''
-        //     const params = `orderId=${this.orderNo}&type=3&payMethod=${this.payMethod}&openId=${openId}&businessType=${this.businessType}`
-        //     const res = await confirmOrder(params)
-        //     if (res.code === 200) {
-        //         if (isWeXinCheck()) {
-        //             if (typeof WeixinJSBridge == 'undefined') {
-        //                 if (document.addEventListener) {
-        //                     document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(res.data, this.orderNo, this.businessType), false)
-        //                 } else if (document.attachEvent) {
-        //                     document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady(res.data, this.orderNo, this.businessType))
-        //                     document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady(res.data, this.orderNo, this.businessType))
-        //                 }
-        //             } else {
-        //                 this.onBridgeReady(res.data, this.orderNo, this.businessType)
-        //             }
-        //         } else {
-        //             window.location.href = res.data.mwebUrl
-        //         }
-        //     } else {
-        //         this.$Notify(res.msg)
-        //     }
-        // },
-        // 阿里支付
-        // async confirmOrderWithAliPayWebApi() {
-        //     const params = `orderId=${this.orderNo}&type=2&payMethod=${this.payMethod}&businessType=${this.businessType}`
-        //     const res = await confirmOrderWithAliPayWeb(params)
-        //     if (res) {
-        //         console.log(res)
-        //         if (res.msg) {
-        //             this.$Notify(res.msg)
-        //         } else {
-        //             this.aliPayHtml = res
-        //             const div = document.createElement('div')
-        //             div.innerHTML = res //此处form就是后台返回接收到的数据
-        //             document.body.appendChild(div)
-        //             document.forms[0].submit()
-        //         }
-        //     }
-        // },
-        // 支付事件
-        goPay() {
-            // 微信支付
-            if (this.payType === 1) {
-                this.confirmOrderApi()
+        async getPicks() {
+            const {
+                deviceId,
+                $api: { product }
+            } = this
+            const { code, data } = await product.deviceSetList({
+                deviceId
+            })
+            if (code === 200) {
+                this.shopName = data.shopName
+                this.deviceNo = data.deviceNo
+                this.deviceSetId = data.deviceSetId
+                this.picks = data.list
             }
-            // 支付宝
-            if (this.payType === 2) {
-                this.confirmOrderWithAliPayWebApi()
+        },
+        // 初始化支付接口 JSAPI
+        async confirmOrderApi(params) {
+            const {
+                $api: { product },
+                deviceId,
+                userId
+            } = this
+            const { code, data } = await product.wechatSubmitPay(params)
+            if (code === 200) {
+                if (typeof WeixinJSBridge == 'undefined') {
+                    if (document.addEventListener) {
+                        document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId), false)
+                    } else if (document.attachEvent) {
+                        document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
+                        document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
+                    }
+                } else {
+                    this.onBridgeReady(data)
+                }
+            }
+        },
+        // 阿里支付
+        async confirmOrderWithAliPayWebApi(params) {
+            const {
+                $api: { product }
+            } = this
+            const res = await product.alipaySubmitPay(params)
+            console.log(res)
+            if (res) {
+                if (res.desc) {
+                    this.$Toast(res.desc)
+                } else {
+                    this.aliPayHtml = res
+                    const div = document.createElement('div')
+                    div.innerHTML = res //此处form就是后台返回接收到的数据
+                    document.body.appendChild(div)
+                    document.forms[0].submit()
+                }
+            }
+        },
+        // 支付事件
+        goPay(packId) {
+            console.log(this.paymentMode)
+            console.log(packId)
+            const params = {
+                deviceId: this.deviceId,
+                deviceSetId: packId,
+                userId: this.userId
+            }
+            // 微信支付
+            if (this.paymentMode === 'wechat') {
+                this.payMethod = 'JSAPI'
+                this.confirmOrderApi(params)
+            } else if (this.paymentMode === 'alipay') {
+                // 支付宝
+                this.confirmOrderWithAliPayWebApi(params)
+            } else {
+                this.$Toast('未获取到支付方式！')
             }
         },
 
@@ -160,31 +179,25 @@ export default {
             window.location.href = this.detailLink
         },
         // 准备唤起微信支付
-        onBridgeReady(v, orderNo, businessType) {
-            let value = v.brandWcVo
-            console.log(value)
-            console.log(orderNo + businessType)
-            //支付回调跳转
-            //     if (typeof WeixinJSBridge == 'undefined') {
-            //         this.$Notify('不在微信浏览器内。')
-            //         return
-            //     }
-            //     WeixinJSBridge.invoke(
-            //         'getBrandWCPayRequest',
-            //         {
-            //             appId: value.appId, //公众号名称，由商户传入
-            //             timeStamp: value.timeStamp, //时间戳，自1970年以来的秒数
-            //             nonceStr: value.nonceStr, //随机串
-            //             package: value.packageData,
-            //             signType: value.signType, //微信签名方式：
-            //             paySign: value.paySign //微信签名
-            //         },
-            //         function(res) {
-            //             if (res.err_msg == 'get_brand_wcpay_request:ok') {
-            //                 window.location.href = `/paySuccess?orderNo=${orderNo}&businessType=${businessType}`
-            //             }
-            //         }
-            //     )
+        onBridgeReady(v, deviceId, orderId) {
+            let value = v
+            console.log(v)
+            window.WeixinJSBridge.invoke(
+                'getBrandWCPayRequest',
+                {
+                    appId: value.appId, //公众号名称，由商户传入
+                    timeStamp: value.timeStamp, //时间戳，自1970年以来的秒数
+                    nonceStr: value.nonceStr, //随机串
+                    package: value.packageData,
+                    signType: value.signType, //微信签名方式：
+                    paySign: value.paySign //微信签名
+                },
+                function(res) {
+                    if (res.err_msg == 'get_brand_wcpay_request:ok') {
+                        window.location.href = `/mycount?deviceId=${deviceId}&orderId=${orderId}`
+                    }
+                }
+            )
         }
     }
 }
@@ -328,6 +341,9 @@ export default {
                         color: #ab1f26;
                         font-size: 18px;
                         margin: 10px;
+                        &::before {
+                            content: '￥';
+                        }
                     }
                     > div:nth-child(3) {
                         font-size: 14px;
