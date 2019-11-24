@@ -65,6 +65,12 @@ export default {
         }
     },
     async asyncData({ app, query }) {
+        // query = {
+        //     deviceId: '10000',
+        //     deviceSetId: '1',
+        //     userId: '3',
+        //     paymentMode: 'alipay'
+        // }
         const params = {
             paymentMode: query.paymentMode,
             jsCode: query.code || query.auth_code
@@ -76,7 +82,6 @@ export default {
             $api: { product }
         } = app
         const { code, data } = await product.userLogin(params)
-
         if (code === 200) {
             app.$cookies.set('userToken', data.token, {
                 path: '/'
@@ -124,20 +129,10 @@ export default {
             if (code === 200) {
                 if (typeof WeixinJSBridge == 'undefined') {
                     if (document.addEventListener) {
-                        document.addEventListener(
-                            'WeixinJSBridgeReady',
-                            this.onBridgeReady(data, deviceId, userId),
-                            false
-                        )
+                        document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId), false)
                     } else if (document.attachEvent) {
-                        document.attachEvent(
-                            'WeixinJSBridgeReady',
-                            this.onBridgeReady(data, deviceId, userId)
-                        )
-                        document.attachEvent(
-                            'onWeixinJSBridgeReady',
-                            this.onBridgeReady(data, deviceId, userId)
-                        )
+                        document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
+                        document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
                     }
                 } else {
                     this.onBridgeReady(data)
@@ -149,12 +144,11 @@ export default {
             const {
                 $api: { product }
             } = this
-            const res = await product.alipaySubmitPay(params)
-            this.$Toast(res)
-            if (res) {
-                this.aliPayHtml = res
+            const { data } = await product.alipaySubmitPay(params)
+            if (data) {
+                this.aliPayHtml = data
                 const div = document.createElement('div')
-                div.innerHTML = res //此处form就是后台返回接收到的数据
+                div.innerHTML = data //此处form就是后台返回接收到的数据
                 document.body.appendChild(div)
                 document.forms[0].submit()
             } else {
@@ -163,8 +157,6 @@ export default {
         },
         // 支付事件
         goPay(packId) {
-            console.log(this.paymentMode)
-            console.log(packId)
             const params = {
                 deviceId: this.deviceId,
                 deviceSetId: packId,
