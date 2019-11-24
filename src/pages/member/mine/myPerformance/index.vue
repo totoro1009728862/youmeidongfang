@@ -1,7 +1,7 @@
 <template>
     <div class="cont">
         <ym-header title="我的业绩"></ym-header>
-        <van-sticky v-if="system === 0" :offset-top="50">
+        <van-sticky :offset-top="50">
             <div class="select-dom">
                 <div class="date-box">
                     <div class="bd" @click="beginDateSwitch = true">{{ bDate }}</div>
@@ -26,7 +26,7 @@
                 <div v-if="!perList.length && !isLoading" class="no-list">暂无{{ item.name }}，快去推广吧</div>
             </div>
         </van-list>
-        <div v-if="system === 0">
+        <div>
             <van-popup v-model="beginDateSwitch" position="bottom">
                 <van-datetime-picker v-model="beginDate" type="date" :min-date="minDate" :max-date="maxDate" @cancel="cancel" @confirm="setBeginDate" />
             </van-popup>
@@ -42,7 +42,6 @@ export default {
     middleware: 'checkLogin',
     data() {
         return {
-            system: 0, // 1,2代理，0店家
             beginDate: '', // 开始日期
             endDate: '', // 结束日期
             minDate: new Date('2010-01-01'),
@@ -59,9 +58,6 @@ export default {
             current: 1,
             pageSize: 10
         }
-    },
-    async asyncData() {
-        return { system: 0 }
     },
     created() {
         this.endDate = new Date()

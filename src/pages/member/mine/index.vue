@@ -16,7 +16,7 @@
                 </div>
             </div>
             <!-- 导航 -->
-            <page-list :id="userInfo.businessType" :user-type="userType" :price="price"></page-list>
+            <page-list :user-type="userType" :price="price"></page-list>
             <div class="bt">
                 <div @click="clearToken">退出登录</div>
             </div>
@@ -52,14 +52,9 @@ export default {
     },
     created() {
         this.getUserInfo()
-        this.macsArr = [
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 },
-            { number: 'SJ04011', price: 260, count: 27 }
-        ]
+    },
+    mounted() {
+        this.getMyDeviceList()
     },
     methods: {
         ...mapActions(['set_userInfo']),
@@ -76,6 +71,22 @@ export default {
             }
             const { data } = this.userType === 1 ? await member.mine.myPerformance(params) : await member.mine.myDeviceNum(params)
             this.price = data.price || data.totalNum || 0
+        },
+        async getMyDeviceList() {
+            const {
+                userInfo,
+                userType,
+                $api: { member }
+            } = this
+            // 如果不为门店则不调该接口
+            if (userType === 1) return
+            let params = {
+                page: 1,
+                row: 6,
+                userId: userInfo.userId
+            }
+            const { data } = await member.mine.myDeviceList(params)
+            this.macsArr = data
         },
         clearToken() {
             this.$cookies.removeAll()

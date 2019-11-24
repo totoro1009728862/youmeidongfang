@@ -7,7 +7,7 @@ module.exports = [
     },
     // 我的团队
     {
-        path: `/mine/teamlist/:id`,
+        path: `/mine/teamlist`,
         name: 'TeamList',
         component: 'pages/member/mine/teamList/index.vue'
     },

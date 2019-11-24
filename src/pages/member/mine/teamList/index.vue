@@ -3,13 +3,18 @@
         <ym-header title="我的团队"></ym-header>
         <van-sticky :offset-top="50">
             <div class="tabs">
-                <div v-for="(item, index) in allStatus" :key="index" :class="{ actived: item.businessType === businessType }" @click="linkTab(item)">
+                <div
+                    v-for="(item, index) in allStatus"
+                    :key="index"
+                    :class="{ actived: item.businessType === businessType }"
+                    @click="linkTab(item.businessType)"
+                >
                     <span>{{ `${item.name}(${item.totalNum})人` }}</span>
                 </div>
             </div>
         </van-sticky>
 
-        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getUsers">
+        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="getUsers">
             <div v-for="(user, i) in users" :key="i" class="item">
                 <div>{{ user.name }}</div>
                 <div class="rt">
@@ -18,8 +23,8 @@
                     台
                 </div>
             </div>
-            <div v-if="!users.length" class="no-list">暂无{{ typeName }}，快去推广吧</div>
         </van-list>
+        <div v-if="!users.length && !loading" class="no-list">暂无{{ typeName }}，快去推广吧</div>
     </div>
 </template>
 <script>
@@ -35,7 +40,7 @@ export default {
             loading: false, // 数据加载loading
             finished: false, // 拿到所有数据
             current: 1,
-            pageSize: 10,
+            pageSize: 12,
             listLoad: false
         }
     },
@@ -49,14 +54,6 @@ export default {
             }
         }
     },
-    watch: {
-        businessType() {
-            this.users = []
-            this.current = 1
-            this.loading = false
-            this.getUsers()
-        }
-    },
     async asyncData({ app }) {
         const userId = app.$cookies.get('userId')
         const {
@@ -65,39 +62,43 @@ export default {
         const { data } = await member.mine.myTeamGroup({ userId })
         return {
             allStatus: data,
-            userId
+            userId,
+            businessType: data[0].businessType
         }
     },
     created() {},
     methods: {
         async getUsers() {
-            const { id } = this.$route.params
             const {
                 userId,
                 current,
                 allStatus,
+                businessType,
+                pageSize,
                 $api: { member }
             } = this
             const params = {
                 userId,
-                businessType: id,
+                businessType,
                 page: current,
-                rows: 10
+                rows: pageSize
             }
             const { data } = await member.mine.myTeamGroupList(params)
-            const total = allStatus[id - 1].totalNum
+            const total = allStatus[businessType - 1].totalNum
             this.users.push(...data)
             this.current++
-
+            this.loading = false
             if (this.users.length === total) {
                 this.finished = true
             }
         },
-        linkTab(item) {
-            this.$router.replace({
-                name: 'TeamList',
-                params: { id: item.businessType }
-            })
+        linkTab(v) {
+            if (this.businessType === v) return
+            this.businessType = v
+            this.users = []
+            this.current = 1
+            this.loading = false
+            this.finished = false
         }
     }
 }
