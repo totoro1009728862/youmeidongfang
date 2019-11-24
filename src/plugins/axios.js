@@ -21,13 +21,13 @@ export default ({ $axios, app, redirect }) => {
         if (isDev) {
             $axios.defaults.baseURL = '/api'
         } else {
-            $axios.defaults.baseURL = 'https://www.iumer.vip'
+            $axios.defaults.baseURL = 'http://www.iumer.vip'
         }
     } else {
         if (isDev) {
             $axios.defaults.baseURL = 'http://127.0.0.1:9922/api'
         } else {
-            $axios.defaults.baseURL = 'https://www.iumer.vip'
+            $axios.defaults.baseURL = 'http://www.iumer.vip'
         }
     }
     //post传参数列化

@@ -124,10 +124,20 @@ export default {
             if (code === 200) {
                 if (typeof WeixinJSBridge == 'undefined') {
                     if (document.addEventListener) {
-                        document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId), false)
+                        document.addEventListener(
+                            'WeixinJSBridgeReady',
+                            this.onBridgeReady(data, deviceId, userId),
+                            false
+                        )
                     } else if (document.attachEvent) {
-                        document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
-                        document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
+                        document.attachEvent(
+                            'WeixinJSBridgeReady',
+                            this.onBridgeReady(data, deviceId, userId)
+                        )
+                        document.attachEvent(
+                            'onWeixinJSBridgeReady',
+                            this.onBridgeReady(data, deviceId, userId)
+                        )
                     }
                 } else {
                     this.onBridgeReady(data)
@@ -140,17 +150,15 @@ export default {
                 $api: { product }
             } = this
             const res = await product.alipaySubmitPay(params)
-            console.log(res)
+            this.$Toast(res)
             if (res) {
-                if (res.desc) {
-                    this.$Toast(res.desc)
-                } else {
-                    this.aliPayHtml = res
-                    const div = document.createElement('div')
-                    div.innerHTML = res //此处form就是后台返回接收到的数据
-                    document.body.appendChild(div)
-                    document.forms[0].submit()
-                }
+                this.aliPayHtml = res
+                const div = document.createElement('div')
+                div.innerHTML = res //此处form就是后台返回接收到的数据
+                document.body.appendChild(div)
+                document.forms[0].submit()
+            } else {
+                this.$Toast('支付失败')
             }
         },
         // 支付事件
@@ -181,16 +189,15 @@ export default {
         // 准备唤起微信支付
         onBridgeReady(v, deviceId, orderId) {
             let value = v
-            console.log(v)
             window.WeixinJSBridge.invoke(
                 'getBrandWCPayRequest',
                 {
                     appId: value.appId, //公众号名称，由商户传入
                     timeStamp: value.timeStamp, //时间戳，自1970年以来的秒数
                     nonceStr: value.nonceStr, //随机串
-                    package: value.packageData,
-                    signType: value.signType, //微信签名方式：
-                    paySign: value.paySign //微信签名
+                    package: value.packAge,
+                    signType: 'MD5', //微信签名方式：
+                    paySign: value.sign //微信签名
                 },
                 function(res) {
                     if (res.err_msg == 'get_brand_wcpay_request:ok') {

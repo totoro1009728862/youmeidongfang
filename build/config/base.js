@@ -147,15 +147,7 @@ module.exports = {
             ssr: true
         },
         {
-            src: '~/plugins/clipboard.js',
-            ssr: false
-        },
-        {
             src: '~/plugins/fastclick.js',
-            ssr: false
-        },
-        {
-            src: '~/plugins/vueBaiduMap.js',
             ssr: false
         }
     ],
