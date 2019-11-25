@@ -90,7 +90,6 @@ export default {
         },
         async getList() {
             const {
-                businessType,
                 current,
                 bDate,
                 eDate,
@@ -99,7 +98,6 @@ export default {
             } = this
             const params = {
                 userId: $cookies.get('userId'),
-                businessType,
                 operation: 0,
                 startDayTime: bDate,
                 endDayTime: eDate,

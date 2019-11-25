@@ -11,5 +11,11 @@ export default $axios => ({
     },
     alipaySubmitPay: params => {
         return $axios.$post(`${api}/customer/biz/pay/alipaySubmitPay`, params)
+    },
+    myUserNum: params => {
+        return $axios.$post(`${api}/customer/biz/user/myUserNum`, params)
+    },
+    startDevice: params => {
+        return $axios.$post(`${api}/customer/biz/device/startDevice`, params)
     }
 })

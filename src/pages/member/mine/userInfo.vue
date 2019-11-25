@@ -35,7 +35,7 @@ export default {
 <style lang="less" scoped>
 .user-info {
     position: absolute;
-    height: 110px;
+    height: 135px;
     top: 0;
     display: flex;
     flex-flow: row nowrap;

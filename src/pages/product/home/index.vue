@@ -35,7 +35,7 @@
                 <div class="count-box">
                     <div class="border">{{ surplusNum }}次</div>
                     <div>剩余次数</div>
-                    <div class="begin-bt">
+                    <div class="begin-bt" @click="goMyCount()">
                         <div>开始使用</div>
                     </div>
                     <div class="tip">每次只能单次使用</div>
@@ -46,6 +46,7 @@
 </template>
 <script>
 import Background from '~/modules/assist/background'
+import { debounce } from '~/common/utils/index.js'
 export default {
     name: 'Home',
     components: {
@@ -65,6 +66,7 @@ export default {
         }
     },
     async asyncData({ app, query }) {
+        console.log(query)
         // query = {
         //     deviceId: '10000',
         //     deviceSetId: '1',
@@ -97,12 +99,29 @@ export default {
                 userId: data.userId
             }
         }
-        return {}
+        return {
+            // auth_code: '08167rQt05jngj1eIyQt02lpQt067rQh',
+            // paymentMode: 'wechat',
+            // deviceId: '10000',
+            // surplusNum: 99,
+            // userId: 4
+        }
     },
     created() {
         this.getPicks()
     },
     methods: {
+        /* eslint-disable */
+        goMyCount() {
+            this.$router.push({
+                name: 'MyCount',
+                query: {
+                    deviceId: this.deviceId,
+                    userId: this.userId,
+                    status: 1
+                }
+            })
+        },
         async getPicks() {
             const {
                 deviceId,
@@ -129,10 +148,20 @@ export default {
             if (code === 200) {
                 if (typeof WeixinJSBridge == 'undefined') {
                     if (document.addEventListener) {
-                        document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId), false)
+                        document.addEventListener(
+                            'WeixinJSBridgeReady',
+                            this.onBridgeReady(data, deviceId, userId),
+                            false
+                        )
                     } else if (document.attachEvent) {
-                        document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
-                        document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
+                        document.attachEvent(
+                            'WeixinJSBridgeReady',
+                            this.onBridgeReady(data, deviceId, userId)
+                        )
+                        document.attachEvent(
+                            'onWeixinJSBridgeReady',
+                            this.onBridgeReady(data, deviceId, userId)
+                        )
                     }
                 } else {
                     this.onBridgeReady(data)
@@ -156,7 +185,7 @@ export default {
             }
         },
         // 支付事件
-        goPay(packId) {
+        goPay: debounce(async function(packId) {
             const params = {
                 deviceId: this.deviceId,
                 deviceSetId: packId,
@@ -172,7 +201,7 @@ export default {
             } else {
                 this.$Toast('未获取到支付方式！')
             }
-        },
+        }, 500),
 
         //返回跳转详情
         goDetail() {
@@ -193,11 +222,12 @@ export default {
                 },
                 function(res) {
                     if (res.err_msg == 'get_brand_wcpay_request:ok') {
-                        window.location.href = `/mycount?deviceId=${deviceId}&orderId=${orderId}`
+                        console.log('c成功')
                     }
                 }
             )
         }
+        /* eslint-disable */
     }
 }
 </script>

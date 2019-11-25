@@ -29,5 +29,11 @@ export default $axios => ({
     },
     submitPrice: params => {
         return $axios.$post(`${api}/business/biz/account/submitPrice`, params)
+    },
+    deviceSetList: params => {
+        return $axios.$post(`${api}/business/biz/device/deviceSetList`, params)
+    },
+    updateDeviceSet: params => {
+        return $axios.$post(`${api}/business/biz/device/updateDeviceSet`, params)
     }
 })

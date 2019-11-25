@@ -7,7 +7,7 @@
             </div>
             <div class="icon ym-right"></div>
         </nuxt-link>
-        <nuxt-link v-else :to="{ name: 'MachineryList' }" tag="div" class="page">
+        <nuxt-link v-else :to="{ name: 'SettingMachinery' }" tag="div" class="page">
             <div class="left-info">
                 <div class="icon ym-setting"></div>
                 <div>机器设置</div>
