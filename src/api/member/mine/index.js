@@ -17,5 +17,23 @@ export default $axios => ({
     },
     myTeamGroupList: params => {
         return $axios.$post(`${api}/business/biz/device/myTeamGroupList`, params)
+    },
+    myPayPassword: params => {
+        return $axios.$post(`${api}/business/biz/account/myPayPassword`, params)
+    },
+    addbank: params => {
+        return $axios.$post(`${api}/business/biz/account/addbank`, params)
+    },
+    bankList: params => {
+        return $axios.$post(`${api}/business/biz/account/bankList`, params)
+    },
+    submitPrice: params => {
+        return $axios.$post(`${api}/business/biz/account/submitPrice`, params)
+    },
+    deviceSetList: params => {
+        return $axios.$post(`${api}/business/biz/device/deviceSetList`, params)
+    },
+    updateDeviceSet: params => {
+        return $axios.$post(`${api}/business/biz/device/updateDeviceSet`, params)
     }
 })

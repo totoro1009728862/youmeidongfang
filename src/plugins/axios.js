@@ -18,17 +18,16 @@ export default ({ $axios, app, redirect }) => {
     //请求头配置
     $axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
     if (!isServer) {
-        $axios.defaults.baseURL = '/api'
+        if (isDev) {
+            $axios.defaults.baseURL = '/api'
+        } else {
+            $axios.defaults.baseURL = 'http://www.iumer.vip'
+        }
     } else {
         if (isDev) {
             $axios.defaults.baseURL = 'http://127.0.0.1:9922/api'
         } else {
-            if (env === 'development' || env === 'host') $axios.defaults.baseURL = 'http://192.168.0.32:8081'
-            else $axios.defaults.baseURL = 'https://www.iumer.vip'
-            // if (env === 'pro') $axios.defaults.baseURL = 'http://hxtrip-zuul'
-            // else if (env === 'rc') $axios.defaults.baseURL = 'http://hxtrip-zuul'
-            // else if (env === 'integration') $axios.defaults.baseURL = 'http://hx-trip-zuul-integration'
-            // else $axios.defaults.baseURL = 'http://192.168.205.6:8769'
+            $axios.defaults.baseURL = 'http://www.iumer.vip'
         }
     }
     //post传参数列化

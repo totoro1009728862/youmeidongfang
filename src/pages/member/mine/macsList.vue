@@ -1,12 +1,14 @@
 <template>
     <div class="macs-box">
-        <div v-for="(item, index) in macsArr" :key="index" class="mac">
-            <div class="l-info">
-                <div class="mac-no">编号：{{ item.name }}</div>
-                <div class="mac-price">{{ item.price }}</div>
-            </div>
-            <div class="r-info">
-                <i>{{ item.totalNum }}</i>
+        <div v-for="(item, index) in macsArr" :key="index">
+            <div v-show="index < 5" class="mac">
+                <div class="l-info">
+                    <div class="mac-no">编号：{{ item.deviceNo }}</div>
+                    <div class="mac-price">{{ item.price }}</div>
+                </div>
+                <div class="r-info">
+                    <i>{{ item.useNum }}</i>
+                </div>
             </div>
         </div>
         <nuxt-link v-show="macsArr.length && macsArr.length > 5" :to="{ name: 'MachineryList' }" tag="div" class="mac-more">查看更多</nuxt-link>

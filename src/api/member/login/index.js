@@ -8,5 +8,8 @@ export default $axios => ({
     },
     authPhone: params => {
         return $axios.$post(`${api}/common/authPhone`, params)
+    },
+    updatePassword: params => {
+        return $axios.$post(`${api}/business/biz/user/updatePassword`, params)
     }
 })

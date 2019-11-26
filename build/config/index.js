@@ -10,21 +10,21 @@ switch (env) {
     case 'pro':
         config = merge(base, require('./prod.js'), {
             env: {
-                domain: '.hxtrip.com'
+                domain: '/'
             }
         })
         break
     case 'integration':
         config = merge(base, require('./qa.js'), {
             env: {
-                domain: '.hxtrip.com'
+                domain: '/'
             }
         })
         break
     case 'rc':
         config = merge(base, require('./stage.js'), {
             env: {
-                domain: '.hxtrip.com'
+                domain: '/'
             }
         })
         break
@@ -39,7 +39,7 @@ switch (env) {
     default:
         config = merge(base, require('./dev.js'), {
             env: {
-                domain: '.hxtrip.com'
+                domain: '/'
             }
         })
         break

@@ -20,7 +20,7 @@ const start = async () => {
 
     if (!isDev) {
         nuxt.options.server.host = process.env.HOST || '0.0.0.0'
-        nuxt.options.server.port = (process.env.PORT0 && Number(process.env.PORT0)) || 80
+        nuxt.options.server.port = (process.env.PORT0 && Number(process.env.PORT0)) || 8080
     }
     const { host, port } = nuxt.options.server
     if (isDev) {

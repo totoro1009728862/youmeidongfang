@@ -5,7 +5,7 @@
         <user-info :info="userInfo"></user-info>
         <div class="mine-box">
             <div class="price-info">
-                <div class="price-v">{{ price }}</div>
+                <div class="val-dom" :class="{ 'price-v': userType === 1 }">{{ price }}</div>
                 <div class="price-t">{{ priceText }}</div>
                 <div v-if="userType === 2" class="show-macs" @click="showMacs = !showMacs">
                     <div class="icon" :class="{ 'ym-down': !showMacs, 'ym-up': showMacs }"></div>
@@ -66,10 +66,10 @@ export default {
             this.userType = userInfo.userType || 1
             this.priceText = this.userType === 1 ? '推广仪器累计佣金' : '已拥有机器数'
             let params = {
-                operation: 0,
                 userId: userInfo.userId
             }
-            const { data } = this.userType === 1 ? await member.mine.myPerformance(params) : await member.mine.myDeviceNum(params)
+            const { data } =
+                this.userType === 1 ? await member.mine.myPerformance(Object.assign(params, { operation: 0 })) : await member.mine.myDeviceNum(params)
             this.price = data.price || data.totalNum || 0
         },
         async getMyDeviceList() {
@@ -82,11 +82,11 @@ export default {
             if (userType === 1) return
             let params = {
                 page: 1,
-                row: 6,
+                rows: 6,
                 userId: userInfo.userId
             }
             const { data } = await member.mine.myDeviceList(params)
-            this.macsArr = data
+            this.macsArr = data.list
         },
         clearToken() {
             this.$cookies.removeAll()
@@ -124,9 +124,18 @@ export default {
             display: flex;
             justify-content: center;
         }
-        .price-v {
+        .val-dom {
             font-size: 24px;
             color: #ab1f26;
+        }
+        .price-v {
+            &::before {
+                content: '￥';
+                padding-right: 5px;
+            }
+            &::after {
+                content: '元';
+            }
         }
         .price-t {
             margin-top: 20px;

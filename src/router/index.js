@@ -19,6 +19,11 @@ module.exports = [
         name: 'Home',
         component: 'pages/product/home/index.vue'
     },
+    {
+        path: `/mycount`,
+        name: 'MyCount',
+        component: 'pages/product/home/myCount.vue'
+    },
 
     ...login,
     ...product,

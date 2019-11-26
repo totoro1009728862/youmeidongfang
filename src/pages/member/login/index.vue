@@ -105,6 +105,7 @@ export default {
                 loginPassword: password
             }
             const userType = tabIndex ? 2 : 1
+            console.log(userType)
             this.$cookies.set('userType', userType, {
                 path: '/'
             })

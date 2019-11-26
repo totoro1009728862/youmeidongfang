@@ -1,29 +1,50 @@
 <template>
     <div class="cont">
         <ym-header title="机器设置"></ym-header>
-        <van-sticky :offset-top="50">
-            <div class="tabs">
-                <div v-for="(item, index) in allStatus" :key="index" :class="{ actived: index === status }" @click="linkTab(index)">
-                    <span>{{ `${item.name}(${item.number})人` }}</span>
-                </div>
-            </div>
-        </van-sticky>
-
-        <van-pull-refresh v-model="reLoading" :immediate-check="false" @refresh="onRefresh(true)">
-            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getUsers">
-                <div v-if="users.length" class="list-box">
-                    <div v-for="(user, i) in users" :key="i" class="item">
-                        <div>{{ user.name }}</div>
-                        <div class="rt">
-                            机器
-                            <span>{{ user.number }}</span>
-                            台
+        <van-tabs v-model="active" sticky @click="onClick">
+            <van-tab v-for="(item, index) in devices" :key="index" :title="item.deviceId.toString()">
+                <div class="item-box">
+                    <div v-if="pack" class="jichu">
+                        <div class="title">基础设置</div>
+                        <div>单次金额：{{ pack.price }}元</div>
+                        <div>单次时长：15分钟/次</div>
+                        <div class="bt">
+                            <div @click="setPackId(pack)">修改</div>
                         </div>
                     </div>
-                    <div v-if="!users.length && !isLoading" class="no-list">暂无{{ item.name }}，快去推广吧</div>
+                    <div v-if="packs && packs.length">
+                        <div v-for="(itm, indx) in packs" :key="indx" class="pack-info" :class="{ open: itm.approveStatus }">
+                            <div class="title">{{ itm.name }}</div>
+                            <div class="price">
+                                <span>套餐总金额:</span>
+                                <span>{{ itm.price }}</span>
+                            </div>
+                            <div class="total">
+                                <span>套餐次数:</span>
+                                <span>{{ itm.totalNum }}</span>
+                            </div>
+                            <div class="switch">
+                                <div @click="changeStatus(itm)">{{ itm.approveStatus ? '暂停使用' : '开始使用' }}</div>
+                                <div @click="setPackId(itm)">修改</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </van-list>
-        </van-pull-refresh>
+            </van-tab>
+        </van-tabs>
+        <van-popup v-model="show" class="form-box" get-container="body">
+            <div class="icon ym-close" @click="show = false"></div>
+            <div class="title">{{ packInfo.name }}修改</div>
+            <div class="item" @click="nameInputFcous('priceRef')">
+                <input ref="priceRef" v-model.trim="price" type="tel" placeholder="请输入金额" />
+            </div>
+            <div v-show="!packInfo.noChangeNum" class="item" @click="nameInputFcous('totalNumRef')">
+                <input ref="totalNumRef" v-model.trim="totalNum" type="tel" placeholder="请输入次数" />
+            </div>
+            <div class="bt">
+                <div :class="{ 'no-click': noClick }" @click="save">保存</div>
+            </div>
+        </van-popup>
     </div>
 </template>
 <script>
@@ -32,77 +53,90 @@ export default {
     middleware: 'checkLogin',
     data() {
         return {
-            tabIndex: 0, // 0一级，1二级
-            allStatus: [
-                { name: '一级代理', value: 0, number: 0 },
-                { name: '二级代理', value: 1, number: 0 },
-                { name: '店家', value: 2, number: 0 }
-            ],
-            users: [],
-            total: 90, // 一共多少数据
-            status: 0, // 当前选中的类型
-            loading: false, // 数据加载loading
-            reLoading: false, // 刷新数据中
-            finished: false, // 拿到所有数据
-            current: 1,
-            pageSize: 10
+            show: false, // 弹窗
+            devices: [], // 设备tabs
+            pack: {}, // 基础套餐
+            packs: [], // 套餐
+            packInfo: {}, // 修改的套餐信息
+            userId: '',
+            deviceId: '', // 当前套餐id
+            active: 0, // tab下标
+            price: '', // 修改金额
+            totalNum: '' // 修改次数
         }
     },
-    async asyncData() {
-        return { tabIndex: 1 }
+    computed: {
+        noClick() {
+            // 是否是基础套餐
+            const noChangeNum = this.packInfo && this.packInfo.noChangeNum ? true : false
+            return noChangeNum ? !this.totalNum || !this.price : !this.price
+        }
+    },
+    async asyncData({ app }) {
+        const {
+            $cookies,
+            $api: { member }
+        } = app
+        let userId = $cookies.get('userId')
+        const { data } = await member.mine.myDeviceList({ userId })
+        return { userId, devices: data.list, deviceId: data.list[0].deviceId }
     },
     created() {
-        const v1 = [
-            { name: '一级代理', value: 0, number: 0 },
-            { name: '二级代理', value: 1, number: 0 },
-            { name: '店家', value: 2, number: 0 }
-        ]
-        const v2 = [
-            { name: '二级代理', value: 1, number: 0 },
-            { name: '店家', value: 2, number: 0 }
-        ]
-        this.allStatus = this.tabIndex ? v2 : v1
-        this.status = this.allStatus[0].value
+        this.getDeviceSetList()
     },
     methods: {
-        // 刷新
-        onRefresh(v) {
-            if (v) {
-                setTimeout(() => {
-                    this.reLoading = false
-                    this.users = []
-                    this.current = 1
-                    this.getUsers()
-                }, 500)
-            } else {
-                this.reLoading = false
-                this.users = []
-                this.current = 1
-                this.getUsers()
-            }
+        onClick(index, title) {
+            this.deviceId = title
+            this.getDeviceSetList()
         },
-        getUsers() {
-            console.log('1111111111111111111111')
-            setTimeout(() => {
-                for (let i = 0; i < 15; i++) {
-                    this.users.push({
-                        name: '强',
-                        number: this.current + '-' + i
-                    })
-                }
-                this.loading = false
-                console.log(this.loading)
-                this.current++
-                if (this.total && this.users.length >= this.total) {
-                    this.finished = true
-                }
-            }, 500)
+        async getDeviceSetList() {
+            const {
+                $api: { member },
+                deviceId
+            } = this
+            const { data } = await member.mine.deviceSetList({ deviceId })
+            this.pack = Object.assign(data[0], { noChangeNum: true })
+            this.packs = data.slice(1)
         },
-        linkTab(index) {
-            if (this.status != index) {
-                this.status = index
-                this.onRefresh()
+        async changeStatus(item) {
+            const {
+                $api: { member }
+            } = this
+            item.approveStatus = item.approveStatus ? 0 : 1
+            const { code } = await member.mine.updateDeviceSet(item)
+            if (code === 200) {
+                this.getDeviceSetList()
             }
+            this.show = false
+        },
+        setPackId(item) {
+            this.price = item.price
+            this.totalNum = item.totalNum
+            this.packInfo = item
+            this.show = true
+        },
+        async save() {
+            if (this.noClick) return
+            const {
+                $api: { member },
+                packInfo,
+                price,
+                totalNum
+            } = this
+            if (packInfo.noChangeNum) delete packInfo.noChangeNum
+
+            let params = Object.assign(packInfo, { price, totalNum })
+            const { code } = await member.mine.updateDeviceSet(params)
+            if (code === 200) {
+                this.getDeviceSetList()
+            }
+            this.show = false
+        },
+        nameInputFcous(v) {
+            this.$nextTick(function() {
+                //DOM 更新了
+                this.$refs[v].focus()
+            })
         }
     }
 }
@@ -111,63 +145,135 @@ export default {
 .cont {
     height: 100vh;
 }
-.tabs {
+.item-box {
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-around;
+    flex-flow: column nowrap;
+    margin-top: 10px;
+    padding: 20px;
+    width: 100%;
     background: #fff;
-    height: 44px;
-    align-items: center;
-    div {
+    font-size: 14px;
+    .jichu {
         font-size: 14px;
-        font-weight: 500;
-        color: rgba(34, 34, 34, 1);
-        line-height: 44px;
-        border-bottom: 2px solid #fff;
-    }
-
-    .actived {
-        border-bottom-color: #ab1f26;
-        font-weight: 600;
-    }
-}
-.list-box {
-    display: flex;
-    flex-flow: column wrap;
-    border-top: 10px solid #ececec;
-    padding: 0 20px;
-    color: #222;
-    background: #fff;
-    .item {
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-        border-bottom: 1px solid #f7f7f7;
-        height: 60px;
-        .rt {
-            color: #888;
-            span {
-                padding: 0 8px;
-                color: #ab1f26;
+        color: #222;
+        > div {
+            margin-bottom: 20px;
+        }
+        > .title {
+            font-weight: 600;
+        }
+        > .bt {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            margin: 30px;
+            > div {
+                height: 40px;
+                width: 120px;
+                line-height: 40px;
+                background: #ab1f26;
+                color: #fff;
+                text-align: center;
+                border-radius: 20px;
             }
         }
     }
-    .end {
-        width: 100%;
-        line-height: 100px;
-        color: #888;
-        text-align: center;
-        font-size: 14px;
-    }
-    .no-list {
+    .pack-info {
+        position: relative;
         display: flex;
-        min-height: calc(100vh - 200px);
-        align-items: center;
-        justify-content: center;
-        color: #888;
+        flex-flow: column nowrap;
+        background: #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 8px 0px rgba(221, 221, 221, 1);
         font-size: 14px;
+        margin-bottom: 20px;
+        .title {
+            width: 100%;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .price,
+        .total {
+            margin-bottom: 16px;
+            > span:nth-child(2) {
+                color: #ab1f26;
+                font-size: 16px;
+                padding: 0 5px;
+            }
+        }
+        .total {
+            > span:nth-child(2) {
+                font-size: 14px;
+            }
+        }
+        .switch {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: flex-end;
+            color: #888;
+            > div:nth-child(1) {
+                color: #ab1f26;
+                margin-right: 10px;
+            }
+        }
+    }
+    .open {
+        background: #fff;
+    }
+}
+.form-box {
+    justify-content: center;
+    padding: 30px 70px 30px;
+    width: 350px;
+    border-radius: 4px;
+    min-height: 240px;
+    overflow: hidden;
+    .icon {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        line-height: 43px;
+        color: #222;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    .title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #222;
+        width: 100%;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    .item {
+        display: flex;
+        justify-content: center;
+        border-bottom: 2px solid #bbb;
+        height: 40px;
+        margin-bottom: 40px;
+        input {
+            text-align: center;
+            font-size: 16px;
+        }
+    }
+    .bt {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        height: 40px;
+        margin-top: 50px;
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            border-radius: 40px;
+            background: #ab1f26;
+            color: #fff;
+            font-size: 14px;
+        }
     }
 }
 </style>

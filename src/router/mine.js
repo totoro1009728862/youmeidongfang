@@ -11,12 +11,18 @@ module.exports = [
         name: 'TeamList',
         component: 'pages/member/mine/teamList/index.vue'
     },
-    // 机器设置
+    // 机器列表
     {
         path: `/mine/machinerylist`,
         name: 'MachineryList',
         component: 'pages/member/mine/machineryList/index.vue'
     },
+    {
+        path: `/mine/settingmachinery`,
+        name: 'SettingMachinery',
+        component: 'pages/member/mine/settingMachinery/index.vue'
+    },
+
     // 我的业绩
     {
         path: `/mine/myperformance`,

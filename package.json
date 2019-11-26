@@ -7,8 +7,9 @@
     "license": "ISC",
     "scripts": {
         "dev": " cross-env NODE_ENV=development IS_DEBUG=debug node build/server/index.js",
-        "build": "cross-env NODE_ENV=integration nuxt build",
-        "start": "cross-env NODE_ENV=integration node build/server/index.js",
+        "build": "cross-env NODE_ENV=production nuxt build",
+        "start": "cross-env NODE_ENV=production node build/server/index.js",
+        "generate": "cross-env NODE_ENV=integration nuxt generate",
         "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
         "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
         "build-qa": "cross-env NODE_ENV=integration nuxt build",
@@ -18,7 +19,6 @@
         "lint"
     ],
     "dependencies": {
-        "clipboard": "^2.0.0",
         "cookie-universal-nuxt": "^2.0.17",
         "es6-promise": "^4.2.8",
         "fastclick": "^1.0.6",
@@ -28,10 +28,7 @@
         "lodash": "^4.17.15",
         "moment": "^2.24.0",
         "nuxt": "^2.8.1",
-        "qrcode": "^1.4.2",
         "vant": "^2.2.8",
-        "vue-baidu-map": "^0.21.22",
-        "vue-clipboard2": "^0.3.1",
         "vue-localstorage": "^0.6.2",
         "vue-sessionstorage": "^1.0.0",
         "vue-touch": "2.0.0-beta.4",

@@ -21,6 +21,7 @@ const resloveRoutes = routes => {
 
 module.exports = {
     mode: 'universal',
+
     srcDir,
     // loading: '~/modules/common/loading/index.vue',
     loading: {
@@ -146,15 +147,7 @@ module.exports = {
             ssr: true
         },
         {
-            src: '~/plugins/clipboard.js',
-            ssr: false
-        },
-        {
             src: '~/plugins/fastclick.js',
-            ssr: false
-        },
-        {
-            src: '~/plugins/vueBaiduMap.js',
             ssr: false
         }
     ],
