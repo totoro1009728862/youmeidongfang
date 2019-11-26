@@ -7,19 +7,21 @@
                     v-for="(item, index) in allStatus"
                     :key="index"
                     :class="{ actived: item.businessType === businessType }"
-                    @click="linkTab(item.businessType)"
+                    @click="linkTab(item.businessType, index)"
                 >
                     <span>{{ `${item.name}(${item.totalNum})人` }}</span>
                 </div>
             </div>
         </van-sticky>
         <div class="mt10" @touchmove="getUsers()">
-            <div v-for="(user, i) in users" :key="i" class="item">
-                <div>{{ user.name }}</div>
-                <div class="rt">
-                    机器
-                    <span>{{ user.totalNum }}</span>
-                    台
+            <div v-if="users && users.length">
+                <div v-for="(user, i) in users" :key="i" class="item">
+                    <div>{{ user.name }}</div>
+                    <div class="rt">
+                        机器
+                        <span>{{ user.totalNum }}</span>
+                        台
+                    </div>
                 </div>
             </div>
             <div v-if="!users.length && !loading" class="no-list">暂无{{ typeName }}，快去推广吧</div>
@@ -40,13 +42,14 @@ export default {
             current: 1,
             pageSize: 12,
             loading: false,
-            scrollEnd: false
+            scrollEnd: false,
+            tabIndex: 0
         }
     },
     computed: {
         typeName() {
-            if (this.allStatus && this.allStatus.length && this.businessType) {
-                let v = this.allStatus[this.businessType - 1]
+            if (this.allStatus && this.allStatus.length && this.tabIndex) {
+                let v = this.allStatus[this.tabIndex]
                 return v.name
             } else {
                 return ''
@@ -80,10 +83,10 @@ export default {
                 allStatus,
                 businessType,
                 pageSize,
+                tabIndex,
                 $api: { member }
             } = this
-            const total = allStatus[businessType - 1].totalNum
-
+            const total = allStatus[tabIndex].totalNum
             const params = {
                 userId,
                 businessType,
@@ -100,8 +103,9 @@ export default {
                 this.finished = true
             }
         },
-        linkTab(v) {
+        linkTab(v, index) {
             if (this.businessType === v) return
+            this.tabIndex = index
             this.businessType = v
             this.users = []
             this.current = 1

@@ -20,7 +20,7 @@ module.exports = [
         component: 'pages/product/home/index.vue'
     },
     {
-        path: `/mycount`,
+        path: `/home/mycount`,
         name: 'MyCount',
         component: 'pages/product/home/myCount.vue'
     },

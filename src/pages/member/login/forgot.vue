@@ -6,7 +6,7 @@
         </background>
 
         <div class="content">
-            <div class="reset-title">密码重置</div>
+            <div class="reset-title">{{ passText }}密码重置</div>
             <!-- 第一步 -->
             <div v-if="step === 1">
                 <div class="items">
@@ -18,7 +18,7 @@
                         <input ref="codeRef" v-model.trim="code" type="tel" maxlength="6" placeholder="请输入短信验证码" />
                     </div>
                 </div>
-
+                <div class="change-bt" @click="passType = !passType">重置{{ passType ? '' : '提现' }}密码</div>
                 <div class="login-bt">
                     <div :class="{ 'no-click': noClick }" @click="goNext">下一步</div>
                 </div>
@@ -63,7 +63,7 @@ export default {
             code: '', // 验证码
             time: null,
             step: 1, // 2为下一步设置密码
-
+            passType: false, // 重置密码类型 true为提现密码
             password: '',
             repassword: '',
             showpass1: false,
@@ -76,6 +76,15 @@ export default {
         },
         noSet() {
             return !this.password || !this.repassword
+        },
+        passText() {
+            return this.passType ? '提现' : ''
+        }
+    },
+    watch: {
+        passType() {
+            this.password = ''
+            this.repassword = ''
         }
     },
     methods: {
@@ -144,14 +153,15 @@ export default {
                 $api: { member },
                 password: loginPassword,
                 code: authCode,
-                phone
+                phone,
+                passType
             } = this
             const params = {
                 authCode,
-                phone,
-                loginPassword
+                phone
             }
-            console.log(params)
+            const key = passType ? 'payPassword' : 'loginPassword'
+            params[key] = loginPassword
             const { code } = await member.login.updatePassword(params)
             if (code === 200) {
                 this.$Toast.success({
@@ -276,5 +286,11 @@ export default {
     input {
         font-size: 14px;
     }
+}
+.change-bt {
+    font-size: 14px;
+    color: #ab1f26;
+    width: 100%;
+    margin-top: 10px;
 }
 </style>

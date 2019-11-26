@@ -2,8 +2,6 @@ const path = require('path')
 
 const px2rem = require('postcss-px2rem')
 
-// const pkg = require('../../package.json')
-
 const routes = require('../../src/router/')
 
 const srcDir = 'src/'
@@ -32,7 +30,7 @@ module.exports = {
         ...process.env
     },
     head: {
-        title: '优美东方',
+        title: '华肽',
         meta: [
             {
                 name: 'google',
@@ -56,19 +54,19 @@ module.exports = {
             {
                 hid: 'description',
                 name: 'description',
-                content: '优美东方,按摩仪'
+                content: '华肽,按摩仪'
             },
             {
                 name: 'Keywords',
-                content: '优美东方,按摩仪'
+                content: '华肽,按摩仪'
             },
             {
                 name: 'author',
-                content: '优美东方,按摩仪'
+                content: '华肽,按摩仪'
             },
             {
                 name: 'copyright',
-                content: '优美东方,按摩仪'
+                content: '华肽,按摩仪'
             }
         ],
         link: [
@@ -171,7 +169,7 @@ module.exports = {
         loading: '加载中...',
         error_404: '啊哦，您来晚了，该页面已失效~',
         server_error: '抱歉！程序加载失败',
-        nuxtjs: '优美东方',
+        nuxtjs: '华肽',
         back_to_home: '返回首页',
         server_error_details: '程序发生错误，工程师们正在紧急抢修，请稍后再试',
         client_error: '抱歉！页面渲染失败',

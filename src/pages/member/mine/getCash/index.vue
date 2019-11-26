@@ -132,7 +132,7 @@ export default {
     },
     computed: {
         noClick() {
-            return !this.selectCard.bankNo || !this.cashPrice
+            return !this.selectCard || !this.selectCard.bankNo || !this.cashPrice
         }
     },
     watch: {

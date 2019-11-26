@@ -1,4 +1,3 @@
-// const year = new Date().getFullYear()
 const LRU = require('lru-cache')
 module.exports = {
     render: {
@@ -22,6 +21,5 @@ module.exports = {
             chunk: ({ isDev }) => (isDev ? '[name].js' : 'js/[name].[chunkhash].js'),
             css: ({ isDev }) => (isDev ? '[name].css' : 'css/[name].[contenthash].css')
         }
-        // publicPath: `//oss.hxtrip.com/common/mobile/hx_touch/rc/${year}/`
     }
 }
