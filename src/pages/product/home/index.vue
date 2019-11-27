@@ -55,7 +55,6 @@ export default {
     data() {
         return {
             userId: '',
-            auth_code: '', // 来源令牌
             paymentMode: '', // 来源
             deviceId: '', // 设备id
             picks: [], // 套餐
@@ -92,7 +91,6 @@ export default {
                 path: '/'
             })
             return {
-                auth_code: query.auth_code || query.code || '',
                 paymentMode: query.paymentMode || 'wechat',
                 deviceId: query.deviceId,
                 surplusNum: data.surplusNum,

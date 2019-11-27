@@ -8,16 +8,21 @@ const mine = require('./mine')
 module.exports = [
     {
         path: '',
-        redirect: '/home'
+        redirect: '/login'
     },
     {
         path: '/',
-        redirect: '/home'
+        redirect: '/login'
     },
     {
         path: `/home`,
         name: 'Home',
         component: 'pages/product/home/index.vue'
+    },
+    {
+        path: `/clogin`,
+        name: 'CLogin',
+        component: 'pages/product/cLogin/index.vue'
     },
     {
         path: `/home/mycount`,

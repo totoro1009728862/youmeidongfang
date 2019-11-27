@@ -57,7 +57,7 @@ export default ({ $axios, app, redirect }) => {
                 //app.nuxt.error.call(app, new Error(desc || '请求响应错误'))
                 return Promise.reject(res)
             } else {
-                if (code == 302) {
+                if (code == 302 && app.$cookies.get('userType') != 3) {
                     //未登录或者登录过期
                     app.$cookies.remove('userToken', {
                         domain,
@@ -96,6 +96,8 @@ export default ({ $axios, app, redirect }) => {
                     return Object.assign(res, {
                         data: handleWarnMessage(data)
                     })
+                } else {
+                    console.log('C端未登录')
                 }
                 // if (process.server && code == 600) {
                 //     redirect({
