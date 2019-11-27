@@ -83,6 +83,19 @@ export default {
         }
     },
     methods: {
+        async getNum() {
+            const params = {
+                deviceId: this.deviceId,
+                userId: this.userId
+            }
+            const {
+                $api: { product }
+            } = this
+            const { code, data } = await product.myUserNum(params)
+            if (code === 200) {
+                this.surplusNum = data.surplusNum
+            }
+        },
         /* eslint-disable */
         goMyCount() {
             this.$router.push({
@@ -190,7 +203,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .home {
-    height: 100vh;
+    min-height: 100vh;
     background: #fff;
     .logo {
         position: absolute;

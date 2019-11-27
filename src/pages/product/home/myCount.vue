@@ -7,6 +7,7 @@
             <div class="begin-bt">
                 <div :class="{ 'no-click': approveStatus === 3 }" @click="startDeviceFunc">{{ approveStatus === 3 ? '使用中' : '开始使用' }}</div>
             </div>
+            <div class="tip">*实际运行时间以机器为准</div>
             <div class="count-info">
                 <div>
                     <div class="ct">{{ surplusNum }}</div>
@@ -30,16 +31,29 @@ export default {
     filters: {
         setTime(v) {
             let mm = 15
-            let ss = '00'
+            let ss = '0'
             if (v) {
-                mm = v / 60
+                mm = parseInt(v / 60)
                 ss = v % 60
             }
             return `${mm < 10 ? '0' + mm : mm.toString()}:${ss < 10 ? '0' + ss : ss.toString()}`
         }
     },
     data() {
-        return { userNum: 0, surplusNum: 0, surplusTime: 0, approveStatus: 3 }
+        return {
+            userNum: 0,
+            surplusNum: 0,
+            surplusTime: 900,
+            approveStatus: 3,
+            timeInt: ''
+        }
+    },
+    watch: {
+        surplusTime() {
+            if (this.surplusTime <= 0) {
+                clearInterval(this.timeInt)
+            }
+        }
     },
     async asyncData({ app, query }) {
         const params = {
@@ -83,13 +97,13 @@ export default {
             const { code, data } = await product.startDevice(params)
             if (code === 200) {
                 Object.assign(this, data)
-                let t = setInterval(() => {
-                    this.surplusTime--
-                }, 1000)
+
                 if (data.surplusTime) {
-                    t()
+                    this.timeInt = setInterval(() => {
+                        this.surplusTime--
+                    }, 1000)
                 } else {
-                    clearInterval(t)
+                    clearInterval(this.timeInt)
                 }
             }
         }
@@ -113,6 +127,11 @@ export default {
     background: #fff;
     padding: 0 20px 30px;
     border-radius: 5px;
+    .tip {
+        margin-top: 10px;
+        color: #888;
+        font-size: 12px;
+    }
     .time {
         position: relative;
         top: -70px;

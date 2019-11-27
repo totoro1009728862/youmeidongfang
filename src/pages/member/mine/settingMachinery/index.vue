@@ -123,9 +123,12 @@ export default {
                 price,
                 totalNum
             } = this
-            if (packInfo.noChangeNum) delete packInfo.noChangeNum
-
-            let params = Object.assign(packInfo, { price, totalNum })
+            const params = {
+                ...packInfo,
+                price,
+                totalNum
+            }
+            if (params.noChangeNum) delete params.noChangeNum
             const { code } = await member.mine.updateDeviceSet(params)
             if (code === 200) {
                 this.getDeviceSetList()

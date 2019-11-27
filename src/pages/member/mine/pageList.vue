@@ -20,7 +20,7 @@
                 <div>我的业绩</div>
             </div>
             <div class="right-info">
-                <div v-if="userType === 2" class="price-text">{{ price }}</div>
+                <!-- <div v-if="userType === 2" class="price-text">{{ price }}</div> -->
                 <div class="icon ym-right"></div>
             </div>
         </nuxt-link>
