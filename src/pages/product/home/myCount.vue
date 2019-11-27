@@ -43,7 +43,7 @@ export default {
         return {
             useNum: 0,
             surplusNum: 0,
-            surplusTime: 900,
+            surplusTime: 100,
             approveStatus: 3,
             timeInt: ''
         }
@@ -52,10 +52,6 @@ export default {
         surplusTime() {
             if (this.surplusTime <= 0) {
                 clearInterval(this.timeInt)
-            } else {
-                this.timeInt = setInterval(() => {
-                    this.surplusTime--
-                }, 1000)
             }
         }
     },
@@ -68,6 +64,7 @@ export default {
             $api: { product }
         } = app
         const { code, data } = await product.myUserNum(params)
+        console.log(data)
         if (code === 200) {
             return {
                 ...data,
@@ -78,11 +75,14 @@ export default {
         return {}
     },
     mounted() {
-        if (this.approveStatus !== 3) this.startDevice()
+        this.startDevice()
     },
     methods: {
         startDeviceFunc() {
             if (this.approveStatus === 3) {
+                this.timeInt = setInterval(() => {
+                    this.surplusTime--
+                }, 1000)
                 this.$Toast('仪器正在运转中')
             } else {
                 this.startDevice()
@@ -101,6 +101,9 @@ export default {
             const { code, data } = await product.startDevice(params)
             if (code === 200) {
                 Object.assign(this, data)
+                this.timeInt = setInterval(() => {
+                    this.surplusTime--
+                }, 1000)
             }
         }
     }
