@@ -82,6 +82,9 @@ export default {
             picks: []
         }
     },
+    created() {
+        this.getNum()
+    },
     methods: {
         async getNum() {
             const params = {

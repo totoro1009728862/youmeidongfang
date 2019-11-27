@@ -14,7 +14,7 @@
                     <div>剩余次数</div>
                 </div>
                 <div>
-                    <div class="ct">{{ userNum }}</div>
+                    <div class="ct">{{ useNum }}</div>
                     <div>使用次数</div>
                 </div>
             </div>
@@ -41,7 +41,7 @@ export default {
     },
     data() {
         return {
-            userNum: 0,
+            useNum: 0,
             surplusNum: 0,
             surplusTime: 900,
             approveStatus: 3,
@@ -52,6 +52,10 @@ export default {
         surplusTime() {
             if (this.surplusTime <= 0) {
                 clearInterval(this.timeInt)
+            } else {
+                this.timeInt = setInterval(() => {
+                    this.surplusTime--
+                }, 1000)
             }
         }
     },
@@ -97,14 +101,6 @@ export default {
             const { code, data } = await product.startDevice(params)
             if (code === 200) {
                 Object.assign(this, data)
-
-                if (data.surplusTime) {
-                    this.timeInt = setInterval(() => {
-                        this.surplusTime--
-                    }, 1000)
-                } else {
-                    clearInterval(this.timeInt)
-                }
             }
         }
     }
