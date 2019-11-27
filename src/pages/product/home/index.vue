@@ -65,48 +65,22 @@ export default {
         }
     },
     async asyncData({ app, query }) {
-        console.log(query)
-        // query = {
-        //     deviceId: '10000',
-        //     deviceSetId: '1',
-        //     userId: '3',
-        //     paymentMode: 'alipay'
-        // }
-        const params = {
-            paymentMode: query.paymentMode,
-            jsCode: query.code || query.auth_code
-        }
-        app.$cookies.set('userType', 3, {
-            path: '/'
-        })
         const {
             $api: { product }
         } = app
-        const { code, data } = await product.userLogin(params)
+        const { code, data } = await product.deviceSetList({
+            deviceId: query.deviceId
+        })
         if (code === 200) {
-            app.$cookies.set('userToken', data.token, {
-                path: '/'
-            })
-            app.$cookies.set('userId', data.userId, {
-                path: '/'
-            })
+            data.picks = data.list
             return {
-                paymentMode: query.paymentMode || 'wechat',
-                deviceId: query.deviceId,
-                surplusNum: data.surplusNum,
-                userId: data.userId
+                ...query,
+                ...data
             }
         }
         return {
-            // auth_code: '08167rQt05jngj1eIyQt02lpQt067rQh',
-            // paymentMode: 'wechat',
-            // deviceId: '10000',
-            // surplusNum: 99,
-            // userId: 4
+            picks: []
         }
-    },
-    created() {
-        this.getPicks()
     },
     methods: {
         /* eslint-disable */
@@ -119,21 +93,6 @@ export default {
                     status: 1
                 }
             })
-        },
-        async getPicks() {
-            const {
-                deviceId,
-                $api: { product }
-            } = this
-            const { code, data } = await product.deviceSetList({
-                deviceId
-            })
-            if (code === 200) {
-                this.shopName = data.shopName
-                this.deviceNo = data.deviceNo
-                this.deviceSetId = data.deviceSetId
-                this.picks = data.list
-            }
         },
         // 初始化支付接口 JSAPI
         async confirmOrderApi(params) {
@@ -220,7 +179,7 @@ export default {
                 },
                 function(res) {
                     if (res.err_msg == 'get_brand_wcpay_request:ok') {
-                        console.log('c成功')
+                        location.replace(location.href)
                     }
                 }
             )

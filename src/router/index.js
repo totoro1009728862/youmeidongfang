@@ -22,7 +22,7 @@ module.exports = [
     {
         path: `/clogin`,
         name: 'CLogin',
-        component: 'pages/product/cLogin/index.vue'
+        component: 'pages/product/home/cLogin.vue'
     },
     {
         path: `/home/mycount`,
