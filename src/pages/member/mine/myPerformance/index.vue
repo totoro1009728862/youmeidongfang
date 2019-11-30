@@ -71,12 +71,15 @@ export default {
     },
     created() {
         this.userType = this.$cookies.get('userType')
-        this.endDate = new Date()
-        const m = this.endDate.getMonth() + 1
-        const y = this.endDate.getFullYear()
-        this.beginDate = new Date(`${m > 3 ? y : y - 1}-${m - 3}-01`)
-        this.bDate = this.formatDate(this.beginDate)
-        this.eDate = this.formatDate(this.endDate)
+        if (this.userType == 2) {
+            this.endDate = new Date()
+            const m = this.endDate.getMonth() + 1
+            const y = this.endDate.getFullYear()
+            const d = `${m > 3 ? y : y - 1}-${m - 3}-01`
+            this.beginDate = new Date(d.replace(/-/g, '/'))
+            this.bDate = this.formatDate(this.beginDate)
+            this.eDate = this.formatDate(this.endDate)
+        }
         this.getList()
     },
     methods: {
@@ -86,7 +89,7 @@ export default {
             this.current = 1
             this.finished = false
             this.loading = false
-            this.getList()
+            // this.getList()
         },
         async getList() {
             const {
@@ -210,7 +213,7 @@ export default {
         i {
             color: #ab1f26;
             &::before {
-                content: '+￥';
+                content: '￥+';
             }
         }
     }

@@ -32,7 +32,7 @@ export default {
         setTime(v) {
             let mm = 15
             let ss = '0'
-            if (v) {
+            if (v && v > 0) {
                 mm = parseInt(v / 60)
                 ss = v % 60
             }
@@ -43,7 +43,7 @@ export default {
         return {
             useNum: 0,
             surplusNum: 0,
-            surplusTime: 100,
+            surplusTime: 0,
             approveStatus: 3,
             timeInt: ''
         }
@@ -51,11 +51,22 @@ export default {
     watch: {
         surplusTime() {
             if (this.surplusTime <= 0) {
+                this.approveStatus = 1
                 clearInterval(this.timeInt)
             }
         }
     },
     async asyncData({ app, query }) {
+        // app.$cookies.set('userType', 3, {
+        //     path: '/'
+        // })
+        // app.$cookies.set('userToken', '59c26001d01a4ac39b086ef29baac493', {
+        //     path: '/'
+        // })
+        // query = {
+        //     deviceId: 10000,
+        //     userId: 4
+        // }
         const params = {
             deviceId: query.deviceId,
             userId: query.userId
@@ -64,7 +75,6 @@ export default {
             $api: { product }
         } = app
         const { code, data } = await product.myUserNum(params)
-        console.log(data)
         if (code === 200) {
             return {
                 ...data,
@@ -75,14 +85,15 @@ export default {
         return {}
     },
     mounted() {
-        this.startDevice()
+        if (this.surplusTime > 0 && this.approveStatus === 3) {
+            this.timeInt = setInterval(() => {
+                this.surplusTime--
+            }, 1000)
+        }
     },
     methods: {
         startDeviceFunc() {
             if (this.approveStatus === 3) {
-                this.timeInt = setInterval(() => {
-                    this.surplusTime--
-                }, 1000)
                 this.$Toast('仪器正在运转中')
             } else {
                 this.startDevice()
@@ -101,9 +112,12 @@ export default {
             const { code, data } = await product.startDevice(params)
             if (code === 200) {
                 Object.assign(this, data)
-                this.timeInt = setInterval(() => {
-                    this.surplusTime--
-                }, 1000)
+                this.approveStatus = 3
+                if (this.surplusTime > 0) {
+                    this.timeInt = setInterval(() => {
+                        this.surplusTime--
+                    }, 1000)
+                }
             }
         }
     }

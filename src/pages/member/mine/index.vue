@@ -5,7 +5,8 @@
         <user-info :info="userInfo"></user-info>
         <div class="mine-box">
             <div class="price-info">
-                <div class="val-dom" :class="{ 'price-v': userType === 1 }">{{ price }}</div>
+                <div v-if="userType === 1" class="val-dom price-v">{{ price }}</div>
+                <div v-else class="val-dom">{{ totalNum }}</div>
                 <div class="price-t">{{ priceText }}</div>
                 <div v-if="userType === 2" class="show-macs" @click="showMacs = !showMacs">
                     <div class="icon" :class="{ 'ym-down': !showMacs, 'ym-up': showMacs }"></div>
@@ -16,7 +17,7 @@
                 </div>
             </div>
             <!-- 导航 -->
-            <page-list :user-type="userType" :price="price"></page-list>
+            <page-list :user-type="userType" :price="price" :total-num="totalNum"></page-list>
             <div class="bt">
                 <div @click="clearToken">退出登录</div>
             </div>
@@ -40,11 +41,12 @@ export default {
     },
     data() {
         return {
-            userType: 1, // 1代理2门店
+            userType: 0, // 1代理2门店
             macsArr: [],
             price: '0',
             priceText: '',
-            showMacs: false
+            showMacs: false,
+            totalNum: 0 // 机器数量
         }
     },
     computed: {
@@ -68,9 +70,16 @@ export default {
             let params = {
                 userId: userInfo.userId
             }
-            const { data } =
-                this.userType === 1 ? await member.mine.myPerformance(Object.assign(params, { operation: 0 })) : await member.mine.myDeviceNum(params)
-            this.price = data.price || data.totalNum || 0
+            const { data } = await member.mine.myPerformance(Object.assign(params, { operation: 0 }))
+            this.price = data.price
+            console.log(this.userType)
+            // 机器数量
+            if (this.userType == 2) {
+                const { code, data } = await member.mine.myDeviceNum(params)
+                if (code && code === 200) {
+                    this.totalNum = data.totalNum
+                }
+            }
         },
         async getMyDeviceList() {
             const {

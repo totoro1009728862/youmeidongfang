@@ -6,7 +6,7 @@
                 <div v-for="(log, i) in logs" :key="i" class="item">
                     <div class="l-info">
                         <div class="mac-no">提现</div>
-                        <div class="mac-price">{{ log.activatedDate }}</div>
+                        <div class="mac-price">{{ log.createDate }}</div>
                     </div>
                     <div class="r-info">
                         <i>{{ log.price }}</i>
@@ -127,7 +127,7 @@ export default {
             i {
                 color: #ab1f26;
                 &::before {
-                    content: '-￥';
+                    content: '￥';
                 }
             }
         }

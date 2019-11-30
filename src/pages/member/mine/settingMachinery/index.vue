@@ -5,6 +5,7 @@
             <van-tab v-for="(item, index) in devices" :key="index" :title="item.deviceId.toString()">
                 <div class="item-box">
                     <div v-if="pack" class="jichu">
+                        <div>设备号：{{ item.deviceNo }}</div>
                         <div class="title">基础设置</div>
                         <div>单次金额：{{ pack.price }}元</div>
                         <div>单次时长：15分钟/次</div>
@@ -79,7 +80,11 @@ export default {
         } = app
         let userId = $cookies.get('userId')
         const { data } = await member.mine.myDeviceList({ userId })
-        return { userId, devices: data.list, deviceId: data.list[0].deviceId }
+        return {
+            userId,
+            devices: data.list,
+            deviceId: data.list ? data.list[0].deviceId : ''
+        }
     },
     created() {
         this.getDeviceSetList()

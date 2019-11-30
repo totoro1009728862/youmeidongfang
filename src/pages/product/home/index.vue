@@ -181,7 +181,7 @@ export default {
             window.location.href = this.detailLink
         },
         // 准备唤起微信支付
-        onBridgeReady(v, deviceId, orderId) {
+        onBridgeReady(v, deviceId, userId) {
             let value = v
             window.WeixinJSBridge.invoke(
                 'getBrandWCPayRequest',
@@ -195,7 +195,7 @@ export default {
                 },
                 function(res) {
                     if (res.err_msg == 'get_brand_wcpay_request:ok') {
-                        location.replace(location.href)
+                        window.location.href = `/mycount?deviceId=${deviceId}&userId=${userId}`
                     }
                 }
             )
@@ -206,8 +206,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .home {
-    min-height: 100vh;
+    height: 100vh;
     background: #fff;
+    overflow: hidden;
     .logo {
         position: absolute;
         width: 100%;
@@ -225,9 +226,8 @@ export default {
     width: 100%;
     top: -40px;
     background: #fff;
-    padding: 0 20px 30px;
+    padding: 0 20px;
     border-radius: 5px;
-    height: calc(100vh - 130px);
     .pick-info {
         display: flex;
         flex-flow: column nowrap;
