@@ -276,8 +276,7 @@ export default {
                 payPassword: this.cashword,
                 price: this.cashPrice,
                 userId: this.userId,
-                bankId: this.selectCard.bankId || '',
-                jsCode: this.cashType === 2 ? this.$route.query.code : ''
+                bankId: this.selectCard.bankId || ''
             }
             this.submit(params)
         },

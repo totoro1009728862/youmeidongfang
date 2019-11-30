@@ -118,10 +118,10 @@ export default {
             }
             let params = {
                 phone: userName,
-                loginPassword: password
+                loginPassword: password,
+                jsCode: this.$route.query.code || ''
             }
             const userType = tabIndex ? 2 : 1
-            console.log(userType)
             this.$cookies.set('userType', userType, {
                 path: '/'
             })
@@ -137,13 +137,11 @@ export default {
                 this.$cookies.set('userId', data.userId, {
                     path: '/'
                 })
-                const jsCode = this.$route.query.code || ''
                 if (this.$route.query.originUrl) {
                     this.$router.replace(decodeURIComponent(this.$route.query.originUrl))
                 } else {
                     this.$router.replace({
-                        name: 'Mine',
-                        query: { code: jsCode }
+                        name: 'Mine'
                     })
                 }
             }
