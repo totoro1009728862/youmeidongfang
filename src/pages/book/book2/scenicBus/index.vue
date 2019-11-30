@@ -22,17 +22,29 @@
                 </dl>
             </div>
             <div v-if="isRealName && isFinish" class="hx-book-person">
-                <select-trips :trips-data="tripsData" @changeTravels="changeTravels" @goBaseTraveler="goBaseTraveler('1')" @goEdit="goEdit"></select-trips>
+                <select-trips
+                    :trips-data="tripsData"
+                    @changeTravels="changeTravels"
+                    @goBaseTraveler="goBaseTraveler('1')"
+                    @goEdit="goEdit"
+                ></select-trips>
             </div>
             <div class="contact-box">
-                <contact-form ref="contact" v-model="contactInfo" :has-bind="hasBind" :need-contact-name="needContactName"></contact-form>
+                <contact-form
+                    ref="contact"
+                    v-model="contactInfo"
+                    :has-bind="hasBind"
+                    :need-contact-name="needContactName"
+                ></contact-form>
             </div>
 
             <div class="hx-book-remark" @click.stop="openRemark">
                 <div class="go-people">
                     <div class="go-title">
                         <span class="title">备注</span>
-                        <span :class="{ c5: remark.remarkText }">{{ remark.remarkText ? remark.remarkText : '请输入您的内容' }}</span>
+                        <span :class="{ c5: remark.remarkText }">{{
+                            remark.remarkText ? remark.remarkText : '请输入您的内容'
+                        }}</span>
                         <span class="icon ym-xiangyou"></span>
                     </div>
                 </div>
@@ -40,7 +52,13 @@
             <!-- 协议 -->
             <agreement :has-bind="hasBind" :elec-protocol-url="elecProtocolUrl"></agreement>
             <div class="hx-book-bottom">
-                <book-detail :total-price="totalPrice" :price-sys="priceSys" :mutil-num="passNumDetail" :btn-text="'去支付'" @next="createOrder"></book-detail>
+                <book-detail
+                    :total-price="totalPrice"
+                    :price-sys="priceSys"
+                    :mutil-num="passNumDetail"
+                    :btn-text="'去支付'"
+                    @next="createOrder"
+                ></book-detail>
             </div>
         </div>
         <!-- 备注 -->
@@ -229,7 +247,13 @@ export default {
             return res
         },
         totalPersonNumber() {
-            return this.personNum.adultNum + this.personNum.childrenNum + this.personNum.seniorNum + this.personNum.studentNum + this.personNum.num
+            return (
+                this.personNum.adultNum +
+                this.personNum.childrenNum +
+                this.personNum.seniorNum +
+                this.personNum.studentNum +
+                this.personNum.num
+            )
         },
         //是否是子路由
         isChildRoute() {
@@ -427,7 +451,8 @@ export default {
                         let payInfo = await this.$api.getPayInfo()
                         if (payInfo.code === 200) {
                             let link = getField()
-                            window.location.href = link + `/pay?orderNo=${res.data.orderId}&businessType=1&openId=${payInfo.data}`
+                            window.location.href =
+                                link + `/pay?orderNo=${res.data.orderId}&businessType=1&openId=${payInfo.data}`
                         }
                     } else {
                         let link = getField()

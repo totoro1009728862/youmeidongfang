@@ -5,7 +5,7 @@
             <div v-if="logs.length" class="list-box">
                 <div v-for="(log, i) in logs" :key="i" class="item">
                     <div class="l-info">
-                        <div class="mac-no">提现</div>
+                        <div class="mac-no">{{ log.remark }}</div>
                         <div class="mac-price">{{ log.createDate }}</div>
                     </div>
                     <div class="r-info">
@@ -36,7 +36,8 @@ export default {
             const {
                 current,
                 $api: { member },
-                $cookies
+                $cookies,
+                $route: { query }
             } = this
             const params = {
                 userId: $cookies.get('userId'),
@@ -44,7 +45,11 @@ export default {
                 page: current,
                 rows: 10
             }
-            const { code, data } = await member.mine.myPerformanceList(params)
+
+            const { code, data } =
+                query.cashType && query.cashType == 1
+                    ? await member.mine.myPerformanceList(params)
+                    : await member.mine.myBrokerageList(params)
             if (code === 200) {
                 this.total = data.total
                 this.logs.push(...data.list)

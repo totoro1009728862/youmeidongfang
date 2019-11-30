@@ -35,5 +35,11 @@ export default $axios => ({
     },
     updateDeviceSet: params => {
         return $axios.$post(`${api}/business/biz/device/updateDeviceSet`, params)
+    },
+    myBrokerageList: params => {
+        return $axios.$post(`${api}/business/biz/account/myBrokerageList`, params)
+    },
+    brokerageSubmitPrice: params => {
+        return $axios.$post(`${api}/business/biz/account/brokerageSubmitPrice`, params)
     }
 })

@@ -11,7 +11,14 @@
                 </div>
             </div>
         </div>
-        <nuxt-link v-show="macsArr.length && macsArr.length > 5" :to="{ name: 'MachineryList' }" tag="div" class="mac-more">查看更多</nuxt-link>
+        <nuxt-link
+            v-show="macsArr.length && macsArr.length > 5"
+            :to="{ name: 'MachineryList' }"
+            tag="div"
+            class="mac-more"
+        >
+            查看更多
+        </nuxt-link>
     </div>
 </template>
 <script>

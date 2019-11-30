@@ -36,7 +36,7 @@ module.exports = {
             "semi": false,
             "singleQuote": true,
             "quoteProps": 'consistent',
-            "printWidth": 160,
+            "printWidth": 120,
             "tabWidth": 4,
             "proseWrap": "always"
         }]

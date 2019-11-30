@@ -3,7 +3,13 @@
     <div class="scene-cont">
         <div class="title">场次信息</div>
         <div class="times-box">
-            <div v-for="(item, index) in times" :key="index" class="time" :class="{ c8: item.c === 3, actived: item.a === time.a }" @click="changeTimes(item)">
+            <div
+                v-for="(item, index) in times"
+                :key="index"
+                class="time"
+                :class="{ c8: item.c === 3, actived: item.a === time.a }"
+                @click="changeTimes(item)"
+            >
                 <div>{{ item.a }}</div>
                 <div :class="{ 'c-orange': item.c === 2 }">{{ item.b }}</div>
             </div>

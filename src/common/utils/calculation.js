@@ -66,5 +66,9 @@ export const div = function(a, b) {
     } catch (g) {
         // console.info(g)
     }
-    return (c = Number(a.toString().replace('.', ''))), (d = Number(b.toString().replace('.', ''))), mul(c / d, Math.pow(10, f - e))
+    return (
+        (c = Number(a.toString().replace('.', ''))),
+        (d = Number(b.toString().replace('.', ''))),
+        mul(c / d, Math.pow(10, f - e))
+    )
 }

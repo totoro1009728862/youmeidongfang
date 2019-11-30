@@ -206,7 +206,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .home {
-    height: 100vh;
+    min-height: 100vh;
     background: #fff;
     overflow: hidden;
     .logo {

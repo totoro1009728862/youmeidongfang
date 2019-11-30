@@ -14,7 +14,12 @@
                         </div>
                     </div>
                     <div v-if="packs && packs.length">
-                        <div v-for="(itm, indx) in packs" :key="indx" class="pack-info" :class="{ open: itm.approveStatus }">
+                        <div
+                            v-for="(itm, indx) in packs"
+                            :key="indx"
+                            class="pack-info"
+                            :class="{ open: itm.approveStatus }"
+                        >
                             <div class="title">{{ itm.name }}</div>
                             <div class="price">
                                 <span>套餐总金额:</span>

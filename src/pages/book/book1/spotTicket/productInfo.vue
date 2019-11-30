@@ -18,7 +18,9 @@
                 <i class="icon ym-xiangyou"></i>
             </div>
         </div>
-        <div v-show="minuteNum < 60 && minuteNum > 0" class="tip">仅剩{{ minuteNum }}分钟可买{{ advanceDay | timeValue }}票</div>
+        <div v-show="minuteNum < 60 && minuteNum > 0" class="tip">
+            仅剩{{ minuteNum }}分钟可买{{ advanceDay | timeValue }}票
+        </div>
     </div>
 </template>
 <script>

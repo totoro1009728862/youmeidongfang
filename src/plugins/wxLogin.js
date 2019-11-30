@@ -18,7 +18,12 @@ export default (context, inject) => {
         const unionId = $cookies.get('unionCode')
         _originUrl = _originUrl || `/`
 
-        const prefixHostName = env == 'pro' ? 'https://m.hxtrip.com/' : env == 'rc' ? 'https://m.t.hxtrip.com/' : 'https://m.qa.hxtrip.com/'
+        const prefixHostName =
+            env == 'pro'
+                ? 'https://m.hxtrip.com/'
+                : env == 'rc'
+                ? 'https://m.t.hxtrip.com/'
+                : 'https://m.qa.hxtrip.com/'
         if (!urlToken && isWechat) {
             if (!code) {
                 let return_url = encodeURIComponent(`${prefixHostName}/login?originUrl=${_originUrl}`),
@@ -34,7 +39,10 @@ export default (context, inject) => {
                 redirect(`${wxOpenOauthUrl}?${utils.deserializeUrl(wxParams)}#wechat_redirect`)
             } else {
                 const noSilentLoginFn = async () => {
-                    const userInfo = await $axios.$get(`/user/common/wechatLogin/${config.AppID}/getUserInfoByCode?code=${code}&state=${promoterId || ''}`)
+                    const userInfo = await $axios.$get(
+                        `/user/common/wechatLogin/${config.AppID}/getUserInfoByCode?code=${code}&state=${promoterId ||
+                            ''}`
+                    )
                     if (userInfo.code == '200') {
                         $cookies.set('userToken', userInfo.data.token || '', { domain, path: '/' })
                         //userInfo.data.userDataDto 用户信息
@@ -50,7 +58,9 @@ export default (context, inject) => {
                     }
                 }
                 if (unionId && unionId.length) {
-                    const userInfo = await $axios.$get(`/user/common/wechatLogin/silentLogin/${config.AppID}?code=${code}&state=${promoterId || ''}`)
+                    const userInfo = await $axios.$get(
+                        `/user/common/wechatLogin/silentLogin/${config.AppID}?code=${code}&state=${promoterId || ''}`
+                    )
                     if (userInfo.code == '200') {
                         $cookies.set('userToken', userInfo.data.token || '', { domain, path: '/' })
                         //userInfo.data.userDataDto 用户信息

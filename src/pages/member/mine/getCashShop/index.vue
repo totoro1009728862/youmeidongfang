@@ -3,16 +3,9 @@
         <ym-header title="提现"></ym-header>
         <background></background>
         <div class="header-info">
-            <div class="cash-box">
-                <div class="cash-tab">
-                    <span :class="{ act: cashType === 1 }" @click="cashType = 1">代理佣金</span>
-                    <span :class="{ act: cashType === 2 }" @click="cashType = 2">仪器分润</span>
-                </div>
-                <nuxt-link class="log" :to="{ name: 'CashLog', query: { cashType } }" tag="div">提现明细</nuxt-link>
-            </div>
-
-            <div class="price">￥{{ cashType === 1 ? brokeragePrice : price }}</div>
-            <div class="txt">{{ cashType === 1 ? '可提现佣金' : '可提现收益' }}</div>
+            <nuxt-link class="log" :to="{ name: 'CashLog' }" tag="div">提现明细</nuxt-link>
+            <div class="price">￥{{ price }}</div>
+            <div class="txt">可提现收益</div>
         </div>
         <div class="mine-box">
             <div class="cash-price">
@@ -24,13 +17,7 @@
                     <div class="rt" @click="cashPrice = price">全部</div>
                 </div>
             </div>
-            <div v-show="cashType === 2" class="card-box">
-                <div class="title">
-                    <div>提现至微信</div>
-                    <div class="icon ym-weixin"></div>
-                </div>
-            </div>
-            <div v-show="cashType === 1" class="card-box">
+            <div class="card-box">
                 <div class="title">
                     <div>提现至银行卡</div>
                     <div class="icon ym-card"></div>
@@ -126,11 +113,9 @@ export default {
     },
     data() {
         return {
-            cashType: 1, // 1为佣金银行卡2为微信红包
-            userType: 1, // 2为店家
+            userType: 2, // 2为店家
             userId: '',
             price: '', // 可提现收益
-            brokeragePrice: '', // 可提现佣金
             cashPrice: '', // 用户输入的提现金额
             cards: [], // 卡信息
             selectCard: {}, // 选择银行卡
@@ -147,8 +132,7 @@ export default {
     },
     computed: {
         noClick() {
-            const v = !this.selectCard || !this.selectCard.bankNo || !this.cashPrice
-            return v
+            return !this.selectCard || !this.selectCard.bankNo || !this.cashPrice
         }
     },
     watch: {
@@ -170,18 +154,17 @@ export default {
         }
     },
     async asyncData({ app }) {
-        const userType = app.$cookies.get('userType')
+        const userType = app.$cookies.get('userType') || 2
         const userId = app.$cookies.get('userId')
         const {
             $api: { member }
         } = app
         const { data } = await member.mine.myPerformance({ userId })
-        console.log(data.brokeragePrice)
+
         return {
             userType,
             userId,
-            price: data.price,
-            brokeragePrice: data.brokeragePrice
+            price: data.price
         }
     },
     created() {
@@ -276,8 +259,7 @@ export default {
                 payPassword: this.cashword,
                 price: this.cashPrice,
                 userId: this.userId,
-                bankId: this.selectCard.bankId || '',
-                jsCode: this.cashType === 2 ? this.$route.query.code : ''
+                bankId: this.selectCard.bankId
             }
             this.submit(params)
         },
@@ -285,10 +267,7 @@ export default {
             const {
                 $api: { member }
             } = this
-            const { code } =
-                this.cashType === 1
-                    ? await member.mine.brokerageSubmitPrice(params)
-                    : await member.mine.submitPrice(params)
+            const { code } = await member.mine.submitPrice(params)
             if (code === 200) {
                 this.$Toast.success({
                     message: '提交成功，资金将在3-5个工作日内到账，请注意查收',
@@ -315,35 +294,16 @@ export default {
     width: 100%;
     height: 140px;
     color: #fff;
-    .cash-box {
+    .log {
         display: flex;
         flex-flow: row nowrap;
-        justify-content: space-between;
+        justify-content: flex-end;
         width: 100%;
         padding: 10px 20px;
-        margin-bottom: 15px;
-        .cash-tab {
-            span {
-                padding: 3px 10px;
-                font-size: 12px;
-                border-radius: 10px;
-                color: #fff;
-            }
-            .act {
-                background: #fff;
-                color: #ab1f26;
-            }
-        }
-        .log {
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: space-between;
-            div {
-                font-size: 14px;
-            }
+        div {
+            font-size: 14px;
         }
     }
-
     .price,
     .txt {
         display: flex;
@@ -423,9 +383,6 @@ export default {
             .icon {
                 font-size: 24px;
                 color: #ab1f26;
-            }
-            .ym-weixin {
-                color: #259b24;
             }
             .ym-radio {
                 color: #888;

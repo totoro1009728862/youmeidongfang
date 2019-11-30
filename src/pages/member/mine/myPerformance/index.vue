@@ -11,8 +11,19 @@
                 <div @click="onRefresh">筛选</div>
             </div>
         </van-sticky>
-
-        <van-list v-model="loading" :finished="finished" :immediate-check="false" finished-text="没有更多了" class="mt10" @load="getList">
+        <van-sticky v-else :offset-top="50">
+            <div class="tabs">
+                <div
+                    v-for="(item, index) in ['代理推广', '仪器推广']"
+                    :key="index"
+                    :class="{ actived: index === perType }"
+                    @click="linkTab(index)"
+                >
+                    <span>{{ item }}</span>
+                </div>
+            </div>
+        </van-sticky>
+        <div class="mt10" @touchmove="getList()">
             <div v-if="perList.length" class="list-box">
                 <div v-for="(item, i) in perList" :key="i" class="item">
                     <div class="l-info">
@@ -25,13 +36,27 @@
                 </div>
             </div>
             <div v-if="!perList.length && !loading" class="no-list">暂无业绩，快去推广吧</div>
-        </van-list>
+        </div>
         <div v-if="userType === 2">
             <van-popup v-model="beginDateSwitch" position="bottom">
-                <van-datetime-picker v-model="beginDate" type="date" :min-date="minDate" :max-date="maxDate" @cancel="cancel" @confirm="setBeginDate" />
+                <van-datetime-picker
+                    v-model="beginDate"
+                    type="date"
+                    :min-date="minDate"
+                    :max-date="maxDate"
+                    @cancel="cancel"
+                    @confirm="setBeginDate"
+                />
             </van-popup>
             <van-popup v-model="endDateSwitch" position="bottom">
-                <van-datetime-picker v-model="endDate" type="date" :min-date="minDate" :max-date="maxDate" @cancel="cancel" @confirm="setEndDate" />
+                <van-datetime-picker
+                    v-model="endDate"
+                    type="date"
+                    :min-date="minDate"
+                    :max-date="maxDate"
+                    @cancel="cancel"
+                    @confirm="setEndDate"
+                />
             </van-popup>
         </div>
     </div>
@@ -42,6 +67,7 @@ export default {
     middleware: 'checkLogin',
     data() {
         return {
+            perType: 0, // 0代理1仪器
             userType: 1, //2门店1代理
             beginDate: '', // 开始日期
             endDate: '', // 结束日期
@@ -54,7 +80,6 @@ export default {
             total: 0, // 一共多少数据
             status: 0, // 当前选中的类型
             loading: false, // 数据加载loading
-            reLoading: false, // 刷新数据中
             finished: false, // 拿到所有数据
             current: 1,
             pageSize: 10
@@ -89,9 +114,13 @@ export default {
             this.current = 1
             this.finished = false
             this.loading = false
-            // this.getList()
+            this.getList()
         },
         async getList() {
+            if (this.finished || this.loading) {
+                return
+            }
+            this.loading = true
             const {
                 current,
                 bDate,
@@ -107,13 +136,15 @@ export default {
                 page: current,
                 rows: 10
             }
-            const { code, data } = await member.mine.myPerformanceList(params)
+            const { code, data } = this.perType
+                ? await member.mine.myPerformanceList(params)
+                : await member.mine.myBrokerageList(params)
             if (code === 200) {
                 this.total = data.total
                 this.perList.push(...data.list)
                 this.loading = false
                 this.current++
-                if (this.perList.length === this.total) {
+                if (this.perList.length >= this.total) {
                     this.finished = true
                 }
             }
@@ -148,6 +179,14 @@ export default {
             const y = v.getFullYear()
             const d = v.getDate()
             return `${y}-${m < 10 ? '0' + m : m}-${d < 10 ? '0' + d : d}`
+        },
+        linkTab(index) {
+            this.perType = index
+            this.perList = []
+            this.current = 1
+            this.finished = false
+            this.loading = false
+            this.getList()
         }
     }
 }
@@ -155,6 +194,26 @@ export default {
 <style lang="less" scoped>
 .cont {
     height: 100vh;
+}
+.tabs {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    background: #fff;
+    height: 44px;
+    align-items: center;
+    div {
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(34, 34, 34, 1);
+        line-height: 44px;
+        border-bottom: 2px solid #fff;
+    }
+
+    .actived {
+        border-bottom-color: #ab1f26;
+        font-weight: 600;
+    }
 }
 .select-dom {
     display: flex;

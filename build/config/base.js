@@ -77,7 +77,7 @@ module.exports = {
             },
             {
                 rel: 'stylesheet',
-                href: '//at.alicdn.com/t/font_1513744_pb11qt3ypl.css'
+                href: '//at.alicdn.com/t/font_1513744_hy91s6izaom.css'
             }
         ],
         script: [

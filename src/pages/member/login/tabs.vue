@@ -21,7 +21,7 @@ export default {
         tabs: {
             type: Array,
             default: () => {
-                return ['一级代理', '二级代理', '店家']
+                return ['合伙人', '服务商', '店家']
             }
         }
     },

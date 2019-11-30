@@ -19,7 +19,11 @@
                 ></product-info>
                 <!-- 价格日期选择 -->
                 <div class="mt20">
-                    <date-select v-model="selectDate" :date-list="dateList" @setCalendarSwitch="setCalendarSwitch"></date-select>
+                    <date-select
+                        v-model="selectDate"
+                        :date-list="dateList"
+                        @setCalendarSwitch="setCalendarSwitch"
+                    ></date-select>
                 </div>
                 <div class="mt20">
                     <!-- 场次信息 -->
@@ -38,7 +42,12 @@
                     ></select-trips>
                 </div>
                 <!-- 联系人 -->
-                <contact-form ref="contact" v-model="contactInfo" :has-bind="phoneNumber" :need-contact-name="needContactName"></contact-form>
+                <contact-form
+                    ref="contact"
+                    v-model="contactInfo"
+                    :has-bind="phoneNumber"
+                    :need-contact-name="needContactName"
+                ></contact-form>
                 <!-- 协议 -->
                 <agreement :has-bind="phoneNumber"></agreement>
             </div>
@@ -64,7 +73,12 @@
             ></price-calendar>
             <!-- 预订须知内容 -->
             <div v-if="explain">
-                <ticket-notes v-model="noticeShow" :explain="explain" route-name="SpotTicket_CompanyApprove" :show-price="false"></ticket-notes>
+                <ticket-notes
+                    v-model="noticeShow"
+                    :explain="explain"
+                    route-name="SpotTicket_CompanyApprove"
+                    :show-price="false"
+                ></ticket-notes>
             </div>
         </div>
         <template v-if="isTravelerInfoChildRoute">
@@ -80,7 +94,13 @@
             />
         </template>
         <template v-else-if="isTravelerEditChildRoute">
-            <nuxt-child keep-alive :is-select="true" :usable-i-d-list="acceptCardTypes" :traveler="editTraveler" @save="handlerEditTravler"></nuxt-child>
+            <nuxt-child
+                keep-alive
+                :is-select="true"
+                :usable-i-d-list="acceptCardTypes"
+                :traveler="editTraveler"
+                @save="handlerEditTravler"
+            ></nuxt-child>
         </template>
     </div>
 </template>
@@ -183,7 +203,17 @@ export default {
         const { code, data } = await book.scenicTicketInitCreateOrder(productId)
         const { code: codeTrips, data: dataTrips } = await book.getRecentTravelPersonList()
         if (code === 200 && codeTrips === 200) {
-            const { productName, scenicName, isChangeTicket, refundType, minuteNum, advanceDay, isRealName, acceptCardTypes, needContactName } = data
+            const {
+                productName,
+                scenicName,
+                isChangeTicket,
+                refundType,
+                minuteNum,
+                advanceDay,
+                isRealName,
+                acceptCardTypes,
+                needContactName
+            } = data
             const { travelPersonList } = dataTrips
             return {
                 userId,

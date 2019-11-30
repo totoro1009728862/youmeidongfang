@@ -24,10 +24,14 @@
                 <div class="icon ym-right"></div>
             </div>
         </nuxt-link>
-        <nuxt-link :to="{ name: 'GetCash' }" tag="div" class="page">
+        <nuxt-link
+            :to="{ name: userType === 2 ? 'GetCashShop' : 'GetCash', query: { code: $route.query.code || '' } }"
+            tag="div"
+            class="page"
+        >
             <div class="left-info">
                 <div class="icon ym-qianbao"></div>
-                <div>{{ userType === 2 ? '收益提现' : '佣金提现' }}</div>
+                <div>收益提现</div>
             </div>
             <div class="right-info">
                 <div class="icon ym-right"></div>

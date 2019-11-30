@@ -5,15 +5,26 @@
         <user-info :info="userInfo"></user-info>
         <div class="mine-box">
             <div class="price-info">
-                <div v-if="userType === 1" class="val-dom price-v">{{ price }}</div>
-                <div v-else class="val-dom">{{ totalNum }}</div>
-                <div class="price-t">{{ priceText }}</div>
-                <div v-if="userType === 2" class="show-macs" @click="showMacs = !showMacs">
-                    <div class="icon" :class="{ 'ym-down': !showMacs, 'ym-up': showMacs }"></div>
+                <div v-if="userType === 1" class="val-dom price-box">
+                    <div>
+                        <div class="price-v">{{ brokeragePrice }}</div>
+                        <div>推广代理累计佣金</div>
+                    </div>
+                    <div>
+                        <div class="price-v">{{ price }}</div>
+                        <div>推广仪器累计分润</div>
+                    </div>
                 </div>
-                <!-- 机器列表 -->
-                <div v-if="userType === 2 && macsArr && macsArr.length">
-                    <macs-list v-show="showMacs" :macs-arr="macsArr"></macs-list>
+                <div v-else class="val-dom">{{ totalNum }}</div>
+                <div v-if="userType === 2">
+                    <div class="price-t">已拥有机器数</div>
+                    <div class="show-macs" @click="showMacs = !showMacs">
+                        <div class="icon" :class="{ 'ym-down': !showMacs, 'ym-up': showMacs }"></div>
+                    </div>
+                    <!-- 机器列表 -->
+                    <div v-if="macsArr && macsArr.length">
+                        <macs-list v-show="showMacs" :macs-arr="macsArr"></macs-list>
+                    </div>
                 </div>
             </div>
             <!-- 导航 -->
@@ -44,6 +55,7 @@ export default {
             userType: 0, // 1代理2门店
             macsArr: [],
             price: '0',
+            brokeragePrice: '0',
             priceText: '',
             showMacs: false,
             totalNum: 0 // 机器数量
@@ -72,7 +84,7 @@ export default {
             }
             const { data } = await member.mine.myPerformance(Object.assign(params, { operation: 0 }))
             this.price = data.price
-            console.log(this.userType)
+            this.brokeragePrice = data.brokeragePrice
             // 机器数量
             if (this.userType == 2) {
                 const { code, data } = await member.mine.myDeviceNum(params)
@@ -137,13 +149,37 @@ export default {
             font-size: 24px;
             color: #ab1f26;
         }
-        .price-v {
-            &::before {
-                content: '￥';
-                padding-right: 5px;
+        .price-box {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            font-size: 12px;
+            color: #222;
+            > div {
+                width: 50%;
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: center;
+                align-items: center;
+                padding: 10px 0;
             }
-            &::after {
-                content: '元';
+            > div:nth-child(1) {
+                border-right: 2px solid #ededed;
+            }
+            .price-v {
+                color: #ab1f26;
+                font-weight: 600;
+                font-size: 16px;
+                margin-bottom: 15px;
+                &::before {
+                    content: '￥';
+                    padding-right: 5px;
+                }
+                &::after {
+                    content: '元';
+                }
             }
         }
         .price-t {

@@ -11,11 +11,23 @@
             <div v-if="step === 1">
                 <div class="items">
                     <div class="item pr180" @click="nameInputFcous('phoneRef')">
-                        <input ref="phoneRef" v-model.trim="phone" type="tel" maxlength="11" placeholder="请输入手机号" />
+                        <input
+                            ref="phoneRef"
+                            v-model.trim="phone"
+                            type="tel"
+                            maxlength="11"
+                            placeholder="请输入手机号"
+                        />
                         <div class="code-bt" @click.stop="getCode">{{ codeText }}</div>
                     </div>
                     <div class="item" @click="nameInputFcous('codeRef')">
-                        <input ref="codeRef" v-model.trim="code" type="tel" maxlength="6" placeholder="请输入短信验证码" />
+                        <input
+                            ref="codeRef"
+                            v-model.trim="code"
+                            type="tel"
+                            maxlength="6"
+                            placeholder="请输入短信验证码"
+                        />
                     </div>
                 </div>
                 <div class="change-bt" @click="passType = !passType">重置{{ passType ? '' : '提现' }}密码</div>
@@ -27,13 +39,23 @@
             <div v-if="step === 2">
                 <div class="items">
                     <div class="item" @click="nameInputFcous('passwordRef')">
-                        <input ref="passwordRef" v-model.trim="password" :type="showpass1 ? 'text' : 'password'" placeholder="请输入新密码" />
+                        <input
+                            ref="passwordRef"
+                            v-model.trim="password"
+                            :type="showpass1 ? 'text' : 'password'"
+                            placeholder="请输入新密码"
+                        />
                         <span class="ege-warp" @click.stop="showpass1 = !showpass1">
                             <van-icon :name="showpass1 ? 'eye-o' : 'closed-eye'" />
                         </span>
                     </div>
                     <div class="item" @click="nameInputFcous('repasswordRef')">
-                        <input ref="repasswordRef" v-model.trim="repassword" :type="showpass2 ? 'text' : 'password'" placeholder="请再次输入新密码" />
+                        <input
+                            ref="repasswordRef"
+                            v-model.trim="repassword"
+                            :type="showpass2 ? 'text' : 'password'"
+                            placeholder="请再次输入新密码"
+                        />
                         <span class="ege-warp" @click.stop="showpass2 = !showpass2">
                             <van-icon :name="showpass2 ? 'eye-o' : 'closed-eye'" />
                         </span>

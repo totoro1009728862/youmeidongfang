@@ -25,12 +25,24 @@
                 </div>
                 <div class="item pr180" @click="nameInputFcous('phoneNumberRef')">
                     <div class="label">手机号</div>
-                    <input ref="phoneNumberRef" v-model.trim="phone" type="tel" maxlength="11" placeholder="请填写您的手机号" />
+                    <input
+                        ref="phoneNumberRef"
+                        v-model.trim="phone"
+                        type="tel"
+                        maxlength="11"
+                        placeholder="请填写您的手机号"
+                    />
                     <div class="code-bt" @click.stop="getCode">{{ codeText }}</div>
                 </div>
                 <div class="item" @click="nameInputFcous('codeRef')">
                     <div class="label">验证码</div>
-                    <input ref="codeRef" v-model.trim="authCode" type="tel" maxlength="6" placeholder="请填写您的手机验证码" />
+                    <input
+                        ref="codeRef"
+                        v-model.trim="authCode"
+                        type="tel"
+                        maxlength="6"
+                        placeholder="请填写您的手机验证码"
+                    />
                 </div>
                 <div class="item" @click.stop="showArea = true">
                     <div class="label">所在区域</div>
@@ -41,32 +53,58 @@
                 </div>
                 <div class="item" @click="nameInputFcous('InviterNumberRef')">
                     <div class="label">邀请人</div>
-                    <input ref="InviterNumberRef" v-model.trim="inviteBusinessPhone" type="tel" maxlength="11" placeholder="请填写邀请人的手机号" />
+                    <input
+                        ref="InviterNumberRef"
+                        v-model.trim="inviteBusinessPhone"
+                        type="tel"
+                        maxlength="11"
+                        placeholder="请填写邀请人的手机号"
+                    />
                 </div>
                 <div class="item" @click="nameInputFcous('passwordRef')">
                     <div class="label">登录密码</div>
-                    <input ref="passwordRef" v-model.trim="loginPassword" :type="passwordShow ? 'text' : 'password'" placeholder="请填写您的登录密码" />
+                    <input
+                        ref="passwordRef"
+                        v-model.trim="loginPassword"
+                        :type="passwordShow ? 'text' : 'password'"
+                        placeholder="请填写您的登录密码"
+                    />
                     <span class="ege-warp" @click.stop="passwordShow = !passwordShow">
                         <van-icon :name="passwordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
                 </div>
                 <div class="item" @click="nameInputFcous('repasswordRef')">
                     <div class="label">确认密码</div>
-                    <input ref="repasswordRef" v-model.trim="repassword" :type="repasswordShow ? 'text' : 'password'" placeholder="请再次填写您的登录密码" />
+                    <input
+                        ref="repasswordRef"
+                        v-model.trim="repassword"
+                        :type="repasswordShow ? 'text' : 'password'"
+                        placeholder="请再次填写您的登录密码"
+                    />
                     <span class="ege-warp" @click.stop="repasswordShow = !repasswordShow">
                         <van-icon :name="repasswordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
                 </div>
                 <div class="item" @click="nameInputFcous('cashwordRef')">
                     <div class="label">提现密码</div>
-                    <input ref="cashwordRef" v-model.trim="payPassword" :type="cashwordShow ? 'text' : 'password'" placeholder="请填写您的提现密码" />
+                    <input
+                        ref="cashwordRef"
+                        v-model.trim="payPassword"
+                        :type="cashwordShow ? 'text' : 'password'"
+                        placeholder="请填写您的提现密码"
+                    />
                     <span class="ege-warp" @click.stop="cashwordShow = !cashwordShow">
                         <van-icon :name="cashwordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
                 </div>
                 <div class="item" @click="nameInputFcous('recashwordRef')">
                     <div class="label">确认密码</div>
-                    <input ref="recashwordRef" v-model.trim="recashword" :type="recashwordShow ? 'text' : 'password'" placeholder="请再次填写您的提现密码" />
+                    <input
+                        ref="recashwordRef"
+                        v-model.trim="recashword"
+                        :type="recashwordShow ? 'text' : 'password'"
+                        placeholder="请再次填写您的提现密码"
+                    />
                     <span class="ege-warp" @click.stop="recashwordShow = !recashwordShow">
                         <van-icon :name="recashwordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
@@ -152,8 +190,29 @@ export default {
     },
     computed: {
         noClick() {
-            const { shopName, name, phone, authCode, areaCode, loginPassword, repassword, payPassword, recashword, checked, tabIndex } = this
-            const v = !phone || !authCode || !name || !areaCode || !loginPassword || !repassword || !payPassword || !recashword || !checked
+            const {
+                shopName,
+                name,
+                phone,
+                authCode,
+                areaCode,
+                loginPassword,
+                repassword,
+                payPassword,
+                recashword,
+                checked,
+                tabIndex
+            } = this
+            const v =
+                !phone ||
+                !authCode ||
+                !name ||
+                !areaCode ||
+                !loginPassword ||
+                !repassword ||
+                !payPassword ||
+                !recashword ||
+                !checked
 
             const v2 = !shopName || v
             return tabIndex === 2 ? v2 : v

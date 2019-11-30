@@ -6,21 +6,37 @@
         </background>
 
         <div class="content">
-            <tabs v-model="tabIndex" :tabs="['代理', '店家']"></tabs>
+            <tabs v-model="tabIndex" :tabs="['服务商', '店家']"></tabs>
             <div class="items">
                 <div class="item" @click="nameInputFcous('userNameRef')">
                     <div class="icon ym-account"></div>
-                    <input ref="userNameRef" v-model.trim="userName" type="tel" maxlength="11" placeholder="请输入登录手机号" />
+                    <input
+                        ref="userNameRef"
+                        v-model.trim="userName"
+                        type="tel"
+                        maxlength="11"
+                        placeholder="请输入登录手机号"
+                    />
                 </div>
                 <div class="item" @click="nameInputFcous('passwordRef')">
                     <div class="icon ym-password"></div>
-                    <input ref="passwordRef" v-model.trim="password" :type="isPasswordShow ? 'text' : 'password'" placeholder="请输入密码" />
+                    <input
+                        ref="passwordRef"
+                        v-model.trim="password"
+                        :type="isPasswordShow ? 'text' : 'password'"
+                        placeholder="请输入密码"
+                    />
                     <span class="ege-warp" @click.stop="isPasswordShow = !isPasswordShow">
                         <van-icon :name="isPasswordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
                 </div>
                 <div class="forgot-box">
-                    <nuxt-link v-if="!isWechat" tag="div" class="forgot" :to="{ name: 'ForgetPassword', query: { tabIndex } }">
+                    <nuxt-link
+                        v-if="!isWechat"
+                        tag="div"
+                        class="forgot"
+                        :to="{ name: 'ForgetPassword', query: { tabIndex } }"
+                    >
                         <span>忘记密码?</span>
                     </nuxt-link>
                     <nuxt-link tag="div" class="forgot" :to="{ name: 'Registration', query: { ...$route.query } }">
@@ -121,12 +137,13 @@ export default {
                 this.$cookies.set('userId', data.userId, {
                     path: '/'
                 })
-
+                const jsCode = this.$route.query.code || ''
                 if (this.$route.query.originUrl) {
                     this.$router.replace(decodeURIComponent(this.$route.query.originUrl))
                 } else {
                     this.$router.replace({
-                        name: 'Mine'
+                        name: 'Mine',
+                        query: { code: jsCode }
                     })
                 }
             }

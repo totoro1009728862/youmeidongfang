@@ -5,7 +5,9 @@
         <div class="time-box">
             <div class="time">{{ surplusTime | setTime }}</div>
             <div class="begin-bt">
-                <div :class="{ 'no-click': approveStatus === 3 }" @click="startDeviceFunc">{{ approveStatus === 3 ? '使用中' : '开始使用' }}</div>
+                <div :class="{ 'no-click': approveStatus === 3 }" @click="startDeviceFunc">
+                    {{ approveStatus === 3 ? '使用中' : '开始使用' }}
+                </div>
             </div>
             <div class="tip">*实际运行时间以机器为准</div>
             <div class="count-info">
