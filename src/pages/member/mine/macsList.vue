@@ -7,7 +7,7 @@
                     <div class="mac-price">{{ item.price }}</div>
                 </div>
                 <div class="r-info">
-                    <i>{{ item.useNum }}</i>
+                    <i>{{ item.useNum * -1 }}</i>
                 </div>
             </div>
         </div>
@@ -17,7 +17,7 @@
             tag="div"
             class="mac-more"
         >
-            查看更多
+            <div>查看更多</div>
         </nuxt-link>
     </div>
 </template>
@@ -42,7 +42,7 @@ export default {
     display: flex;
     flex-flow: column nowrap;
     width: 100%;
-    padding: 0 20px;
+    padding: 0;
     font-size: 14px;
     color: #222;
     .mac {
@@ -66,7 +66,7 @@ export default {
             }
         }
         .r-info {
-            font-size: 16px;
+            font-size: 14px;
             color: #222;
             font-weight: bold;
             i {

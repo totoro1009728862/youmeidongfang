@@ -137,7 +137,7 @@ export default {
                         )
                     }
                 } else {
-                    this.onBridgeReady(data)
+                    this.onBridgeReady(data, deviceId, userId)
                 }
             }
         },
@@ -195,7 +195,7 @@ export default {
                 },
                 function(res) {
                     if (res.err_msg == 'get_brand_wcpay_request:ok') {
-                        window.location.href = `/mycount?deviceId=${deviceId}&userId=${userId}`
+                        window.location.href = `/home/mycount?deviceId=${deviceId}&userId=${userId}`
                     }
                 }
             )

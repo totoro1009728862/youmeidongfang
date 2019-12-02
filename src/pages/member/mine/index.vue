@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div v-else class="val-dom">{{ totalNum }}</div>
-                <div v-if="userType === 2">
+                <div v-if="userType === 2" class="macs-dom">
                     <div class="price-t">已拥有机器数</div>
                     <div class="show-macs" @click="showMacs = !showMacs">
                         <div class="icon" :class="{ 'ym-down': !showMacs, 'ym-up': showMacs }"></div>
@@ -141,11 +141,9 @@ export default {
         border: 1px solid rgba(255, 255, 255, 0);
         border-radius: 5px;
 
-        > div {
+        .val-dom {
             display: flex;
             justify-content: center;
-        }
-        .val-dom {
             font-size: 24px;
             color: #ab1f26;
         }
@@ -182,13 +180,23 @@ export default {
                 }
             }
         }
-        .price-t {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #222;
-        }
-        .show-macs {
-            padding: 10px;
+        .macs-dom {
+            display: block;
+            width: 100%;
+            padding: 0 30px;
+            margin: 0 auto;
+            .price-t {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 14px;
+                color: #222;
+            }
+            .show-macs {
+                padding: 10px;
+                .icon {
+                    text-align: center;
+                }
+            }
         }
     }
     .bt {
