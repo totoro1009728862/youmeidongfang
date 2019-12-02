@@ -136,9 +136,10 @@ export default {
                 page: current,
                 rows: 10
             }
-            const { code, data } = this.perType
-                ? await member.mine.myPerformanceList(params)
-                : await member.mine.myBrokerageList(params)
+            const { code, data } =
+                this.perType === 0 && this.userType === 1
+                    ? await member.mine.myBrokerageList(params)
+                    : await member.mine.myPerformanceList(params)
             if (code === 200) {
                 this.total = data.total
                 this.perList.push(...data.list)

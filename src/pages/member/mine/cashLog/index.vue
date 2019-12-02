@@ -48,8 +48,8 @@ export default {
 
             const { code, data } =
                 query.cashType && query.cashType == 1
-                    ? await member.mine.myPerformanceList(params)
-                    : await member.mine.myBrokerageList(params)
+                    ? await member.mine.myBrokerageList(params)
+                    : await member.mine.myPerformanceList(params)
             if (code === 200) {
                 this.total = data.total
                 this.logs.push(...data.list)
