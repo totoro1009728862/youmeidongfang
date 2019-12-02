@@ -14,7 +14,7 @@
         <van-sticky v-else :offset-top="50">
             <div class="tabs">
                 <div
-                    v-for="(item, index) in ['代理推广', '仪器推广']"
+                    v-for="(item, index) in ['推广佣金', '仪器分润']"
                     :key="index"
                     :class="{ actived: index === perType }"
                     @click="linkTab(index)"
@@ -27,7 +27,7 @@
             <div v-if="perList.length" class="list-box">
                 <div v-for="(item, i) in perList" :key="i" class="item">
                     <div class="l-info">
-                        <div class="mac-no">{{ typeTxt.t1 }}{{ item.deviceNo }}</div>
+                        <div class="mac-no">{{ item.remark }}</div>
                         <div class="mac-price">{{ typeTxt.t2 }}{{ item.createDate }}</div>
                     </div>
                     <div class="r-info">

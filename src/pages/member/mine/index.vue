@@ -8,11 +8,11 @@
                 <div v-if="userType === 1" class="val-dom price-box">
                     <div>
                         <div class="price-v">{{ brokeragePrice }}</div>
-                        <div>推广代理累计佣金</div>
+                        <div>推广累计佣金</div>
                     </div>
                     <div>
                         <div class="price-v">{{ price }}</div>
-                        <div>推广仪器累计分润</div>
+                        <div>仪器累计分润</div>
                     </div>
                 </div>
                 <div v-else class="val-dom">{{ totalNum }}</div>

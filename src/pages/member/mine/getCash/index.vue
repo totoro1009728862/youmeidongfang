@@ -5,7 +5,7 @@
         <div class="header-info">
             <div class="cash-box">
                 <div class="cash-tab">
-                    <span :class="{ act: cashType === 1 }" @click="cashType = 1">代理佣金</span>
+                    <span :class="{ act: cashType === 1 }" @click="cashType = 1">推广佣金</span>
                     <span :class="{ act: cashType === 2 }" @click="cashType = 2">仪器分润</span>
                 </div>
                 <nuxt-link class="log" :to="{ name: 'CashLog', query: { cashType } }" tag="div">提现明细</nuxt-link>

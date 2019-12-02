@@ -9,7 +9,7 @@
                         <div class="mac-price">{{ item.price }}</div>
                     </div>
                     <div class="r-info">
-                        <i>{{ item.useNum }}</i>
+                        <i>{{ item.useNum * -1 }}</i>
                     </div>
                 </div>
             </div>
