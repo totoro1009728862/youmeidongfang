@@ -42,7 +42,8 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 90px;
+        padding: 0 10px;
+        min-width: 90px;
         height: 30px;
         overflow: hidden;
         color: #222;

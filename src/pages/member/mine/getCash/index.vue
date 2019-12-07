@@ -21,7 +21,7 @@
                 </div>
                 <div class="tip">
                     <div class="txt">提现金额最低10元</div>
-                    <div class="rt" @click="cashPrice = price">全部</div>
+                    <div class="rt" @click="setCashPrice">全部</div>
                 </div>
             </div>
             <div v-show="cashType === 2" class="card-box">
@@ -147,8 +147,12 @@ export default {
     },
     computed: {
         noClick() {
-            const v = !this.selectCard || !this.selectCard.bankNo || !this.cashPrice
-            return v
+            if (this.cashType === 1) {
+                const v = !this.selectCard || !this.selectCard.bankNo || !this.cashPrice
+                return v
+            } else {
+                return !this.cashPrice
+            }
         }
     },
     watch: {
@@ -227,6 +231,9 @@ export default {
                 //DOM 更新了
                 this.$refs[v].focus()
             })
+        },
+        setCashPrice() {
+            this.cashPrice = this.cashType === 1 ? this.brokeragePrice : this.price
         },
         async addEditBank() {
             if (!this.bankInfo.name) {

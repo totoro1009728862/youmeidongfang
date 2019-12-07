@@ -6,7 +6,7 @@
         </background>
 
         <div class="content">
-            <tabs v-model="tabIndex" :tabs="['服务商', '店家']"></tabs>
+            <tabs v-model="tabIndex" :tabs="['服务商/合伙人', '店家']"></tabs>
             <div class="items">
                 <div class="item" @click="nameInputFcous('userNameRef')">
                     <div class="icon ym-account"></div>
