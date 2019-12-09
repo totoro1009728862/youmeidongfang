@@ -20,7 +20,8 @@ export default {
     async asyncData({ app, query, redirect }) {
         const params = {
             paymentMode: query.paymentMode,
-            jsCode: query.code || query.auth_code
+            jsCode: query.code || query.auth_code,
+            deviceId: query.deviceId
         }
         app.$cookies.set('userType', 3, {
             path: '/'

@@ -282,8 +282,11 @@ export default {
             let params = {
                 payPassword: this.cashword,
                 price: this.cashPrice,
-                userId: this.userId,
-                bankId: this.selectCard.bankId || ''
+                userId: this.userId
+            }
+            // 非微信需要提供银行卡帐号
+            if (this.cashType === 1) {
+                params.bankId = this.selectCard.bankId || ''
             }
             this.submit(params)
         },
