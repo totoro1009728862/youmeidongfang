@@ -92,7 +92,7 @@
         </van-popup>
         <!-- 提现密码弹窗 -->
         <van-popup v-model="showSub" class="cashword-box" get-container="body">
-            <div class="icon ym-close" @click="showSub = false"></div>
+            <div class="icon ym-close" @click.stop="showSub = false"></div>
             <div class="title">提现密码</div>
             <div class="item" @click="nameInputFcous('cashwordRef')">
                 <input ref="cashwordRef" v-model.trim="cashword" type="password" placeholder="请输入提现密码" />
@@ -206,6 +206,17 @@ export default {
                 this.cards = data
             }
         },
+        async getPriceInfo() {
+            const {
+                userId,
+                $api: { member }
+            } = this
+            const { code, data } = await member.mine.myPerformance({ userId })
+            if (code === 200) {
+                this.price = data.price
+                this.brokeragePrice = data.brokeragePrice
+            }
+        },
 
         addCard() {
             this.bankInfo = {
@@ -303,6 +314,7 @@ export default {
                     message: '提交成功，资金将在3-5个工作日内到账，请注意查收',
                     duration: 2000,
                     onClose: () => {
+                        this.getPriceInfo()
                         this.showSub = false
                     }
                 })

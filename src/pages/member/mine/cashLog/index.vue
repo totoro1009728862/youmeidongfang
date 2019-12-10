@@ -120,9 +120,9 @@ export default {
                 font-size: 12px;
                 line-height: 30px;
                 color: #888;
-                &::after {
-                    content: '元/次';
-                }
+                // &::after {
+                //     content: '元/次';
+                // }
             }
         }
         .r-info {
