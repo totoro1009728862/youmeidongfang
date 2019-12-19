@@ -3,7 +3,7 @@
         <div class="head">{{ info.name | getHead }}</div>
         <div class="user-name">
             <div>{{ info.name }}</div>
-            <div v-if="info.InviterNumber">邀请人:{{ info.inviteBusinessName }}</div>
+            <div v-if="info.inviteBusinessName">邀请人:{{ info.inviteBusinessName }}</div>
         </div>
     </div>
 </template>

@@ -21,7 +21,7 @@
                 </div>
                 <div class="tip">
                     <div class="txt">提现金额最低10元</div>
-                    <div class="rt" @click="cashPrice = price">全部</div>
+                    <div class="rt" @click="setCashPrice">全部</div>
                 </div>
             </div>
             <div v-show="cashType === 2" class="card-box">
@@ -92,7 +92,7 @@
         </van-popup>
         <!-- 提现密码弹窗 -->
         <van-popup v-model="showSub" class="cashword-box" get-container="body">
-            <div class="icon ym-close" @click="showSub = false"></div>
+            <div class="icon ym-close" @click.stop="showSub = false"></div>
             <div class="title">提现密码</div>
             <div class="item" @click="nameInputFcous('cashwordRef')">
                 <input ref="cashwordRef" v-model.trim="cashword" type="password" placeholder="请输入提现密码" />
@@ -147,8 +147,12 @@ export default {
     },
     computed: {
         noClick() {
-            const v = !this.selectCard || !this.selectCard.bankNo || !this.cashPrice
-            return v
+            if (this.cashType === 1) {
+                const v = !this.selectCard || !this.selectCard.bankNo || !this.cashPrice
+                return v
+            } else {
+                return !this.cashPrice
+            }
         }
     },
     watch: {
@@ -202,6 +206,17 @@ export default {
                 this.cards = data
             }
         },
+        async getPriceInfo() {
+            const {
+                userId,
+                $api: { member }
+            } = this
+            const { code, data } = await member.mine.myPerformance({ userId })
+            if (code === 200) {
+                this.price = data.price
+                this.brokeragePrice = data.brokeragePrice
+            }
+        },
 
         addCard() {
             this.bankInfo = {
@@ -227,6 +242,9 @@ export default {
                 //DOM 更新了
                 this.$refs[v].focus()
             })
+        },
+        setCashPrice() {
+            this.cashPrice = this.cashType === 1 ? this.brokeragePrice : this.price
         },
         async addEditBank() {
             if (!this.bankInfo.name) {
@@ -275,8 +293,11 @@ export default {
             let params = {
                 payPassword: this.cashword,
                 price: this.cashPrice,
-                userId: this.userId,
-                bankId: this.selectCard.bankId || ''
+                userId: this.userId
+            }
+            // 非微信需要提供银行卡帐号
+            if (this.cashType === 1) {
+                params.bankId = this.selectCard.bankId || ''
             }
             this.submit(params)
         },
@@ -293,6 +314,7 @@ export default {
                     message: '提交成功，资金将在3-5个工作日内到账，请注意查收',
                     duration: 2000,
                     onClose: () => {
+                        this.getPriceInfo()
                         this.showSub = false
                     }
                 })

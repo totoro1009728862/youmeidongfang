@@ -46,9 +46,9 @@
                 </div>
                 <div class="item" @click.stop="showArea = true">
                     <div class="label">所在区域</div>
-                    <span v-for="(item, index) in areaCodes" :key="index" :class="{ 'has-value': item.name }">{{
-                        item.name || `选择${index === 0 ? '省' : index === 1 ? '市' : '区/县'}`
-                    }}</span>
+                    <span v-for="(item, index) in areaCodes" :key="index" :class="{ 'has-value': item.name }">
+                        {{ item.name || `选择${index === 0 ? '省' : index === 1 ? '市' : '区/县'}` }}
+                    </span>
                     <span class="ege-warp icon ym-down"></span>
                 </div>
                 <div class="item" @click="nameInputFcous('InviterNumberRef')">
@@ -353,9 +353,14 @@ export default {
                 areaName: areaCodes[2].name
             }
             this.loading = true
-            this.$Toast('注册中，请稍后..')
+            this.$Toast.loading({
+                mask: true,
+                message: '提交中...',
+                duration: 0
+            })
             const { code } = await member.login.registerUser(params)
             this.loading = false
+            this.$Toast.clear()
             if (code === 200) {
                 this.$Toast.success({
                     message: '申请已发送，请等待客服审核！',

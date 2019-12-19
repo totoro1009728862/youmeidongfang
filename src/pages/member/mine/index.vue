@@ -73,6 +73,7 @@ export default {
     methods: {
         ...mapActions(['set_userInfo']),
         async getUserInfo() {
+            console.log(this.userInfo)
             const {
                 userInfo,
                 $api: { member }
