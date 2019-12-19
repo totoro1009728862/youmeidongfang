@@ -20,7 +20,7 @@
                     <input ref="cashPriceRef" v-model.trim="cashPrice" type="tel" placeholder="请输入提现金额" />
                 </div>
                 <div class="tip">
-                    <div class="txt">提现金额最低10元</div>
+                    <div class="txt">{{ cashType === 1 ? '提现收取3%的综合费用' : '提现收取6‰的综合费用' }}</div>
                     <div class="rt" @click="setCashPrice">全部</div>
                 </div>
             </div>
