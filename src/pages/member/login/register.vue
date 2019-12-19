@@ -340,7 +340,7 @@ export default {
                 path: '/'
             })
             let params = {
-                businessType: tabIndex === 2 ? 0 : tabIndex === 1 ? 1 : 2,
+                businessType: tabIndex === 2 ? 0 : tabIndex === 1 ? 2 : 1,
                 authCode, // 验证码
                 shopName, // 门店数量
                 name, //用户名
