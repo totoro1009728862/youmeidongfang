@@ -13,7 +13,7 @@
                     <input ref="cashPriceRef" v-model.trim="cashPrice" type="tel" placeholder="请输入提现金额" />
                 </div>
                 <div class="tip">
-                    <div class="txt">提现收取6‰的综合费用</div>
+                    <div class="txt">提现收取0.6%的综合费用</div>
                     <div class="rt" @click="cashPrice = price">全部</div>
                 </div>
             </div>
