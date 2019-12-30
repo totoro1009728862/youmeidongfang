@@ -92,6 +92,12 @@ export default {
                 this.surplusTime--
             }, 1000)
         }
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState !== 'hidden') {
+                console.log('亮屏')
+                this.setMyUserNum()
+            }
+        })
     },
     methods: {
         startDeviceFunc() {
@@ -99,6 +105,22 @@ export default {
                 this.$Toast('仪器正在运转中')
             } else {
                 this.startDevice()
+            }
+        },
+        // 初始化接口调用获取剩余时间
+        async setMyUserNum() {
+            const {
+                $api: { product },
+                deviceId,
+                userId
+            } = this
+            const params = {
+                deviceId,
+                userId
+            }
+            const { code, data } = await product.myUserNum(params)
+            if (code === 200) {
+                Object.assign(this, data)
             }
         },
         async startDevice() {
