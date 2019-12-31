@@ -6,7 +6,7 @@
             <div class="time">{{ surplusTime | setTime }}</div>
             <div class="begin-bt">
                 <div :class="{ 'no-click': approveStatus === 3 }" @click="startDeviceFunc">
-                    {{ approveStatus === 3 ? '使用中' : '开始使用' }}
+                    {{ approveStatus === 3 ? '刷新倒计时' : '开始使用' }}
                 </div>
             </div>
             <div class="tip">*实际运行时间以机器为准</div>
@@ -102,7 +102,8 @@ export default {
     methods: {
         startDeviceFunc() {
             if (this.approveStatus === 3) {
-                this.$Toast('仪器正在运转中')
+				this.setMyUserNum()
+                //this.$Toast('仪器正在运转中')
             } else {
                 this.startDevice()
             }
