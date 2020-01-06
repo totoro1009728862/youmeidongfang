@@ -122,6 +122,11 @@ export default {
             const { code, data } = await product.myUserNum(params)
             if (code === 200) {
                 Object.assign(this, data)
+				if (this.surplusTime > 0 && this.approveStatus === 3) {
+					this.timeInt = setInterval(() => {
+						this.surplusTime--
+					}, 1000)
+				}
             }
         },
         async startDevice() {
