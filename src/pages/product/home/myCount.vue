@@ -123,6 +123,7 @@ export default {
             if (code === 200) {
                 Object.assign(this, data)
 				if (this.surplusTime > 0 && this.approveStatus === 3) {
+					clearInterval(this.timeInt)
 					this.timeInt = setInterval(() => {
 						this.surplusTime--
 					}, 1000)
