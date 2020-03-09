@@ -29,6 +29,16 @@ module.exports = [
         name: 'MyCount',
         component: 'pages/product/home/myCount.vue'
     },
+    {
+        path: `/home/merchantsPay`,
+        name: 'MerchantsPay',
+        component: 'pages/product/home/merchantsPay.vue'
+    },
+    {
+        path: `/home/pay`,
+        name: 'Pay',
+        component: 'pages/product/home/pay.vue'
+    },
 
     ...login,
     ...product,

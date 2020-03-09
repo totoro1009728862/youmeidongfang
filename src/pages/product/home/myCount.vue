@@ -102,7 +102,7 @@ export default {
     methods: {
         startDeviceFunc() {
             if (this.approveStatus === 3) {
-				this.setMyUserNum()
+                this.setMyUserNum()
                 //this.$Toast('仪器正在运转中')
             } else {
                 this.startDevice()
@@ -122,12 +122,12 @@ export default {
             const { code, data } = await product.myUserNum(params)
             if (code === 200) {
                 Object.assign(this, data)
-				if (this.surplusTime > 0 && this.approveStatus === 3) {
-					clearInterval(this.timeInt)
-					this.timeInt = setInterval(() => {
-						this.surplusTime--
-					}, 1000)
-				}
+                if (this.surplusTime > 0 && this.approveStatus === 3) {
+                    clearInterval(this.timeInt)
+                    this.timeInt = setInterval(() => {
+                        this.surplusTime--
+                    }, 1000)
+                }
             }
         },
         async startDevice() {

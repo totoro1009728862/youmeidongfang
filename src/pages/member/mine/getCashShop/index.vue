@@ -19,10 +19,10 @@
             </div>
             <div class="card-box">
                 <div class="title">
-                    <div>提现至银行卡</div>
-                    <div class="icon ym-card"></div>
+                    <div>提现至微信</div>
+                    <div class="icon ym-weixin"></div>
                 </div>
-                <div v-if="cards && cards.length">
+                <!-- <div v-if="cards && cards.length">
                     <div v-for="(item, index) in cards" :key="index" class="card" @click="selectCard = item">
                         <div class="lf">
                             <div class="icon ym-radio-checked"></div>
@@ -38,14 +38,14 @@
                         <div class="number">添加新的银行卡</div>
                     </div>
                     <div class="icon ym-right"></div>
-                </div>
+                </div>-->
             </div>
             <div class="bt">
                 <div :class="{ 'no-click': noClick }" @click="submitForm">确定</div>
             </div>
         </div>
         <!-- 绑定银行卡 -->
-        <van-popup v-model="show" class="edit-card-box" position="right" :style="{ height: '100%', width: '100%' }">
+        <!-- <van-popup v-model="show" class="edit-card-box" position="right" :style="{ height: '100%', width: '100%' }">
             <div class="bind-header">
                 <div class="icon ym-left" @click="show = false"></div>
                 <div>{{ bankInfo.bankId ? '修改银行卡信息' : '新增银行卡卡号' }}</div>
@@ -64,6 +64,17 @@
                         <input ref="cardNumberRef" v-model.trim="bankInfo.bankNo" placeholder="请输入银行卡卡号" />
                     </div>
                 </div>
+                <div class="card-input">
+                    <div class="label">开户行地址</div>
+                    <div class="card-number" @click="nameInputFcous('addressRef')">
+                        <input
+                            ref="addressRef"
+                            v-model.trim="bankInfo.address"
+                            type="text"
+                            placeholder="请输入开户行地址"
+                        />
+                    </div>
+                </div>
                 <div v-if="bankInfo['bankName']" class="card-input">
                     <div class="label">银行</div>
                     <div class="card-number">{{ bankInfo.bankName }}</div>
@@ -76,7 +87,7 @@
                     <div @click="addEditBank">确定</div>
                 </div>
             </div>
-        </van-popup>
+        </van-popup>-->
         <!-- 提现密码弹窗 -->
         <van-popup v-model="showSub" class="cashword-box" get-container="body">
             <div class="icon ym-close" @click="showSub = false"></div>
@@ -124,7 +135,8 @@ export default {
             showSub: false, // 密码弹窗
             bankInfo: {
                 name: '',
-                bankNo: ''
+                bankNo: '',
+                address: ''
             }, // 卡信息
             cardCheck: false, // 卡号是否正确
             cashword: '' // 提现密码
@@ -193,7 +205,8 @@ export default {
                 bankName: '',
                 cardTypeName: '',
                 cardType: '',
-                bankCode: ''
+                bankCode: '',
+                address: ''
             }
             this.show = true
         },
@@ -216,17 +229,20 @@ export default {
                 this.$Toast('请输入持卡人姓名')
             } else if (!this.cardCheck) {
                 this.$Toast('请输入正确的银行卡号')
+            } else if (!this.bankInfo.address) {
+                this.$Toast('请输入开户行地址')
             } else {
                 const {
                     userId,
-                    bankInfo: { name, bankNo, bankName },
+                    bankInfo: { name, bankNo, bankName, address },
                     $api: { member }
                 } = this
                 const params = {
                     userId,
                     name,
                     bankNo,
-                    bankName
+                    bankName,
+                    address
                 }
                 const { code, data } = await member.mine.addbank(params)
                 if (code === 200) {
