@@ -80,7 +80,7 @@
                 <div class="card-input">
                     <div class="label">开户行地址</div>
                     <div class="card-number" @click="nameInputFcous('addressRef')">
-                        <input ref="addressRef" v-model.trim="bankInfo.address" type="text" placeholder="持卡人姓名" />
+                        <input ref="addressRef" v-model.trim="bankInfo.bankAddress" type="text" placeholder="请输入开户行地址" />
                     </div>
                 </div>
                 <div v-if="bankInfo['bankName']" class="card-input">
@@ -146,7 +146,7 @@ export default {
             bankInfo: {
                 name: '',
                 bankNo: '',
-                address: ''
+                bankAddress: ''
             }, // 卡信息
             cardCheck: false, // 卡号是否正确
             cashword: '' // 提现密码
@@ -233,7 +233,7 @@ export default {
                 cardTypeName: '',
                 cardType: '',
                 bankCode: '',
-                address: ''
+                bankAddress: ''
             }
             this.show = true
         },
@@ -259,12 +259,12 @@ export default {
                 this.$Toast('请输入持卡人姓名')
             } else if (!this.cardCheck) {
                 this.$Toast('请输入正确的银行卡号')
-            } else if (!this.bankInfo.address) {
+            } else if (!this.bankInfo.bankAddress) {
                 this.$Toast('请输入开户行地址')
             } else {
                 const {
                     userId,
-                    bankInfo: { name, bankNo, bankName, address },
+                    bankInfo: { name, bankNo, bankName, bankAddress },
                     $api: { member }
                 } = this
                 const params = {
@@ -272,7 +272,7 @@ export default {
                     name,
                     bankNo,
                     bankName,
-                    address
+                    bankAddress
                 }
                 const { code, data } = await member.mine.addbank(params)
                 if (code === 200) {
@@ -321,8 +321,9 @@ export default {
                     ? await member.mine.brokerageSubmitPrice(params)
                     : await member.mine.submitPrice(params)
             if (code === 200) {
+				
                 this.$Toast.success({
-                    message: '提交成功，资金将在3-5个工作日内到账，请注意查收',
+                    message: this.cashType === 1 ? '提交成功，资金将在3-5个工作日内到账，请注意查收':'已提现到微信零钱，请在微信钱包中查看',
                     duration: 2000,
                     onClose: () => {
                         this.getPriceInfo()

@@ -286,7 +286,7 @@ export default {
             const { code } = await member.mine.submitPrice(params)
             if (code === 200) {
                 this.$Toast.success({
-                    message: '提交成功，资金将在3-5个工作日内到账，请注意查收',
+                    message: '已提现到微信零钱，请在微信钱包中查看',
                     duration: 2000,
                     onClose: () => {
                         this.showSub = false
@@ -399,6 +399,9 @@ export default {
             .icon {
                 font-size: 24px;
                 color: #ab1f26;
+            }
+			.ym-weixin {
+                color: #259b24;
             }
             .ym-radio {
                 color: #888;
