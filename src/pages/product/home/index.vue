@@ -15,6 +15,7 @@
                 <div class="title">
                     <span>购买使用次数</span>
                     <span>(只限当前门店使用)</span>
+                    <div class="daifu" @click="goMerchantsPay">店家代付</div>
                 </div>
                 <div class="list">
                     <div>
@@ -199,6 +200,13 @@ export default {
                     }
                 }
             )
+        },
+        goMerchantsPay() {
+            const { deviceId, userId, deviceNo, shopName } = this
+            this.$router.push({
+                name: 'MerchantsPay',
+                query: { deviceId, userId, deviceNo, shopName }
+            })
         }
         /* eslint-disable */
     }
@@ -246,11 +254,25 @@ export default {
         flex-flow: column nowrap;
         width: 100%;
         .title {
+            position: relative;
             font-size: 12px;
             color: #888;
             span:nth-child(1) {
                 font-size: 14px;
                 color: #222;
+            }
+            .daifu {
+                position: absolute;
+                right: 0;
+                top: 0;
+                height: 24px;
+                line-height: 20px;
+                text-align: center;
+                width: 80px;
+                color: #ab1f26;
+                font-size: 14px;
+                border: 2px solid #ab1f26;
+                border-radius: 4px;
             }
         }
         .mt20 {

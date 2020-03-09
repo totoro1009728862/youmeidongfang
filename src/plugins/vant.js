@@ -22,7 +22,8 @@ import {
     Area,
     Tab,
     Tabs,
-    PullRefresh
+    PullRefresh,
+    Stepper
 } from 'vant'
 /** 按需引用vant组件的样式，
  * base.less 包含icon、overlay、button、lazyload等等组件样式
@@ -65,6 +66,8 @@ import 'vant/lib/tab/index.less'
 import 'vant/lib/tabs/index.less'
 // pull-refresh
 import 'vant/lib/pull-refresh/index.less'
+// Stepper
+import 'vant/lib/stepper/index.less'
 //这里自动覆盖vant的样式的外链样式文件
 import '~/assets/css/vant.css'
 
@@ -96,6 +99,7 @@ Vue.use(Area)
 Vue.use(Tab)
 Vue.use(Tabs)
 Vue.use(PullRefresh)
+Vue.use(Stepper)
 Vue.prototype.$Dialog = Dialog
 //(1)这个方法是仅仅注入Vue实例，所有组件内都可以访问，但是不包含服务器端
 // Vue.prototype.$Toast = Toast

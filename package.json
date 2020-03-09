@@ -6,7 +6,7 @@
     "author": "1009728862@qq.com",
     "license": "ISC",
     "scripts": {
-        "dev": " cross-env NODE_ENV=development IS_DEBUG=debug node build/server/index.js",
+        "dev": " eslint --fix --ext .js,.vue --ignore-path .gitignore . & cross-env NODE_ENV=development IS_DEBUG=debug node build/server/index.js",
         "build": "cross-env NODE_ENV=product nuxt build",
         "start": "cross-env NODE_ENV=product node build/server/index.js",
         "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
@@ -26,6 +26,7 @@
         "moment": "^2.24.0",
         "nuxt": "^2.8.1",
         "vant": "^2.2.8",
+        "qrcode": "^1.4.2",
         "vue-localstorage": "^0.6.2",
         "vue-sessionstorage": "^1.0.0",
         "vue-touch": "2.0.0-beta.4",

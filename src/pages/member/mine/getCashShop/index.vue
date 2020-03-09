@@ -64,6 +64,17 @@
                         <input ref="cardNumberRef" v-model.trim="bankInfo.bankNo" placeholder="请输入银行卡卡号" />
                     </div>
                 </div>
+                <div class="card-input">
+                    <div class="label">开户行地址</div>
+                    <div class="card-number" @click="nameInputFcous('addressRef')">
+                        <input
+                            ref="addressRef"
+                            v-model.trim="bankInfo.address"
+                            type="text"
+                            placeholder="请输入开户行地址"
+                        />
+                    </div>
+                </div>
                 <div v-if="bankInfo['bankName']" class="card-input">
                     <div class="label">银行</div>
                     <div class="card-number">{{ bankInfo.bankName }}</div>
@@ -124,7 +135,8 @@ export default {
             showSub: false, // 密码弹窗
             bankInfo: {
                 name: '',
-                bankNo: ''
+                bankNo: '',
+                address: ''
             }, // 卡信息
             cardCheck: false, // 卡号是否正确
             cashword: '' // 提现密码
@@ -193,7 +205,8 @@ export default {
                 bankName: '',
                 cardTypeName: '',
                 cardType: '',
-                bankCode: ''
+                bankCode: '',
+                address: ''
             }
             this.show = true
         },
@@ -216,17 +229,20 @@ export default {
                 this.$Toast('请输入持卡人姓名')
             } else if (!this.cardCheck) {
                 this.$Toast('请输入正确的银行卡号')
+            } else if (!this.bankInfo.address) {
+                this.$Toast('请输入开户行地址')
             } else {
                 const {
                     userId,
-                    bankInfo: { name, bankNo, bankName },
+                    bankInfo: { name, bankNo, bankName, address },
                     $api: { member }
                 } = this
                 const params = {
                     userId,
                     name,
                     bankNo,
-                    bankName
+                    bankName,
+                    address
                 }
                 const { code, data } = await member.mine.addbank(params)
                 if (code === 200) {
