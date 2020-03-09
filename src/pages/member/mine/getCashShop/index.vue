@@ -19,10 +19,10 @@
             </div>
             <div class="card-box">
                 <div class="title">
-                    <div>提现至银行卡</div>
-                    <div class="icon ym-card"></div>
+                    <div>提现至微信</div>
+                    <div class="icon ym-weixin"></div>
                 </div>
-                <div v-if="cards && cards.length">
+                <!-- <div v-if="cards && cards.length">
                     <div v-for="(item, index) in cards" :key="index" class="card" @click="selectCard = item">
                         <div class="lf">
                             <div class="icon ym-radio-checked"></div>
@@ -38,14 +38,14 @@
                         <div class="number">添加新的银行卡</div>
                     </div>
                     <div class="icon ym-right"></div>
-                </div>
+                </div>-->
             </div>
             <div class="bt">
                 <div :class="{ 'no-click': noClick }" @click="submitForm">确定</div>
             </div>
         </div>
         <!-- 绑定银行卡 -->
-        <van-popup v-model="show" class="edit-card-box" position="right" :style="{ height: '100%', width: '100%' }">
+        <!-- <van-popup v-model="show" class="edit-card-box" position="right" :style="{ height: '100%', width: '100%' }">
             <div class="bind-header">
                 <div class="icon ym-left" @click="show = false"></div>
                 <div>{{ bankInfo.bankId ? '修改银行卡信息' : '新增银行卡卡号' }}</div>
@@ -87,7 +87,7 @@
                     <div @click="addEditBank">确定</div>
                 </div>
             </div>
-        </van-popup>
+        </van-popup>-->
         <!-- 提现密码弹窗 -->
         <van-popup v-model="showSub" class="cashword-box" get-container="body">
             <div class="icon ym-close" @click="showSub = false"></div>
