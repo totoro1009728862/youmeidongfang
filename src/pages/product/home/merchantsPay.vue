@@ -45,8 +45,8 @@ export default {
             $api: { product }
         } = app
         const { code, data } = await product.userPayQr({
-            deviceId: query.deviceId,
-            userId: query.userId
+            deviceId: query.deviceId || 10376,
+            userId: query.userId || 4
         })
         if (code === 200) {
             console.log(data)
@@ -66,8 +66,27 @@ export default {
         }
         return {}
     },
-    created() {},
-    methods: {}
+    created() {
+        this.getNum()
+    },
+    methods: {
+        async getNum() {
+            const params = {
+                deviceId: this.deviceId,
+                userId: this.userId
+            }
+            const {
+                $api: { product }
+            } = this
+            console.log('---------测试老街口')
+            const { code, data } = await product.myUserNum(params)
+            console.log(code)
+            console.log(data)
+            if (code === 200) {
+                this.surplusNum = data.surplusNum
+            }
+        }
+    }
 }
 </script>
 <style lang="less" scoped>
@@ -117,6 +136,7 @@ export default {
             color: #222;
             margin-top: 10px;
             font-size: 14px;
+            text-align: center;
         }
         &-img {
             width: 200px;

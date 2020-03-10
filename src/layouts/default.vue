@@ -8,7 +8,11 @@
 export default {
     beforeMount() {
         // 在这里种cookie可以本地模拟登陆状态
-        this.$cookies.set('userToken', 'df4765c7ecc548308811e241b1986f71', {
+        this.$cookies.set('userToken', 'f2b4d3a7eb0f4e0aaff40dc6dd331624', {
+            path: '/'
+            // domain: '.hxtrip.com'
+        })
+        this.$cookies.set('userType', '3', {
             path: '/'
             // domain: '.hxtrip.com'
         })

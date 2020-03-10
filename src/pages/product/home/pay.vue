@@ -56,7 +56,7 @@ import Background from '~/modules/assist/background'
 import { debounce } from '~/common/utils/index.js'
 import { phoneNumberReg, passwordReg } from '~/common/utils/checkForm.js'
 export default {
-    name: 'Home',
+    name: 'Pay',
     components: {
         Background
     },
@@ -83,49 +83,47 @@ export default {
             return !this.userName || !this.password
         }
     },
-    async asyncData({ app, query }) {
-        const {
-            $api: { product }
-        } = app
-        const params = {
-            paymentMode: query.paymentMode,
-            jsCode: query.code || query.auth_code,
-            deviceId: query.deviceId
-        }
-        app.$cookies.set('userType', 3, {
-            path: '/'
-        })
-        const { code, data } = await product.userLogin(params)
-        const { code: code2, data: data2 } = await product.selectCustomerInfo({
-            deviceId: query.deviceId,
-            customerId: query.customerId
-        })
-        console.log('login：')
-        console.log(data)
-        console.log('userInfo:')
-        console.log(data2)
-        // 登录
-        if (code === 200 && code2 === 200) {
-            app.$cookies.set('userToken', data.token, {
-                path: '/'
-            })
-            app.$cookies.set('userId', data.userId, {
-                path: '/'
-            })
-            return {
-                ...query,
-                ...data,
-                ...data2
-            }
-        }
-        return {
-            picks: []
-        }
-    },
     created() {
-        this.getNum()
+        this.readyFunc()
     },
     methods: {
+        async readyFunc() {
+            const {
+                $api: { product },
+                $route: { query }
+            } = this
+            const params = {
+                paymentMode: query.paymentMode,
+                jsCode: query.code || query.auth_code,
+                deviceId: query.deviceId
+            }
+            console.log(params)
+            this.$cookies.set('userType', 3, {
+                path: '/'
+            })
+            const { code, data } = await product.userLogin(params)
+            const { code: code2, data: data2 } = await product.selectCustomerInfo({
+                deviceId: query.deviceId,
+                customerId: query.customerId
+            })
+            // 登录
+            if (code === 200 && code2 === 200) {
+                this.$cookies.set('userToken', data.token, {
+                    path: '/'
+                })
+                this.$cookies.set('userId', data.userId, {
+                    path: '/'
+                })
+                Object.assign(
+                    {
+                        ...query,
+                        ...data,
+                        ...data2
+                    },
+                    this
+                )
+            }
+        },
         nameInputFcous(v) {
             this.$nextTick(function() {
                 //DOM 更新了

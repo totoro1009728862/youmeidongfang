@@ -18,11 +18,18 @@ export default {
         }
     },
     async asyncData({ app, query, redirect }) {
+        // const params = {
+        //     paymentMode: query.paymentMode,
+        //     jsCode: query.code || query.auth_code,
+        //     deviceId: query.deviceId
+        // }
         const params = {
-            paymentMode: query.paymentMode,
-            jsCode: query.code || query.auth_code,
-            deviceId: query.deviceId
+            paymentMode: 'wechat',
+            jsCode: '071PLhtW1je4BX0aWpuW1SwdtW1PLhtx',
+            deviceId: '10376'
         }
+        console.log('--------------------')
+        console.log(params)
         app.$cookies.set('userType', 3, {
             path: '/'
         })
@@ -30,6 +37,7 @@ export default {
             $api: { product }
         } = app
         const { code, data } = await product.userLogin(params)
+        console.log(code)
         if (code === 200) {
             app.$cookies.set('userToken', data.token, {
                 path: '/'
