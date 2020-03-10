@@ -18,17 +18,17 @@ export default {
         }
     },
     async asyncData({ app, query, redirect }) {
-        // const params = {
-        //     paymentMode: query.paymentMode,
-        //     jsCode: query.code || query.auth_code,
-        //     deviceId: query.deviceId
-        // }
         const params = {
-            paymentMode: 'wechat',
-            jsCode: '071PLhtW1je4BX0aWpuW1SwdtW1PLhtx',
-            deviceId: '10376'
+            paymentMode: query.paymentMode,
+            jsCode: query.code || query.auth_code,
+            deviceId: query.deviceId
         }
-        console.log('--------------------')
+        // const params = {
+        //     paymentMode: 'wechat',
+        //     jsCode: '071PLhtW1je4BX0aWpuW1SwdtW1PLhtx',
+        //     deviceId: '10376'
+        // }
+        // console.log('--------------------')
         console.log(params)
         app.$cookies.set('userType', 3, {
             path: '/'

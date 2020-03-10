@@ -111,6 +111,7 @@ export default {
             console.log('----登录---')
             console.log(data)
             if (code === 200) {
+                this.userId = data.userId
                 this.$cookies.set('userToken', data.token, {
                     path: '/'
                 })
