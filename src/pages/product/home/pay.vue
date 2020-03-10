@@ -25,11 +25,22 @@
             <div class="account">
                 <div class="item" @click="nameInputFcous('userNameRef')">
                     <div class="icon ym-account"></div>
-                    <input ref="userNameRef" v-model.trim="userName" type="tel" maxlength="11" placeholder="请输入门店帐号" />
+                    <input
+                        ref="userNameRef"
+                        v-model.trim="userName"
+                        type="tel"
+                        maxlength="11"
+                        placeholder="请输入门店帐号"
+                    />
                 </div>
                 <div class="item" @click="nameInputFcous('passwordRef')">
                     <div class="icon ym-password"></div>
-                    <input ref="passwordRef" v-model.trim="password" :type="isPasswordShow ? 'text' : 'password'" placeholder="请输入密码" />
+                    <input
+                        ref="passwordRef"
+                        v-model.trim="password"
+                        :type="isPasswordShow ? 'text' : 'password'"
+                        placeholder="请输入密码"
+                    />
                     <span class="ege-warp" @click.stop="isPasswordShow = !isPasswordShow">
                         <van-icon :name="isPasswordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
@@ -54,7 +65,6 @@ export default {
             userId: '',
             paymentMode: '', // 来源
             deviceId: '', // 设备id
-            picks: [], // 套餐
             deviceNo: '', // 机器型号
             shopName: '', // 门点名称
             surplusNum: 0, // 剩余次数
@@ -73,12 +83,17 @@ export default {
         }
     },
     created() {
+        const {
+            $route: { query }
+        } = this
+        this.deviceId = query.deviceId
+        this.customerId = query.customerId
+        this.paymentMode = query.paymentMode
         this.readyFunc()
         this.getSelectCustomerInfo()
     },
     methods: {
         async readyFunc() {
-            console.log('----------------------')
             const {
                 $api: { product },
                 $route: { query }
@@ -93,6 +108,8 @@ export default {
             })
             const { code, data } = await product.userLogin(params)
             // 登录
+            console.log('----登录---')
+            console.log(data)
             if (code === 200) {
                 this.$cookies.set('userToken', data.token, {
                     path: '/'
@@ -111,23 +128,17 @@ export default {
                 deviceId: query.deviceId,
                 customerId: query.customerId
             })
+            // 用户信息获取
+
             console.log(res)
+            if (res.code === 200) {
+                this.header = res.data.header
+            }
         },
         nameInputFcous(v) {
             this.$nextTick(function() {
                 //DOM 更新了
                 this.$refs[v].focus()
-            })
-        },
-        /* eslint-disable */
-        goMyCount() {
-            this.$router.push({
-                name: 'MyCount',
-                query: {
-                    deviceId: this.deviceId,
-                    userId: this.userId,
-                    status: 1
-                }
             })
         },
         // 初始化支付接口 JSAPI
@@ -147,14 +158,8 @@ export default {
                             false
                         )
                     } else if (document.attachEvent) {
-                        document.attachEvent(
-                            'WeixinJSBridgeReady',
-                            this.onBridgeReady(data, deviceId, userId)
-                        )
-                        document.attachEvent(
-                            'onWeixinJSBridgeReady',
-                            this.onBridgeReady(data, deviceId, userId)
-                        )
+                        document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
+                        document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady(data, deviceId, userId))
                     }
                 } else {
                     this.onBridgeReady(data, deviceId, userId)
@@ -178,15 +183,8 @@ export default {
             }
         },
         // 支付事件
-        goPay: debounce(async function(packId) {
-            const {
-                deviceId,
-                customerId,
-                userId,
-                totalNum,
-                userName,
-                password
-            } = this
+        goPay: debounce(async function() {
+            const { deviceId, customerId, userId, totalNum, userName, password } = this
             let phoneReg = phoneNumberReg(userName)
             let psReg = passwordReg(password)
             if (phoneReg) {
@@ -240,15 +238,7 @@ export default {
                     }
                 }
             )
-        },
-        goMerchantsPay() {
-            const { deviceId, userId, deviceNo, shopName } = this
-            this.$router.push({
-                name: 'MerchantsPay',
-                query: { deviceId, userId, deviceNo, shopName }
-            })
         }
-        /* eslint-disable */
     }
 }
 </script>

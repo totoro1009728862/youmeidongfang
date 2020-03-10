@@ -81,11 +81,7 @@ export default {
                 userId: query.userId,
                 deviceId: query.deviceId
             }
-            console.log(params)
             const { code, data } = await product.userPayQr(params)
-
-            console.log(code)
-            console.log(data)
             if (code === 200) {
                 this.qrPath = data.qrPath
                 console.log('OKKKKKKKKKKKKK')
