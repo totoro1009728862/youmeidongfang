@@ -25,22 +25,11 @@
             <div class="account">
                 <div class="item" @click="nameInputFcous('userNameRef')">
                     <div class="icon ym-account"></div>
-                    <input
-                        ref="userNameRef"
-                        v-model.trim="userName"
-                        type="tel"
-                        maxlength="11"
-                        placeholder="请输入门店帐号"
-                    />
+                    <input ref="userNameRef" v-model.trim="userName" type="tel" maxlength="11" placeholder="请输入门店帐号" />
                 </div>
                 <div class="item" @click="nameInputFcous('passwordRef')">
                     <div class="icon ym-password"></div>
-                    <input
-                        ref="passwordRef"
-                        v-model.trim="password"
-                        :type="isPasswordShow ? 'text' : 'password'"
-                        placeholder="请输入密码"
-                    />
+                    <input ref="passwordRef" v-model.trim="password" :type="isPasswordShow ? 'text' : 'password'" placeholder="请输入密码" />
                     <span class="ege-warp" @click.stop="isPasswordShow = !isPasswordShow">
                         <van-icon :name="isPasswordShow ? 'eye-o' : 'closed-eye'" />
                     </span>
@@ -85,9 +74,11 @@ export default {
     },
     created() {
         this.readyFunc()
+        this.getSelectCustomerInfo()
     },
     methods: {
         async readyFunc() {
+            console.log('----------------------')
             const {
                 $api: { product },
                 $route: { query }
@@ -97,51 +88,36 @@ export default {
                 jsCode: query.code || query.auth_code,
                 deviceId: query.deviceId
             }
-            console.log(params)
             this.$cookies.set('userType', 3, {
                 path: '/'
             })
             const { code, data } = await product.userLogin(params)
-            const { code: code2, data: data2 } = await product.selectCustomerInfo({
-                deviceId: query.deviceId,
-                customerId: query.customerId
-            })
             // 登录
-            if (code === 200 && code2 === 200) {
+            if (code === 200) {
                 this.$cookies.set('userToken', data.token, {
                     path: '/'
                 })
                 this.$cookies.set('userId', data.userId, {
                     path: '/'
                 })
-                Object.assign(
-                    {
-                        ...query,
-                        ...data,
-                        ...data2
-                    },
-                    this
-                )
             }
+        },
+        async getSelectCustomerInfo() {
+            const {
+                $api: { product },
+                $route: { query }
+            } = this
+            const res = await product.selectCustomerInfo({
+                deviceId: query.deviceId,
+                customerId: query.customerId
+            })
+            console.log(res)
         },
         nameInputFcous(v) {
             this.$nextTick(function() {
                 //DOM 更新了
                 this.$refs[v].focus()
             })
-        },
-        async getNum() {
-            const params = {
-                deviceId: this.deviceId,
-                userId: this.userId
-            }
-            const {
-                $api: { product }
-            } = this
-            const { code, data } = await product.myUserNum(params)
-            if (code === 200) {
-                this.surplusNum = data.surplusNum
-            }
         },
         /* eslint-disable */
         goMyCount() {

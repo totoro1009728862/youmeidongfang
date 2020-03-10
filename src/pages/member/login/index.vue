@@ -52,11 +52,11 @@
                 <nuxt-link tag="span" :to="{ name: 'Registration', query: { ...$route.query } }">注册账号</nuxt-link>
             </div>-->
         </div>
-		<div class="footer">
-			©2020 优美东方 <a href="http://icp.chinaz.com/info?q=iumer.vip" style="color: #b3b3b3;" target="_blank">京ICP备17060551号-2</a>
-		</div>
+        <!-- <div class="footer">
+            ©2020 优美东方
+            <a href="http://icp.chinaz.com/info?q=iumer.vip" style="color: #b3b3b3;" target="_blank">京ICP备17060551号-2</a>
+        </div>-->
     </div>
-	
 </template>
 
 <script>
@@ -254,13 +254,13 @@ export default {
         font-size: 14px;
     }
 }
-.footer{
-	font-size:12px;
+.footer {
+    font-size: 12px;
     color: #bbb;
-	color: #bbb;
-	position:absolute;
-	bottom:10px;
-	width:100%;
-	text-align:center;
+    color: #bbb;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
 }
 </style>

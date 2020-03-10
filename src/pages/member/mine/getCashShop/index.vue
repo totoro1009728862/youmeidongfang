@@ -400,7 +400,7 @@ export default {
                 font-size: 24px;
                 color: #ab1f26;
             }
-			.ym-weixin {
+            .ym-weixin {
                 color: #259b24;
             }
             .ym-radio {

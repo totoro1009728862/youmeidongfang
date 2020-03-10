@@ -80,7 +80,12 @@
                 <div class="card-input">
                     <div class="label">开户行地址</div>
                     <div class="card-number" @click="nameInputFcous('addressRef')">
-                        <input ref="addressRef" v-model.trim="bankInfo.bankAddress" type="text" placeholder="请输入开户行地址" />
+                        <input
+                            ref="addressRef"
+                            v-model.trim="bankInfo.bankAddress"
+                            type="text"
+                            placeholder="请输入开户行地址"
+                        />
                     </div>
                 </div>
                 <div v-if="bankInfo['bankName']" class="card-input">
@@ -321,9 +326,11 @@ export default {
                     ? await member.mine.brokerageSubmitPrice(params)
                     : await member.mine.submitPrice(params)
             if (code === 200) {
-				
                 this.$Toast.success({
-                    message: this.cashType === 1 ? '提交成功，资金将在3-5个工作日内到账，请注意查收':'已提现到微信零钱，请在微信钱包中查看',
+                    message:
+                        this.cashType === 1
+                            ? '提交成功，资金将在3-5个工作日内到账，请注意查收'
+                            : '已提现到微信零钱，请在微信钱包中查看',
                     duration: 2000,
                     onClose: () => {
                         this.getPriceInfo()

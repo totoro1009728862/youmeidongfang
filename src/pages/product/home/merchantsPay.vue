@@ -48,6 +48,8 @@ export default {
             deviceId: query.deviceId || 10376,
             userId: query.userId || 4
         })
+        console.log('---------------------')
+        console.log(code)
         if (code === 200) {
             console.log(data)
             // let qrImgData = ''
@@ -67,23 +69,26 @@ export default {
         return {}
     },
     created() {
-        this.getNum()
+        this.getQr()
     },
     methods: {
-        async getNum() {
-            const params = {
-                deviceId: this.deviceId,
-                userId: this.userId
-            }
+        async getQr() {
             const {
-                $api: { product }
+                $api: { product },
+                $route: { query }
             } = this
-            console.log('---------测试老街口')
-            const { code, data } = await product.myUserNum(params)
+            const params = {
+                userId: query.userId,
+                deviceId: query.deviceId
+            }
+            console.log(params)
+            const { code, data } = await product.userPayQr(params)
+
             console.log(code)
             console.log(data)
             if (code === 200) {
-                this.surplusNum = data.surplusNum
+                this.qrPath = data.qrPath
+                console.log('OKKKKKKKKKKKKK')
             }
         }
     }
