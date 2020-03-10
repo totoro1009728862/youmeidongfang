@@ -9,7 +9,7 @@
             <div class="count">
                 <div>为TA代买次数</div>
                 <div>
-                    <van-stepper v-model="totalNum" />
+                    <van-stepper v-model="totalNum" min="10" />
                 </div>
             </div>
             <div class="price">
@@ -69,7 +69,7 @@ export default {
             shopName: '', // 门点名称
             surplusNum: 0, // 剩余次数
             payMethod: '', // 微信支付方式
-            totalNum: 1,
+            totalNum: 10,
             price: 13,
             userName: '',
             password: '', //密码
