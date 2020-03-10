@@ -30,12 +30,12 @@ module.exports = [
         component: 'pages/product/home/myCount.vue'
     },
     {
-        path: `/home/merchantsPay`,
+        path: `/merchantsPay`,
         name: 'MerchantsPay',
         component: 'pages/product/home/merchantsPay.vue'
     },
     {
-        path: `/home/pay`,
+        path: `/pay`,
         name: 'Pay',
         component: 'pages/product/home/pay.vue'
     },
