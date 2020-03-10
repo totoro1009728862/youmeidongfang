@@ -90,7 +90,6 @@ export default {
         this.customerId = query.customerId
         this.paymentMode = query.paymentMode
         this.readyFunc()
-        this.getSelectCustomerInfo()
     },
     methods: {
         async readyFunc() {
@@ -118,6 +117,7 @@ export default {
                 this.$cookies.set('userId', data.userId, {
                     path: '/'
                 })
+                this.getSelectCustomerInfo()
             }
         },
         async getSelectCustomerInfo() {
@@ -270,6 +270,7 @@ export default {
         img {
             width: 100%;
             height: 100%;
+            border-radius: 50%;
             display: block;
             overflow: hidden;
         }
