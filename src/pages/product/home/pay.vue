@@ -89,37 +89,10 @@ export default {
         this.deviceId = query.deviceId
         this.customerId = query.customerId
         this.paymentMode = query.paymentMode
-        this.readyFunc()
+        this.userId = query.userId
+        this.getSelectCustomerInfo()
     },
     methods: {
-        async readyFunc() {
-            const {
-                $api: { product },
-                $route: { query }
-            } = this
-            const params = {
-                paymentMode: query.paymentMode,
-                jsCode: query.code || query.auth_code,
-                deviceId: query.deviceId
-            }
-            this.$cookies.set('userType', 3, {
-                path: '/'
-            })
-            const { code, data } = await product.userLogin(params)
-            // 登录
-            console.log('----登录---')
-            console.log(data)
-            if (code === 200) {
-                this.userId = data.userId
-                this.$cookies.set('userToken', data.token, {
-                    path: '/'
-                })
-                this.$cookies.set('userId', data.userId, {
-                    path: '/'
-                })
-                this.getSelectCustomerInfo()
-            }
-        },
         async getSelectCustomerInfo() {
             const {
                 $api: { product },
@@ -129,9 +102,6 @@ export default {
                 deviceId: query.deviceId,
                 customerId: query.customerId
             })
-            // 用户信息获取
-
-            console.log(res)
             if (res.code === 200) {
                 this.header = res.data.header
             }

@@ -45,24 +45,28 @@ export default {
             app.$cookies.set('userId', data.userId, {
                 path: '/'
             })
+            let urlLink = {
+                name: 'Home',
+                query: {
+                    ...query,
+                    surplusNum: data.surplusNum,
+                    userId: data.userId
+                }
+            }
+            // 代付
+            if (query.urlType && query.urlType == 2) {
+                urlLink = {
+                    name: 'Pay',
+                    query: {
+                        ...query,
+                        userId: data.userId
+                    }
+                }
+            }
             if (process.server) {
-                redirect({
-                    name: 'Home',
-                    query: {
-                        ...query,
-                        surplusNum: data.surplusNum,
-                        userId: data.userId
-                    }
-                })
+                redirect(urlLink)
             } else if (process.client) {
-                app.router.push({
-                    name: 'Home',
-                    query: {
-                        ...query,
-                        surplusNum: data.surplusNum,
-                        userId: data.userId
-                    }
-                })
+                app.router.push(urlLink)
             }
             return {}
         }
