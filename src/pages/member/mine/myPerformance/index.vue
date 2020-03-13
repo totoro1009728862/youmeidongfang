@@ -100,7 +100,7 @@ export default {
             this.endDate = new Date()
             const m = this.endDate.getMonth() + 1
             const y = this.endDate.getFullYear()
-            const d = `${m > 3 ? y : y - 1}-${m - 3}-01`
+            const d = `${m > 1 ? y : y - 1}-${m > 1 ? m - 1 : m}-01`
             this.beginDate = new Date(d.replace(/-/g, '/'))
             this.bDate = this.formatDate(this.beginDate)
             this.eDate = this.formatDate(this.endDate)
@@ -152,11 +152,13 @@ export default {
         },
         // 赋值开始日期
         setBeginDate(e) {
+            console.log(e)
             if (e.getTime() > this.endDate.getTime()) {
                 this.beginDate = new Date(this.bDate)
                 this.$Toast('开始日期不能大于结束日期')
                 return
             }
+            console.log(this.beginDate)
             this.bDate = this.formatDate(this.beginDate)
             this.beginDateSwitch = false
         },

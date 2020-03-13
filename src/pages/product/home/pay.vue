@@ -205,7 +205,7 @@ export default {
                 },
                 function(res) {
                     if (res.err_msg == 'get_brand_wcpay_request:ok') {
-                        window.location.href = `/home/mycount?deviceId=${deviceId}&userId=${userId}`
+                        window.location.href = `/home/success?deviceId=${deviceId}&userId=${userId}`
                     }
                 }
             )
@@ -278,7 +278,6 @@ export default {
             align-items: center;
             width: 40px;
             justify-content: center;
-
             top: 0;
             font-size: 20px;
             color: #bbb;

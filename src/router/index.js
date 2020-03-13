@@ -35,9 +35,14 @@ module.exports = [
         component: 'pages/product/home/merchantsPay.vue'
     },
     {
-        path: `/pay`,
+        path: `/home/pay`,
         name: 'Pay',
         component: 'pages/product/home/pay.vue'
+    },
+    {
+        path: `/home/success`,
+        name: 'success',
+        component: 'pages/product/home/success.vue'
     },
 
     ...login,

@@ -52,10 +52,10 @@
                 <nuxt-link tag="span" :to="{ name: 'Registration', query: { ...$route.query } }">注册账号</nuxt-link>
             </div>-->
         </div>
-        <div class="footer">
+        <!-- <div class="footer">
             ©2020 优美东方
             <a href="http://icp.chinaz.com/info?q=iumer.vip" style="color: #b3b3b3;" target="_blank">京ICP备17060551号-2</a>
-        </div>
+        </div>-->
     </div>
 </template>
 
