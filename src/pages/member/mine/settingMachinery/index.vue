@@ -106,7 +106,8 @@ export default {
             } = this
             const { data } = await member.mine.deviceSetList({ deviceId })
             this.pack = Object.assign(data[0], { noChangeNum: true })
-            this.packs = data.slice(1)
+            this.packs = [].concat(data.slice(1))
+            console.log(this.packs)
         },
         async changeStatus(item) {
             const {
@@ -138,9 +139,11 @@ export default {
                 price,
                 totalNum
             }
+            alert(this.price)
             if (params.noChangeNum) delete params.noChangeNum
             const { code } = await member.mine.updateDeviceSet(params)
             if (code === 200) {
+                alert('更新成功')
                 this.getDeviceSetList()
             }
             this.show = false
